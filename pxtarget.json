@@ -20,7 +20,9 @@
         "libs/bitmap",
         "libs/fonts",
         "libs/color",
-        "libs/audio-recording"
+        "libs/audio-recording",
+        "libs/Module-World",
+        "libs/tm1650"
     ],
     "cloud": {
         "workspace": false,

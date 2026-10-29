@@ -3,7 +3,9 @@
     "dependencies": {
         "core": "file:../core",
         "radio": "file:../radio",
-        "microphone": "file:../microphone"
+        "microphone": "file:../microphone",
+        "Module-World": "file:../Module-World",
+        "tm1650": "file:../tm1650"
     },
     "description": "",
     "files": [
