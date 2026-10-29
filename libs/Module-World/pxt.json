@@ -1,0 +1,22 @@
+{
+    "name": "Module-World",
+    "version": "0.0.1",
+    "description": "Extension for YahBoom YB_Module-World V0.0.1",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts",
+        "_locales/zh-cn/Module-World-strings.json",
+        "_locales/zh-tw/Module-World-strings.json"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": false,
+    "preferredEditor": "tsprj"
+}
