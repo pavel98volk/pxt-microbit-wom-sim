@@ -100,16 +100,16 @@ namespace pxsim.visuals {
 
     /**
      * Port enum decoder for ModuleWorld_PWM.mwServoNum (1..4)
-     * 1: P1 (P1P10), 2: P4 (P4P5), 3: P2 (P2P3), 4: P10 (P10P11)
+     * 1: P1, 2: P4, 3: P2, 4: P10
      */
     export function decodeServoPort(val: number): string[] {
         const map: { [k: number]: string[] } = {
-            1: ["P1", "P10"],
-            2: ["P4", "P5"],
-            3: ["P2", "P3"],
-            4: ["P10", "P11"]
+            1: ["P1"],
+            2: ["P4"],
+            3: ["P2"],
+            4: ["P10"]
         };
-        return map[val] || ["P1", "P10"];
+        return map[val] || ["P1"];
     }
 
     /**
@@ -129,6 +129,9 @@ namespace pxsim.visuals {
         const id = pinNameToId(pinName);
         return b.edgeConnectorState.getPin(id) || undefined;
     }
+
+    /** Pins shared with micro:bit V2 LED matrix columns/rows and photosensitive sensor */
+    export const LED_SHARED_PINS: string[] = ["P3", "P4", "P6", "P7", "P9", "P10"];
 
     export interface WomModuleOptions {
         moduleType: string;
@@ -454,6 +457,64 @@ namespace pxsim.visuals {
         }
 
         /**
+         * Default LED state before led.enable is called.
+         * micro:bit V2 hardware enables the LED screen by default (true).
+         * If false, LED conflict is only flagged when photosensitive or LED showing modes are active.
+         */
+        public static defaultLedState: boolean = true;
+
+        public static isLedShowing(ledState?: LedMatrixState): boolean {
+            if (!ledState) return false;
+            if (ledState.disabled === true) return false;
+            if ((ledState as any)._hasActiveDisplay) return true;
+            if (ledState.image && ledState.image.data) {
+                for (let i = 0; i < ledState.image.data.length; i++) {
+                    if (ledState.image.data[i] > 0) return true;
+                }
+            }
+            if (
+                ledState.animationQ &&
+                (ledState.animationQ as any).queue &&
+                (ledState.animationQ as any).queue.length > 0
+            ) {
+                return true;
+            }
+            return false;
+        }
+
+        public static isPhotosensitiveActive(lightState?: LightSensorState): boolean {
+            return !!(lightState && lightState.usesLightLevel);
+        }
+
+        public static isLedConflictActive(b?: DalBoard): boolean {
+            const boardInst = b || board();
+            if (!boardInst || !boardInst.ledMatrixState) return false;
+
+            const ledState = boardInst.ledMatrixState;
+            const lightState = boardInst.lightSensorState;
+
+            const isPhotosensitive = WomModuleManager.isPhotosensitiveActive(lightState);
+            const isShowing = WomModuleManager.isLedShowing(ledState);
+
+            // If led.enable(false) was explicitly called:
+            if (ledState.disabled === true) {
+                return isPhotosensitive || isShowing;
+            }
+
+            // If led.enable(true) was explicitly called:
+            if (ledState.disabled === false) {
+                return true;
+            }
+
+            // Default state (before any call to led.enable):
+            if (WomModuleManager.defaultLedState) {
+                return true;
+            } else {
+                return isPhotosensitive || isShowing;
+            }
+        }
+
+        /**
          * Initialize WoM support on a DalBoard instance.
          * Called from DalBoard.initAsync(this) in sim/dalboard.ts.
          */
@@ -723,6 +784,12 @@ namespace pxsim.visuals {
                 }
             }
 
+            // 2b. Check LED matrix shared pin conflict (orange warning banner)
+            const ledConflictPins = pins.filter(p => LED_SHARED_PINS.indexOf(p) !== -1);
+            if (ledConflictPins.length > 0 && WomModuleManager.isLedConflictActive(this.boardInstance)) {
+                this.showLedPinConflictWarning(moduleType, pins, ledConflictPins);
+            }
+
             // 3. Instantiate the new module via registered factory
             const factory = WomModuleManager.factories[moduleType];
             if (!factory) {
@@ -890,12 +957,56 @@ namespace pxsim.visuals {
             this.updateViewBox();
         }
 
+        public showLedPinConflictWarning(
+            attemptedType: string,
+            attemptedPins: string[],
+            conflictPins: string[],
+            displayName?: string
+        ): void {
+            const pinDesc = conflictPins.join(", ");
+            const targetName = displayName || attemptedType;
+            const msg = `Pin conflict on ${pinDesc}: pin(s) shared with micro:bit LED screen; call led.enable(false) to use for ${targetName}.`;
+            if (this.warningsShown[msg]) return;
+            this.warningsShown[msg] = true;
+
+            console.warn(`[WoM Sim] ${msg}`);
+            if (!this.warningGroup) return;
+
+            const bannerIndex = Object.keys(this.warningsShown).length - 1;
+            const yOffset = 412 + bannerIndex * 26;
+            const g = svg.child(this.warningGroup, "g", {
+                transform: `translate(10, ${yOffset})`
+            });
+            svg.child(g, "rect", {
+                x: 0,
+                y: 0,
+                width: 480,
+                height: 22,
+                rx: 4,
+                fill: "#c2410c",
+                stroke: "#fdba74",
+                "stroke-width": 1
+            });
+            const t = svg.child(g, "text", {
+                x: 8,
+                y: 15,
+                fill: "#ffffff",
+                "font-family": "monospace, sans-serif",
+                "font-size": "10.5px",
+                "font-weight": "bold"
+            });
+            t.textContent = `⚠️ ${msg}`;
+            this.updateViewBox();
+        }
+
         private updateViewBox(): void {
             const b = this.boardInstance || board();
             if (!b || !b.view) return;
             const numRows = Math.max(1, this.occupied.length);
+            const numWarnings = Object.keys(this.warningsShown).length;
+            const warningExtra = Math.max(0, (numWarnings - 1) * 26);
             const requiredHeight = Math.max(
-                430,
+                430 + warningExtra,
                 WomModuleManager.START_Y +
                 numRows * (WomModuleManager.CELL_H + WomModuleManager.GAP_Y) +
                 16

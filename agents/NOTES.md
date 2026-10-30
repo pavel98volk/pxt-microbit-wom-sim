@@ -74,6 +74,13 @@ Per project requirements:
      - Displays a prominent visual warning banner in the simulator SVG (e.g. `⚠️ Pin Conflict: Pin(s) P0, P1 already used by Ultrasonic (wom_ultrasonic); cannot attach PIR (wom_pir)`) and logs `console.warn(...)`.
 4. **Reset on Simulator Restart**:
    - When the user stops/restarts the simulator or changes code (`DalBoard` constructor / `initAsync`), all module instances, pin registrations, and warnings are cleared cleanly.
+5. **LED Matrix & Light Sensor Shared Pin Warning (Orange Banner)**:
+   - Pins `P3`, `P4`, `P6`, `P7`, `P9`, and `P10` (`LED_SHARED_PINS`) are multiplexed with the 5x5 LED matrix columns/rows and light sensing on micro:bit V2.
+   - On hardware, `uBit.display.enable()` runs at boot, requiring `led.enable(false)` to free these pins for GPIO/analog use.
+   - The warning is checked **only on module initialization** when the module is first started/spawned in `ensureModule`, avoiding repeated checks or overhead on subsequent command calls.
+   - If these pins are used by an external module upon initialization before `led.enable(false)` is invoked (or while `led.enable(true)` is set), `WomModuleManager` shows an orange banner (`fill="#c2410c"`, `stroke="#fdba74"`): `⚠️ Pin conflict on <pins>: pin(s) shared with micro:bit LED screen; call led.enable(false) to use for <module>.`
+   - If `defaultLedState` is `false`, the warning only triggers when the LED module is active in photosensitive mode (`input.lightLevel()`) or LED showing mode (`basic.showLeds`, `showNumber`, `showString`, `showIcon`, `led.plot`, `animationQ`, or non-zero pixel data).
+   - Unlike red pin conflicts (which block module spawning due to two external devices colliding), orange warnings permit module spawning so visual wiring to the edge connector remains visible while alerting the developer.
 
 ---
 
@@ -108,14 +115,15 @@ Per project requirements:
 - `Light`, `Sound`, `Potentiometer` read `pinA` (`P0`, `P2`, or `P3`).
 - `Rocker` (Joystick) reads `pinA` for `X` (`Rocker_X`) and `pinB` for `Y` (`Rocker_Y`).
 
-#### `ModuleWorld_PWM.mwServoNum` (Dual-Pin PWM/Servo Port)
-| Enum Member | Numeric Value | Primary Pin (`pinA`) | Secondary Pin (`pinB`) |
-| :--- | :---: | :---: | :---: |
-| `P1` | `1` | `P1` | `P10` (on physical port `P1P10`, or single pin `P1`) |
-| `P2` | `2` | `P2` | `P3` |
-| `P3` | `3` | `P3` | `P4` |
-| `P4` | `4` | `P4` | `P5` |
-| `P10` | `5` | `P10` | `P11` |
+#### `ModuleWorld_PWM.mwServoNum` (Servo Signal Pins)
+| Enum Member | Numeric Value | Signal Pin |
+| :--- | :---: | :---: |
+| `P1` | `1` | `P1` |
+| `P4` | `2` | `P4` |
+| `P2` | `3` | `P2` |
+| `P10` | `4` | `P10` |
+
+- A servo only connects to a single signal pin (`P1`, `P4`, `P2`, or `P10`). `decodeServoPort` maps each enum strictly to its single pin `["P1"]`, `["P4"]`, `["P2"]`, or `["P10"]`.
 
 #### Fixed-Pin & I2C Modules
 - **`ModuleWorld_PWM.RGB` & `RGB2`**: Hardcoded to `P12` (Red), `P13` (Green), `P14` (Blue).
