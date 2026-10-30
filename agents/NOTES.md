@@ -51,6 +51,14 @@ In `node_modules/pxt-core/built/pxtsim.js` (`BoardHost` lines 776–805 and `All
    - In the simulator, if `digitalReadPin` returns a static `0` or `1`, the first or second `while` loop spins forever and freezes the browser tab!
    - Solution: When `control.dmesg("wom:dht11:" + value_DNum + ":" + dht11type)` is called, if `pins.digitalReadPin(dht11pin)` is hooked or if `dht11value` checks a simulator fast-path (or `digitalReadPin` toggles through the 40-bit frame), it returns the exact temperature/humidity from the DHT11 module slider without hanging. (Even simpler and faster: in `dht11value`, right after `control.dmesg(...)`, if `pxsim` sets a virtual state or if `digitalReadPin` returns a simulated value, see Section 5.2 of `ARCH.md` for the exact 3-line hardware-safe fast-path).
 
+### 1.5 `pxsim.control.dmesg` Overwriting Hazard & Centralized Runtime Hooks
+- In `sim/tsconfig.json`, `pxt-common-packages/libs/base/sim/control.ts` is compiled **after** `sim/visuals/*.ts`.
+- If `pxsim.control.dmesg` is hooked at top-level module load time (or defined in `sim/state/misc.ts`), `control.ts` executes later in `built/sim.js` and overwrites `control.dmesg = dmesg`.
+- **Solution (Already Implemented in [sim/visuals/womManager.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/visuals/womManager.ts))**:
+  - `WomModuleManager.installHooks()` wraps `pxsim.control.dmesg`, `pxsim.pins.digitalReadPin`, `pxsim.pins.analogReadPin`, `pxsim.pins.pulseIn`, `pxsim.pins.servoSetPulse`, `pxsim.pins.i2cWriteBuffer`, and `pxsim.pins.i2cReadBuffer` at runtime when `WomModuleManager.initBoard(this)` runs in `DalBoard.initAsync` ([sim/dalboard.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/dalboard.ts#L184)).
+  - Each wrapped function is tagged with `(fn as any)._womHook = true` rather than a static boolean flag, guaranteeing idempotency and survival across script load order.
+  - Because all pin hooks live inside `sim/visuals/womManager.ts`, **core simulator files (`sim/state/edgeconnector.ts`, `sim/state/edgeconnectorsim.ts`, `sim/state/misc.ts`) remain 100% unmodified** and agents adding new modules never need to edit `sim/dalboard.ts` or `sim/state/*`.
+
 ---
 
 ## 2. Strict Pin-Set Registry & Conflict Detection Rule
