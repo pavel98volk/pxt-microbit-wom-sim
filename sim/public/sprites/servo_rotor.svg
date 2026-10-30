@@ -6,22 +6,22 @@
     </linearGradient>
   </defs>
 
-  <!-- Servo Arm Body with True Center Cutout (Rotation-Ready, Shadow-Free) -->
-  <path fill="url(#primary-gradient)" fill-rule="evenodd" d="M 60,20
-           L 300,36
-           A 24,24 0 0,1 300,84
-           L 60,100
-           A 40,40 0 0,1 60,20
-           M 60,48
-           A 12,12 0 1,0 60,72
-           A 12,12 0 1,0 60,48 Z" />
+  <!-- Servo Arm Body with True Center Cutout (Thicker profile with black outline, Rotation-Ready) -->
+  <path fill="url(#primary-gradient)" fill-rule="evenodd" stroke="#000000" stroke-width="4" stroke-linejoin="round" d="M 60,14
+           L 300,30
+           A 30,30 0 0,1 300,90
+           L 60,106
+           A 46,46 0 0,1 60,14
+           M 60,47
+           A 13,13 0 1,0 60,73
+           A 13,13 0 1,0 60,47 Z" />
 
   <!-- Outer Center Mounting Ring Accent -->
-  <path fill="#1976D2" fill-rule="evenodd" opacity="0.3" d="M 60,28
-           A 32,32 0 1,1 59.9,28
-           M 60,48
-           A 12,12 0 1,0 60,72
-           A 12,12 0 1,0 60,48 Z" />
+  <path fill="#1976D2" fill-rule="evenodd" opacity="0.3" d="M 60,24
+           A 36,36 0 1,1 59.9,24
+           M 60,47
+           A 13,13 0 1,0 60,73
+           A 13,13 0 1,0 60,47 Z" />
 
   <!-- Servo Shaft Center Marker -->
   <circle cx="60" cy="60" r="2.5" fill="#0D47A1" opacity="0.6" />

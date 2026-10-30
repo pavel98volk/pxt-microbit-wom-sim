@@ -52,7 +52,6 @@ In the simulator view (`sim/visuals/`):
 | Module (base .png image with transparent background) | Expected Filename | Description |
 |---|---|---|
 | **Button Module** | `wom_button.png` | Push-button tactile switch, square. When pressed on a central area, semi-transparent shadow circle must be drawn over it to signify button being pressed |
-| **Buzzer Module** | `wom_buzzer.png` | Single sound buzzer, square. When buzzer buzzes - yellow circle or animation must be drawn over it |
 | **Color recognition Module** | `wom_color_recognition.png` | A module with RGB color recognition and a simple white LED that is allways lit when it is active, must be used with a color selection triangle and intensity slider, square |
 | **DHT11 Temp & Humidity** | `wom_dht11.png` | Blue DHT11 sensor enclosure on module PCB, square |
 | **IR Obstacle Sensor** | `wom_ir.png` | IR transmitter and photodiode receiver pair, square |
@@ -71,4 +70,9 @@ In the simulator view (`sim/visuals/`):
 | **Joystick Stick** | `joystick_stick.svg` | A centered circle to represent joystick moving part. Can be dragged up/down/left/right to a certain degree. |
 | **Servo Rotor** | `servo_rotor.svg` | A rotor lever `arm` that should be placed on servo rotor where its right circle is, and rotated around that circle. Used to show servo position |
 | **Potentiometer Rotor** | `potentiometer_rotor.svg` | a centered circle with a tick to represent potentiometer moving part, must be rotated when dragged left/right |
+| **DHT11 Rain Icon** | `dht_rain.svg` | Simplistic material design rain cloud with falling drops for 100% humidity |
+| **DHT11 Clouds Icon** | `dht_clouds.svg` | Simplistic material design overcast clouds for 75%–99% humidity |
+| **DHT11 Sun & Cloud Icon** | `dht_sun_cloud.svg` | Simplistic material design sun with cloud for 30%–74% humidity |
+| **DHT11 Sun Icon** | `dht_sun.svg` | Simplistic material design sun with radiating rays for 10%–29% humidity |
+| **DHT11 Sahara Dune Icon** | `dht_dune.svg` | Simplistic material design desert sand dunes with hot sun for 0%–9% humidity |
 

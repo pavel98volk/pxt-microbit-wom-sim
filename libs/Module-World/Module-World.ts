@@ -92,6 +92,10 @@ namespace ModuleWorld_Digital {
 		else if(value_DNum == 8)	{ dht11pin = DigitalPin.P12; }
 		else if(value_DNum == 9)	{ dht11pin = DigitalPin.P14; }
 		else if(value_DNum == 10)	{ dht11pin = DigitalPin.P1; }
+
+		control.dmesg("wom:dht11:" + value_DNum + ":" + dht11type);
+		let simVal = pins.digitalReadPin(dht11pin);
+		if (simVal < 0) return -(simVal + 1000);
 			
 		pins.digitalWritePin(dht11pin, 0)
 		basic.pause(18)
@@ -180,6 +184,7 @@ namespace ModuleWorld_Digital {
     //% blockGap=20
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
     export function Ultrasonic(value_DNum: mwDigitalNum): number {
+        control.dmesg("wom:ultrasonic:" + value_DNum);
         //send pulse
 		let Trig,Echo;		
 		if(value_DNum == 1)	{ Trig = DigitalPin.P0; Echo = DigitalPin.P1; }
@@ -234,6 +239,7 @@ namespace ModuleWorld_Digital {
     //% blockGap=20
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
     export function PIR(value_DNum: mwDigitalNum, value: enPIR): boolean {
+        control.dmesg("wom:pir:" + value_DNum);
 		let pin;
 		if(value_DNum == 1)	{ pin = DigitalPin.P0; }
 		else if(value_DNum == 2)	{ pin = DigitalPin.P2; }
@@ -349,6 +355,7 @@ namespace ModuleWorld_Analog {
     //% blockGap=20
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5 
     export function Light(value_ANum: mwAnalogNum): number {
+        control.dmesg("wom:light:" + value_ANum);
 		let lightpin;
 		let value: number;
 		if(value_ANum == 1)	{ lightpin = AnalogPin.P0; }
@@ -380,6 +387,7 @@ namespace ModuleWorld_Analog {
     //% blockGap=20
     //% name.fieldEditor="gridpicker" name.fieldOption.columns=5
     export function Potentiometer(value_ANum: mwAnalogNum): number {
+        control.dmesg("wom:potentiometer:" + value_ANum);
 		let pin;
 		let value: number;
 		if(value_ANum == 1)	{ pin = AnalogPin.P0; }
@@ -394,7 +402,7 @@ namespace ModuleWorld_Analog {
     //% weight=1
     //% blockGap=20
     export function Rocker(value_ANum: mwAnalogNum, value: enRocker): boolean {
-		
+        control.dmesg("wom:joystick:" + value_ANum);
 		let pin1;
 		let pin2;
 
@@ -539,7 +547,7 @@ namespace ModuleWorld_PWM {
     //% value1.min=0 value1.max=255 value2.min=0 value2.max=255 value3.min=0 value3.max=255
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     export function RGB(value1: number, value2: number, value3: number): void {
-		
+        control.dmesg("wom:rgb:P12,P13,P14");
         pins.analogWritePin(AnalogPin.P13, value1 * 1024 / 256);
         pins.analogWritePin(AnalogPin.P14, value2 * 1024 / 256);
         pins.analogWritePin(AnalogPin.P12, value3 * 1024 / 256);
@@ -550,6 +558,7 @@ namespace ModuleWorld_PWM {
     //% blockGap=20
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
     export function RGB2(value: enColor): void {
+        control.dmesg("wom:rgb:P12,P13,P14");
 		let pin1=DigitalPin.P13;
 		let pin2=DigitalPin.P14;
 		let pin3=DigitalPin.P12;
@@ -606,12 +615,28 @@ namespace ModuleWorld_PWM {
         }
     }
 	
+    export enum enServoType {
+        //% block="360"
+        Servo360 = 1,
+        //% block="270"
+        Servo270 = 2,
+        //% block="continuous"
+        Continuous = 3
+    }
+
+    //% blockId=ModuleWorld_PWM_SIM_InitServo block="SIM init servo|pin %pin|type %servoType"
+    //% weight=10
+    export function simInitServo(pin: mwServoNum, servoType: enServoType): void {
+        control.dmesg("wom:servo_init:" + pin + ":" + servoType);
+    }
+
     //% blockId=ModuleWorld_PWM_Servo block="Servo(360)|pin %ServoNum|value %value"
     //% weight=6
     //% blockGap=20
     //% value.min=0 value.max=360
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
     export function Servo(ServoNum: mwServoNum, value: number): void {
+        control.dmesg("wom:servo:" + ServoNum);
 		let pin;
 		if(ServoNum == 1)	{ pin = AnalogPin.P1; }
 		else if(ServoNum == 2)	{ pin = AnalogPin.P4; }
@@ -627,6 +652,7 @@ namespace ModuleWorld_PWM {
     //% value.min=0 value.max=270
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
     export function Servo2(ServoNum: mwServoNum, value: number): void {
+        control.dmesg("wom:servo:" + ServoNum);
 		let pin;
 		if(ServoNum == 1)	{ pin = AnalogPin.P1; }
 		else if(ServoNum == 2)	{ pin = AnalogPin.P4; }

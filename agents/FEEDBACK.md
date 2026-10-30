@@ -50,7 +50,7 @@ This file records untruthful, misleading, or broken guidance discovered in `AGEN
   > Original `ARCH.md` assumed all modules were uniform `120x120` hand-drawn SVG rects in a 1D wrap grid (`col = index % 3`, `row = Math.floor(index / 3)`) and predated `sim/public/sprites/README.md`.
 - **Why This Was Incomplete**:
   - Modules in `sim/public/sprites/` have three distinct aspect ratios:
-    - Square `1x1` (`colSpan: 1, rowSpan: 1`): Button, Buzzer, Color Recognition, DHT11, IR, Joystick, Photoresistor, PIR, Potentiometer, RGB.
+    - Square `1x1` (`colSpan: 1, rowSpan: 1`): Button, Color Recognition, DHT11, IR, Joystick, Photoresistor, PIR, Potentiometer, RGB.
     - Horizontal `2x1` (`colSpan: 2, rowSpan: 1`, ~2x wider than tall): Ultrasonic (`297x203`), TM1650 (`1255x848`).
     - Vertical `1x2` (`colSpan: 1, rowSpan: 2`, ~2x taller than wide): Positional Servo (`445x758`), Continuous Servo (`386x625`).
   - Simple `index % 3` indexing causes `2x1` and `1x2` modules to overlap neighboring cells.

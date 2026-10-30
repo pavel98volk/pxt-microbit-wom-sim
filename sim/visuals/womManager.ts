@@ -99,15 +99,15 @@ namespace pxsim.visuals {
     }
 
     /**
-     * Port enum decoder for ModuleWorld_PWM.mwServoNum (1..5)
+     * Port enum decoder for ModuleWorld_PWM.mwServoNum (1..4)
+     * 1: P1 (P1P10), 2: P4 (P4P5), 3: P2 (P2P3), 4: P10 (P10P11)
      */
     export function decodeServoPort(val: number): string[] {
         const map: { [k: number]: string[] } = {
             1: ["P1", "P10"],
-            2: ["P2", "P3"],
-            3: ["P3", "P4"],
-            4: ["P4", "P5"],
-            5: ["P10", "P11"]
+            2: ["P4", "P5"],
+            3: ["P2", "P3"],
+            4: ["P10", "P11"]
         };
         return map[val] || ["P1", "P10"];
     }

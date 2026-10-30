@@ -301,15 +301,12 @@ Whenever you are asked to implement another module from `libs/Module-World` or `
 
 ---
 
-### 5.5 PWM & Actuators: RGB LED (`wom_rgb`), Buzzer (`wom_buzzer`), Vibration Motor (`wom_vibmot`)
+### 5.5 PWM & Actuators: RGB LED (`wom_rgb`), Vibration Motor (`wom_vibmot`)
 - **RGB LED (`ModuleWorld_PWM.RGB` and `ModuleWorld_PWM.RGB2`)**:
   - Hardcoded to `P12` (Red), `P13` (Green), `P14` (Blue).
   - Add `control.dmesg("wom:rgb:P12,P13,P14");` to **both** `RGB` and `RGB2`.
   - Options: `sprite: "/sim/sprites/wom_rgb.png"`, `padEdge: "right"`, `wiredPins: ["P12", "P13", "P14"]`.
   - In `updateState()`, read `getPinInstance("P12")?.value`, `"P13"`, `"P14"` (`0..1023`), convert to `0..255`, and update `this.addCircleOverlay(...)` with `fill = rgb(R, G, B)` and `opacity = Math.min(1, (R + G + B) / 255)`.
-- **Buzzer (`ModuleWorld_PWM.BuzzerPin`)**:
-  - Add `control.dmesg("wom:buzzer:" + pin);` in `BuzzerPin`.
-  - Options: `sprite: "/sim/sprites/wom_buzzer.png"`, `padEdge: "left"`.
 - **Vibration Motor (`ModuleWorld_PWM.VibrationMot`)**:
   - Add `control.dmesg("wom:vibmot:" + pin + ":" + speed);` in `VibrationMot`.
 

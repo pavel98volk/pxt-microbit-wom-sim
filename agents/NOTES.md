@@ -35,7 +35,7 @@ In `node_modules/pxt-core/built/pxtsim.js` (`BoardHost` lines 776–805 and `All
 - Always place the WoM module container `<g class="wom-board-area">` starting at `y = 445` (below the micro:bit) and dynamically expand `boardSvg.element.setAttribute("viewBox", "0 0 500 " + totalHeight)` whenever modules or warning banners are added.
 - **Alphabetical `outFile` Ordering (`/// <reference path="./womManager.ts" />`)**:
   - `sim/tsconfig.json` uses `"outFile": "../built/sim.js"` with `"visuals/*.ts"`. TypeScript orders matched glob files alphabetically unless directed by `/// <reference path="..." />`.
-  - Any module file whose name alphabetically precedes `womManager.ts` (e.g. `womButton.ts`, `womBuzzer.ts`, `womColor.ts`, `womDht11.ts`, `womIr.ts`, `womJoystick.ts`) **must** begin with `/// <reference path="./womManager.ts" />` so `WomModuleManager` is emitted before `WomModuleManager.registerFactory(...)` runs.
+  - Any module file whose name alphabetically precedes `womManager.ts` (e.g. `womButton.ts`, `womColor.ts`, `womDht11.ts`, `womIr.ts`, `womJoystick.ts`) **must** begin with `/// <reference path="./womManager.ts" />` so `WomModuleManager` is emitted before `WomModuleManager.registerFactory(...)` runs.
 
 ### 1.4 Unimplemented Simulator Stubs in Base Repo That Must Be Hooked
 1. **`pxsim.pins.servoSetPulse(name: number, micros: number)`** in [sim/state/edgeconnector.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/state/edgeconnector.ts#L93-L95):
@@ -132,17 +132,16 @@ All module visuals should render the PNG/SVG sprites in `/sim/sprites/<filename>
 | :--- | :--- | :---: | :---: | :--- |
 | `wom_ultrasonic` | `wom_ultrasonic.png` | `297x203` | **`2x1`** (Horizontal) | Distance slider (`0–300 cm`) |
 | `wom_tm1650` | `wom_tm1650.png` | `1255x848` | **`2x1`** (Horizontal) | 4-digit 7-segment SVG overlay |
-| `wom_servo` | `wom_servo.png` + `servo_rotor.svg` | `445x758` | **`1x2`** (Vertical) | Rotating horn (`0°–270°` or `0°–360°`, pivot `(60,60)`) |
-| `wom_servo_continuous` | `wom_servo_continuous.png` + `servo_rotor.svg` | `386x625` | **`1x2`** (Vertical) | Rotating/spinning horn (pivot `(60,60)`) |
-| `wom_dht11` | `wom_dht11.png` | `241x243` | **`1x1`** (Square) | Temp (`0–50°C` / `32–122°F`) & Humidity (`0–100%`) sliders |
+| `wom_servo` | `wom_servo.png` + `servo_rotor.svg` | `445x758` | **`1x2`** (Vertical) | Rotating horn (`0°–270°` or `0°–360°`, pivot `(60,60)`, shaft `(74, 108)`) |
+| `wom_servo_continuous` | `wom_servo_continuous.png` + `servo_rotor.svg` | `386x625` | **`1x2`** (Vertical) | Rotating/spinning horn (pivot `(60,60)`, shaft `(74, 108)`) |
+| `wom_dht11` | `wom_dht11.png` + `dht_*.svg` | `241x243` | **`1x1`** (Square) | Dual vertical sliders: Left retro thermometer (0–50°C, blue->red) & Right humidity (0–100%, grey->blue, text blue->white, weather icons). Changing temp dynamically modulates RH per Magnus formula; water capped at 100% saturation and excess discarded upon cooling |
 | `wom_button` | `wom_button.png` | `235x235` | **`1x1`** (Square) | Click/hold red cap on PCB (`active-low`: pressed=`0`, released=`1`) |
 | `wom_ir` | `wom_ir.png` | `254x254` | **`1x1`** (Square) | Obstacle toggle switch (`obstacle=0`, `clear=1`) |
-| `wom_pir` | `wom_pir.png` | `255x254` | **`1x1`** (Square) | Motion toggle switch (`motion=1`, `idle=0`) |
+| `wom_pir` | `wom_pir.png` + `pir_hand.svg` + `pir_robot.svg` | `255x254` | **`1x1`** (Square) | Draggable warm hand & cold robot circles; red ray arrow to sensor center obstructed by robot; kinematic energy model (0–1023) with ~2s decay |
 | `wom_photoresistor` | `wom_photoresistor.png` | `245x245` | **`1x1`** (Square) | Light slider (`0–1023`; note `Light()` returns `1024 - analogReadPin`) |
 | `wom_potentiometer` | `wom_potentiometer.png` + `potentiometer_rotor.svg` | `245x245` | **`1x1`** (Square) | Draggable rotary knob (`0–1023`, `-135°` to `+135°`) |
-| `wom_joystick` | `wom_joystick_base.png` + `joystick_stick.svg` | `362x364` | **`1x1`** (Square) | 2D draggable thumbstick (`X: 0–1023`, `Y: 0–1023`, springs back to `512,512`) |
+| `wom_joystick` | `wom_joystick_base.png` + `joystick_stick.svg` | `362x364` | **`1x1`** (Square) | 2D draggable thumbstick (`X: 0–1023`, `Y: 0–1023`, springs back to `512,512`, `maxRadius = 12`, pointer sensitivity scaled by `0.5`) |
 | `wom_rgb` | `wom_rgb.png` | `234x234` | **`1x1`** (Square) | Glowing `<circle>` over central LED (`opacity = (R+G+B)/255`) |
-| `wom_buzzer` | `wom_buzzer.png` | `240x240` | **`1x1`** (Square) | Animated sound waves + frequency readout when active |
 | `wom_color` | `wom_color_recognition.png` | `243x243` | **`1x1`** (Square) | Color picker (`<input type="color">`) feeding R/G/B/H |
 | `wom_sound` | Custom PCB or shared sensor card | — | **`1x1`** (Square) | Sound level slider (`0–1023`) |
 | `wom_collision` | Custom PCB or switch card | — | **`1x1`** (Square) | Micro-lever toggle/momentary button (`collision=0`, `normal=1`) |
