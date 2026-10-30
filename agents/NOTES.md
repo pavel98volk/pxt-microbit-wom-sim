@@ -1,79 +1,142 @@
-# Architecture & Implementation Notes: MakeCode Simulator Extension
+# Architectural Notes & Codebase Findings: World of Modules (WoM) Simulator
 
-This document records critical architectural discoveries, findings, and decisions made during the design and development of the custom simulator extensions for micro:bit and Yahboom Module-World. Future agents modifying or extending this codebase must consult and update this document.
-
----
-
-## 1. MakeCode / PXT Simulator Internals
-
-### 1.1 How PXT Discovers and Instantiates Parts
-* **Block Annotations**: PXT compiler scans TypeScript AST for comments containing `//% parts="<part_name>"` and `//% trackArgs=<arg_indices>`.
-* **Part Manifest (`pxtparts.json`)**: When bundled in an extension package (`libs/<ext>/pxtparts.json`), PXT loads `PartDefinition` metadata into the simulator message: `msg.parts` (array of part IDs), `msg.partDefinitions` (dict of definitions), and `msg.fnArgs` (arguments extracted at callsites).
-* **Simulator Lifecycle**: In `sim/dalboard.ts`, `DalBoard.initAsync(msg)` initializes `BoardHost`, which coordinates all parts and wires before appending the root SVG element to `document.body`.
-* **Builtin Registries**:
-  - `DalBoard.builtinParts["<name>"]`: Stores virtual hardware state instances (under `namespace pxsim`).
-  - `DalBoard.builtinVisuals["<name>"]`: Factory function returning an `IBoardPart<T>` instance.
-  - `DalBoard.builtinPartVisuals["<name>"]`: Optional SVG icon thumbnail for assembly tutorials.
-
-### 1.2 Limitations of PXT's Default Breadboard Allocator
-* The default `pxsim.allocateDefinitions` in `pxt-core` is hardcoded for placing components onto a standard 30-column breadboard (`BREADBOARD_MID_COLS = 30`).
-* Parts are allocated horizontally in a single row (`placeParts` uses only breadboard rows 1–4). If multiple wide modules are connected, column space runs out (`"Not enough breadboard space!"`), leading to overlapping or clipping.
-* Module-World / Yahboom breakout boards are standalone PCB modules with cables, **not** DIP breadboard components.
-* Therefore, a dedicated **2D Flexible Grid Module Layout Manager** (`WomLayoutManager`) is required to place modules in multiple rows and columns below the micro:bit and route dynamic Bezier wires directly from the edge connector.
-
-### 1.3 Pin Coordinates and Edge Connector
-* In `sim/visuals/microbit.ts`, `MicrobitBoardSvg.getCoord(pinNm)` maps pin names (`"P0"`, `"P1"`, `"P2"`, `"3V"`, `"GND"`, etc.) to exact `[x, y]` SVG coordinates at the bottom edge of the board (`y ≈ 396.7`).
-* Use `board().viewHost.boardView.getCoord(pinName)` or `MicrobitBoardSvg.getCoord(pinName)` to determine wire start coordinates.
+This document records verified architectural findings, PXT compiler/simulator internals, and extension details for `libs/Module-World` and `libs/tm1650`. Always read [agents/ARCH.md](file:///home/tresspass/Projects/pxt-microbit-wom-sim/agents/ARCH.md) and [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/public/sprites/README.md) alongside this file.
 
 ---
 
-## 2. Sensor & Actuator Interception Patterns
+## 1. PXT Simulator & Compiler Internals (Verified in `pxt.js` & `pxtsim.js`)
 
-### 2.1 Hardware Code Execution vs. Simulator Shims
-* When user code runs in the simulator VM, functions in `libs/Module-World/Module-World.ts` execute their TypeScript bodies.
-* For **Actuators** (e.g. RGB, Buzzer, Vibration Motor):
-  Functions already write via `pins.analogWritePin` or `pins.digitalWritePin`. These functions mutate `EdgeConnectorState` and trigger `runtime.queueDisplayUpdate()`. The module visual reads these pin states directly from `board().edgeConnectorState`.
-* For **Sensors** (e.g. Ultrasonic, DHT11, Light):
-  In hardware, Ultrasonic triggers a pulse and calls `pins.pulseIn(Echo, High, maxDuration)`. In `sim/state/misc.ts`, `pulseIn` returns a static default (5000). To support interactive sliders:
-  - **Approach A (Pin/Pulse Interception)**: Enhance `pxsim.pins.pulseIn` to look up active sensor state on that pin and return `distance * 58` microseconds.
-  - **Approach B (Simulator Shims)**: Add `//% shim=wom::getUltrasonic` to the block. If defined in `sim/`, the simulator runs the C++/JS shim directly; on physical hardware, MakeCode compiles the TypeScript body.
-  - **Decision**: Use **Approach B (Shim with TS Fallback)** as primary for complex protocols (Ultrasonic, DHT11) to eliminate timing glitches in the JS event loop, while supporting pin-level synchronization for simple analog/digital pins.
+### 1.1 Why Custom `//% shim=...` on Functions with TypeScript Bodies Fails
+In `node_modules/pxt-core/built/pxt.js`:
+- **Simulator compilation (`isNative === false`)**: `hasShimDummy(decl)` (line 136745) returns `true` whenever a function has a non-empty TypeScript body (`f.body && f.body.statements.length > 0`). When emitting calls (line 136044), `if (attrs.shim && !hasShimDummy(decl)) return emitShim(...); return emitPlain();` means **any function with a TS body ignores `//% shim=...` in the simulator** and executes its TypeScript body instead.
+- **Hardware compilation (`isNative === true`)**: `pxtc.hexfile.validateShim` (line 140680) checks every `//% shim=...` against the precompiled C++ firmware jump table. If you put a fake shim name (such as `//% shim=ModuleWorld_Digital::Ultrasonic`) on a function, hardware `.hex` compilation throws `function not found: ...`.
+- **Correct Hardware + Simulator Bridge**:
+  - Keep the original TypeScript bodies in `libs/Module-World/Module-World.ts` and `libs/tm1650/tm1650.ts` so micro:bit hardware continues to work natively.
+  - At the start of each exported block function in `Module-World.ts` (or `tm1650.ts`), call `control.dmesg("wom:<moduleType>:<pinArg>")`.
+  - `control.dmesg(s: string)` is a built-in C++ shim in `libs/core/shims.d.ts` (`//% shim=control::dmesg`) that is a harmless no-op on micro:bit hardware (`CODAL_DMESG` disabled in production) and calls `pxsim.control.dmesg(s)` in `sim/state/misc.ts` in the simulator!
+  - Inside `pxsim.control.dmesg`, parse `"wom:<moduleType>:<pinArg>"` to:
+    1. Spawn or reuse the visual module in `WomModuleManager` (strictly keyed by pin set, or show a warning if any pin is already claimed by a different module type).
+    2. Prime or synchronize the virtual pin state (`EdgeConnectorState` / `WomSensorState`) so the TypeScript body's `pins.pulseIn`, `pins.digitalReadPin`, `pins.analogReadPin`, `pins.analogWritePin`, `pins.servoSetPulse`, or `pins.i2cWriteBuffer` reads/writes the exact interactive simulator values.
+
+### 1.2 Why `pxtparts.json` and `//% parts="..."` Must NOT Be Used for WoM Modules
+In `node_modules/pxt-core/built/pxtsim.js` (`BoardHost` lines 776–805 and `Allocator` lines 213–700):
+- Defining a part in `pxtparts.json` and annotating a block with `//% parts="..."` forces `BoardHost` to display a 30-column 1D solderless breadboard (`this.breadboard`) and run `Allocator.allocateDefinitions`.
+- `pxsim.readPin` fails to parse composite port enums like `ModuleWorld_Digital.mwDigitalNum.P0P1` (`"P0P1"` is not a micro:bit pin), causing `allocWire` to return `undefined` and silently drop the part.
+- Static `trackArgs` in `pxt.js` only deduplicates within a single block's part name and cannot enforce cross-block or cross-module pin ownership or display pin conflict warnings.
+- **Solution**: Do **not** add WoM or TM1650 modules to `pxtparts.json` and do **not** add `//% parts="..."` to their blocks. Manage all WoM module visuals, 2D layout, strict pin-set registration, conflict warnings, and Bezier wiring dynamically via `WomModuleManager` attached to `DalBoard`.
+
+### 1.3 Micro:bit Board Coordinate System (`sim/visuals/microbit.ts`)
+- `MicrobitBoardSvg` sets initial SVG `viewBox="0 0 500 430"`.
+- `boardSvg.getCoord(pinName)` returns `[centerX, centerY]` of any edge connector pad in SVG coordinates (`y` is around `370–400`).
+- **Exact Pin Names in `sim/visuals/microbit.ts` (line 216)**:
+  - Power: `"+3v3"` (NOT `"3V"` or `"VCC"`!)
+  - Ground: `"GND"`, `"GND0"`, `"GND1"`
+  - GPIO: `"P0"`, `"P1"`, `"P2"`, `"P3"`, `"P4"`, `"P5"`, `"P6"`, `"P7"`, `"P8"`, `"P9"`, `"P10"`, `"P11"`, `"P12"`, `"P13"`, `"P14"`, `"P15"`, `"P16"`, `"P19"`, `"P20"`
+- Always place the WoM module container `<g class="wom-board-area">` starting at `y = 445` (below the micro:bit) and dynamically expand `boardSvg.element.setAttribute("viewBox", "0 0 500 " + totalHeight)` whenever modules or warning banners are added.
+- **Alphabetical `outFile` Ordering (`/// <reference path="./womManager.ts" />`)**:
+  - `sim/tsconfig.json` uses `"outFile": "../built/sim.js"` with `"visuals/*.ts"`. TypeScript orders matched glob files alphabetically unless directed by `/// <reference path="..." />`.
+  - Any module file whose name alphabetically precedes `womManager.ts` (e.g. `womButton.ts`, `womBuzzer.ts`, `womColor.ts`, `womDht11.ts`, `womIr.ts`, `womJoystick.ts`) **must** begin with `/// <reference path="./womManager.ts" />` so `WomModuleManager` is emitted before `WomModuleManager.registerFactory(...)` runs.
+
+### 1.4 Unimplemented Simulator Stubs in Base Repo That Must Be Hooked
+1. **`pxsim.pins.servoSetPulse(name: number, micros: number)`** in [sim/state/edgeconnector.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/state/edgeconnector.ts#L93-L95):
+   - Currently has `// TODO` and does nothing!
+   - `ModuleWorld_PWM.Servo` and `ModuleWorld_PWM.Servo2` use `pins.servoSetPulse(pin, v_us)` (NOT `pins.servoWritePin`).
+   - Must be updated to store `pin.servoPulse = micros` on the `Pin` object (and notify `WomModuleManager` / `runtime.queueDisplayUpdate()`).
+2. **`pxsim.pins.i2cWriteBuffer(address: number, buf: RefBuffer, repeat: boolean)`** in [sim/state/misc.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/state/misc.ts#L109-L111):
+   - Currently a no-op.
+   - `libs/tm1650/tm1650.ts` writes 1-byte buffers (`buf.data[0]`) to I2C address `0x24` (`COMMAND_I2C_ADDRESS`) and `0x34..0x37` (`DISPLAY_I2C_ADDRESS + 0..3`).
+   - Hooking `i2cWriteBuffer` for addresses `0x24` and `0x34..0x37` lets TM1650 work automatically on I2C pins `P19` (SCL) and `P20` (SDA).
+3. **`ModuleWorld_Digital.dht11value` Infinite Loop Hazard** in [libs/Module-World/Module-World.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/libs/Module-World/Module-World.ts#L106-L152):
+   - `dht11value` bit-bangs DHT11 using `while (pins.digitalReadPin(dht11pin) == 1);` and `while (pins.digitalReadPin(dht11pin) == 0);`.
+   - In the simulator, if `digitalReadPin` returns a static `0` or `1`, the first or second `while` loop spins forever and freezes the browser tab!
+   - Solution: When `control.dmesg("wom:dht11:" + value_DNum + ":" + dht11type)` is called, if `pins.digitalReadPin(dht11pin)` is hooked or if `dht11value` checks a simulator fast-path (or `digitalReadPin` toggles through the 40-bit frame), it returns the exact temperature/humidity from the DHT11 module slider without hanging. (Even simpler and faster: in `dht11value`, right after `control.dmesg(...)`, if `pxsim` sets a virtual state or if `digitalReadPin` returns a simulated value, see Section 5.2 of `ARCH.md` for the exact 3-line hardware-safe fast-path).
 
 ---
 
-## 3. UI and Interactive Controls in Simulator SVG
-* The MakeCode simulator host is an SVG canvas.
-* To render interactive controls (sliders, switches, text inputs) on top of module images:
-  - **Option 1 (SVG `<foreignObject>`)**: Allows embedding HTML `<input type="range">`, styled buttons, and HTML5 canvas directly inside SVG. Fully supported across modern browsers.
-  - **Option 2 (Pure SVG Drag Handlers)**: Use `pxsim.svg.buttonEvents` to build custom draggable knobs/thumbs.
-  - **Decision**: Standardize on SVG `<foreignObject>` containing semantic HTML5 controls (`<input type="range">`, `<button>`) styled cleanly. It gives native mobile/desktop touch responsiveness, keyboard accessibility, and rapid implementation.
+## 2. Strict Pin-Set Registry & Conflict Detection Rule
+
+Per project requirements:
+1. **Strict Pin-Set Keying Across All Modules**:
+   - Every module instance claims a canonical sorted set of micro:bit signal pins (e.g. `["P0", "P1"]` → key `"P0,P1"`, or `["P1"]` → key `"P1"`).
+2. **Reuse on Same Module Type + Same Pin Set**:
+   - If a block is called with a pin set that is already registered to a module of the **same `moduleType`** (for example, `Ultrasonic(P0P1)` called in a `forever` loop, or `dht11value(TempC, P0P1)` followed by `dht11value(Humidity, P0P1)`, or `RGB(...)` followed by `RGB2(...)` on `P12,P13,P14`), `WomModuleManager` **reuses** the existing module instance.
+3. **Warn & Reject on Pin Conflict Across Different Modules**:
+   - If a block attempts to use **any pin** that is already owned by a **different `moduleType`** (or a partially overlapping pin set, e.g., `Ultrasonic` on `P0,P1` followed by `PIR` on `P0,P1` or `Button` on `P1,P10`), `WomModuleManager`:
+     - Does **not** spawn the conflicting module.
+     - Displays a prominent visual warning banner in the simulator SVG (e.g. `⚠️ Pin Conflict: Pin(s) P0, P1 already used by Ultrasonic (wom_ultrasonic); cannot attach PIR (wom_pir)`) and logs `console.warn(...)`.
+4. **Reset on Simulator Restart**:
+   - When the user stops/restarts the simulator or changes code (`DalBoard` constructor / `initAsync`), all module instances, pin registrations, and warnings are cleared cleanly.
 
 ---
 
-## 4. Yahboom Port & Cable Conventions (`mwDigitalNum`)
-Each Yahboom digital port bundles:
-1. Signal Pin 1 (e.g. P0, P2, P3...)
-2. Signal Pin 2 (e.g. P1, P3, P4...)
-3. VCC (3.3V)
-4. GND
+## 3. Complete Extension Catalog (`libs/Module-World` & `libs/tm1650`)
 
-When wiring in the simulator, standard cable colors are:
-- `VCC`: Red (`#e74c3c`)
-- `GND`: Black / Dark Gray (`#2c3e50`)
-- `Signal 1`: Yellow (`#f1c40f`) or Orange (`#e67e22`)
-- `Signal 2`: Green (`#2ecc71`) or Blue (`#3498db`)
+### 3.1 Port Enum Values & Pin Mappings in `libs/Module-World/Module-World.ts`
+
+#### `ModuleWorld_Digital.mwDigitalNum` (Dual-Pin Digital Port)
+| Enum Member | Numeric Value | Primary Signal Pin (`pinA`) | Secondary Signal Pin (`pinB`) |
+| :--- | :---: | :---: | :---: |
+| `P0P1` | `1` | `P0` | `P1` |
+| `P2P3` | `2` | `P2` | `P3` |
+| `P3P4` | `3` | `P3` | `P4` |
+| `P4P5` | `4` | `P4` | `P5` |
+| `P6P7` | `5` | `P6` | `P7` |
+| `P8P9` | `6` | `P8` | `P9` |
+| `P10P11` | `7` | `P10` | `P11` |
+| `P12P13` | `8` | `P12` | `P13` |
+| `P14P15` | `9` | `P14` | `P15` |
+| `P1P10` | `10` | `P1` | `P10` |
+
+> **Important Note on Single-Wire Digital Modules**:
+> In `Module-World.ts`, `Ultrasonic` uses both pins (`Trig = pinA`, `Echo = pinB`), whereas `dht11value`, `IR`, `PIR`, `Collision`, `Button`, and `Vibration` only read `pinA` (`P0`, `P2`, `P3`, `P4`, `P6`, `P8`, `P10`, `P12`, `P14`, or `P1`). However, because the physical 4-pin Grove/PH2.0 cable plugs into the 2-pin port (`value_DNum`), keying by the port's pin pair `["P0", "P1"]` (or `pinA` + `pinB`) accurately reflects the physical connector!
+
+#### `ModuleWorld_Analog.mwAnalogNum` (Dual-Pin Analog Port)
+| Enum Member | Numeric Value | Primary Pin (`pinA`) | Secondary Pin (`pinB`) |
+| :--- | :---: | :---: | :---: |
+| `AP0P1` | `1` | `P0` | `P1` |
+| `AP2P3` | `2` | `P2` | `P3` |
+| `AP3P4` | `3` | `P3` | `P4` |
+
+- `Light`, `Sound`, `Potentiometer` read `pinA` (`P0`, `P2`, or `P3`).
+- `Rocker` (Joystick) reads `pinA` for `X` (`Rocker_X`) and `pinB` for `Y` (`Rocker_Y`).
+
+#### `ModuleWorld_PWM.mwServoNum` (Dual-Pin PWM/Servo Port)
+| Enum Member | Numeric Value | Primary Pin (`pinA`) | Secondary Pin (`pinB`) |
+| :--- | :---: | :---: | :---: |
+| `P1` | `1` | `P1` | `P10` (on physical port `P1P10`, or single pin `P1`) |
+| `P2` | `2` | `P2` | `P3` |
+| `P3` | `3` | `P3` | `P4` |
+| `P4` | `4` | `P4` | `P5` |
+| `P10` | `5` | `P10` | `P11` |
+
+#### Fixed-Pin & I2C Modules
+- **`ModuleWorld_PWM.RGB` & `RGB2`**: Hardcoded to `P12` (Red), `P13` (Green), `P14` (Blue).
+- **`ModuleWorld_Color` (Color Recognition Sensor)**: Hardcoded to I2C bus `P19` (SCL) and `P20` (SDA) (`i2cAddr = 0x29`).
+- **`tm1650` (4-Digit 7-Segment Display)**: Uses I2C bus `P19` (SCL) and `P20` (SDA) (`COMMAND_I2C_ADDRESS = 0x24`, `DISPLAY_I2C_ADDRESS = 0x34..0x37`).
 
 ---
 
-## 5. Static Assets & Module Sprites
+## 4. Sprite Assets & Grid Footprints (`sim/public/sprites/`)
 
-### 5.1 Directory & Asset Serving
-- Static assets for the simulator must reside in `sim/public/` so they are served by MakeCode's HTTP server (`pxt serve`).
-- The directory `sim/public/sprites/` is designated for `.png` files representing physical building-block modules.
-- In the browser/simulator iframe, files placed in `sim/public/sprites/<name>.png` are accessible via `/sim/sprites/<name>.png` (or `/sprites/<name>.png`).
+All module visuals should render the PNG/SVG sprites in `/sim/sprites/<filename>` (served from `sim/public/sprites/`). See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/public/sprites/README.md) for full details:
 
-### 5.2 Layering Architecture in Visual Views
-- Views in `sim/visuals/*.ts` create an SVG `<image>` element to display the base PNG sprite.
-- Interactive elements (such as `<foreignObject>` containing `<input type="range">`, toggle buttons, or dynamic SVG swatches) are appended as siblings in the module `<g>` container to render directly over the base image.
-
-
+| Module ID | Sprite File(s) | Native Size | Grid Span (`colSpan x rowSpan`) | Interactive / Dynamic Overlay |
+| :--- | :--- | :---: | :---: | :--- |
+| `wom_ultrasonic` | `wom_ultrasonic.png` | `297x203` | **`2x1`** (Horizontal) | Distance slider (`0–300 cm`) |
+| `wom_tm1650` | `wom_tm1650.png` | `1255x848` | **`2x1`** (Horizontal) | 4-digit 7-segment SVG overlay |
+| `wom_servo` | `wom_servo.png` + `servo_rotor.svg` | `445x758` | **`1x2`** (Vertical) | Rotating horn (`0°–270°` or `0°–360°`, pivot `(60,60)`) |
+| `wom_servo_continuous` | `wom_servo_continuous.png` + `servo_rotor.svg` | `386x625` | **`1x2`** (Vertical) | Rotating/spinning horn (pivot `(60,60)`) |
+| `wom_dht11` | `wom_dht11.png` | `241x243` | **`1x1`** (Square) | Temp (`0–50°C` / `32–122°F`) & Humidity (`0–100%`) sliders |
+| `wom_button` | `wom_button.png` | `235x235` | **`1x1`** (Square) | Click/hold red cap on PCB (`active-low`: pressed=`0`, released=`1`) |
+| `wom_ir` | `wom_ir.png` | `254x254` | **`1x1`** (Square) | Obstacle toggle switch (`obstacle=0`, `clear=1`) |
+| `wom_pir` | `wom_pir.png` | `255x254` | **`1x1`** (Square) | Motion toggle switch (`motion=1`, `idle=0`) |
+| `wom_photoresistor` | `wom_photoresistor.png` | `245x245` | **`1x1`** (Square) | Light slider (`0–1023`; note `Light()` returns `1024 - analogReadPin`) |
+| `wom_potentiometer` | `wom_potentiometer.png` + `potentiometer_rotor.svg` | `245x245` | **`1x1`** (Square) | Draggable rotary knob (`0–1023`, `-135°` to `+135°`) |
+| `wom_joystick` | `wom_joystick_base.png` + `joystick_stick.svg` | `362x364` | **`1x1`** (Square) | 2D draggable thumbstick (`X: 0–1023`, `Y: 0–1023`, springs back to `512,512`) |
+| `wom_rgb` | `wom_rgb.png` | `234x234` | **`1x1`** (Square) | Glowing `<circle>` over central LED (`opacity = (R+G+B)/255`) |
+| `wom_buzzer` | `wom_buzzer.png` | `240x240` | **`1x1`** (Square) | Animated sound waves + frequency readout when active |
+| `wom_color` | `wom_color_recognition.png` | `243x243` | **`1x1`** (Square) | Color picker (`<input type="color">`) feeding R/G/B/H |
+| `wom_sound` | Custom PCB or shared sensor card | — | **`1x1`** (Square) | Sound level slider (`0–1023`) |
+| `wom_collision` | Custom PCB or switch card | — | **`1x1`** (Square) | Micro-lever toggle/momentary button (`collision=0`, `normal=1`) |
+| `wom_vibration` | Custom PCB or shake card | — | **`1x1`** (Square) | "Shake!" button firing `DAL.MICROBIT_PIN_EVT_FALL` + pulse |
+| `wom_vibmot` | Custom PCB or motor card | — | **`1x1`** (Square) | Vibrating motor animation when PWM/digital output > 0 |
