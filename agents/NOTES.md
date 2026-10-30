@@ -139,7 +139,7 @@ All module visuals should render the PNG/SVG sprites in `/sim/sprites/<filename>
 | Module ID | Sprite File(s) | Native Size | Grid Span (`colSpan x rowSpan`) | Interactive / Dynamic Overlay |
 | :--- | :--- | :---: | :---: | :--- |
 | `wom_ultrasonic` | `wom_ultrasonic.png` | `297x203` | **`2x1`** (Horizontal) | Distance slider (`0–300 cm`) |
-| `wom_tm1650` | `wom_tm1650.png` | `1255x848` | **`2x1`** (Horizontal) | 4-digit 7-segment SVG overlay |
+| `wom_tm1650` | `wom_tm1650.png` | `1255x848` | **`2x1`** (Horizontal) | 4-digit 7-segment SVG red `<line>` overlay (`SEGMENTS_D0` in `1255x848` space, `DIGIT_STEP_X = 198.15`, `showCardBackground: false`, `spriteBounds = { x: 55.37, y: 1, width: 201.26, height: 136 }`; lazy `on()` init in `libs/tm1650/tm1650.ts` so unused projects do not emit I2C `0x24` writes at boot) |
 | `wom_servo` | `wom_servo.png` + `servo_rotor.svg` | `445x758` | **`1x2`** (Vertical) | Rotating horn (`0°–270°` or `0°–360°`, pivot `(60,60)`, shaft `(74, 108)`) |
 | `wom_servo_continuous` | `wom_servo_continuous.png` + `servo_rotor.svg` | `386x625` | **`1x2`** (Vertical) | Rotating/spinning horn (pivot `(60,60)`, shaft `(74, 108)`) |
 | `wom_dht11` | `wom_dht11.png` + `dht_*.svg` | `241x243` | **`1x1`** (Square) | Dual vertical sliders: Left retro thermometer (0–50°C, blue->red) & Right humidity (0–100%, grey->blue, text blue->white, weather icons). Changing temp dynamically modulates RH per Magnus formula; water capped at 100% saturation and excess discarded upon cooling |

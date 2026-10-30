@@ -26,12 +26,14 @@ namespace TM1650 {
     let _intensity = 3
     let dbuf = [0, 0, 0, 0]
     let iPosition = ""
+    let _initialized = false
 
     /**
      * send command to display
      * @param is command, eg: 0
      */
     function cmd(c: number) {
+        _initialized = true
         pins.i2cWriteNumber(COMMAND_I2C_ADDRESS, c, NumberFormat.Int8BE)
     }
 
@@ -40,6 +42,9 @@ namespace TM1650 {
      * @param is data, eg: 0
      */
     function dat(bit: number, d: number) {
+        if (!_initialized) {
+            on()
+        }
         pins.i2cWriteNumber(DISPLAY_I2C_ADDRESS + (bit % 4), d, NumberFormat.Int8BE)
     }
 
@@ -110,6 +115,9 @@ namespace TM1650 {
     //% blockId="showSring" block="show string %str"
     //% weight=100 blockGap=8
     export function showSring(str: string) {
+        if (!_initialized) {
+            on()
+        }
         for(let i = 0;i<4;i++)
         {
             let a = str.charCodeAt(i) & 0x7F;
@@ -224,6 +232,4 @@ namespace TM1650 {
             cmd((dat << 4) | 0x01)
         }
     }
-
-    on();
 }

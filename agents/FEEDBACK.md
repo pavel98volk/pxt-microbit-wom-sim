@@ -68,3 +68,16 @@ This file records untruthful, misleading, or broken guidance discovered in `AGEN
 - **Resolution**:
   - Explicitly documented all three in `ARCH.md` and `NOTES.md` with exact code solutions.
 
+---
+
+## 6. Top-Level `on();` in `libs/tm1650/tm1650.ts` vs Default Project Inclusion (`libs/blocksprj/pxt.json`)
+
+- **Original Claim in `ARCH.md` (Section 5.7)**:
+  > *"Requires zero changes to `libs/tm1650/tm1650.ts`!"*
+- **Why This Causes Unintended Module Spawning & I2C Pin Conflicts**:
+  - Because `"tm1650": "file:../tm1650"` is bundled as a default dependency in `libs/blocksprj/pxt.json`, any top-level statement in `libs/tm1650/tm1650.ts` executes in `_main_` for **every** Blocks project — even projects that do not use any `TM1650` blocks.
+  - Line 228 of `libs/tm1650/tm1650.ts` previously had an unconditional top-level `on();` call, which wrote `0x31` to I2C address `0x24` (`P19, P20`) at boot in every project.
+  - When `0x24` is hooked in `WomModuleManager.registerI2cHandler`, that unconditional boot call would spawn `WomTm1650Module` in blank projects and claim `P19, P20` before `Module_World_Color` could use I2C.
+- **Resolution**:
+  - Replaced the unconditional top-level `on();` in `libs/tm1650/tm1650.ts` with a lazy `_initialized` flag so `on()` is sent automatically on first use of any `TM1650` function (`dat`, `showSring`, `on`, `off`, `setIntensity`), keeping unused projects completely free of spurious I2C traffic.
+
