@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Desert sun -->
+  <circle cx="17.5" cy="6.5" r="3.5" fill="#fbbf24"/>
+  <!-- Heat shimmer lines -->
+  <path d="M 2,7.5 Q 5,6 8,7.5" stroke="#fbbf24" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <!-- Back desert sand dune -->
+  <path fill="#b45309" d="M 0,21 Q 7,12 14,15.5 Q 19,17.5 24,14 L 24,23 L 0,23 Z"/>
+  <!-- Front golden sand dune -->
+  <path fill="#f59e0b" d="M 0,16.5 Q 7.5,10.5 15,17 Q 19,20.5 24,19.5 L 24,23 L 0,23 Z"/>
+</svg>
+

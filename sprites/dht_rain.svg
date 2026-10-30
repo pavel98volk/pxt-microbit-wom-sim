@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Material design rain cloud with falling raindrops -->
+  <path fill="#94a3b8" d="M 18.5,13 C 19.9,13 21,11.9 21,10.5 C 21,9.3 20.1,8.2 18.9,8 C 18.5,5.5 16.3,3.5 13.5,3.5 C 11.2,3.5 9.2,4.8 8.3,6.8 C 7.9,6.6 7.5,6.5 7,6.5 C 5.3,6.5 4,7.8 4,9.5 C 4,9.7 4,9.9 4.1,10.1 C 2.9,10.7 2,11.8 2,13.2 C 2,15 3.5,16.5 5.3,16.5 L 18.5,16.5 C 20.4,16.5 22,14.9 22,13 Z"/>
+  <!-- Raindrops -->
+  <line x1="7" y1="18" x2="5.5" y2="21.5" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="12" y1="18" x2="10.5" y2="21.5" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="17" y1="18" x2="15.5" y2="21.5" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/>
+</svg>
+

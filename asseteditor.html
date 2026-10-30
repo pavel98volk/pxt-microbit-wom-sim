@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"  manifest="/pxt-microbit-wom-sim/release.manifest" data-framework="typescript">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <link rel="stylesheet" data-rtl="/pxt-microbit-wom-sim/rtlsemantic.css" href="/pxt-microbit-wom-sim/semantic.css" type="text/css">
+    <title>MakeCode Asset Editor</title>
+    <style>
+        #asset-editor-field-div {
+            height: 100%;
+        }
+        .image-editor-wrapper {
+            border-radius: 0;
+        }
+        .image-editor-confirm {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+
+<body class="pxt-theme-root">
+    <script>
+        // This line gets patched up by the cloud
+        var pxtConfig = {
+    "relprefix": "/pxt-microbit-wom-sim/",
+    "verprefix": "",
+    "workerjs": "/pxt-microbit-wom-sim/worker.js",
+    "monacoworkerjs": "/pxt-microbit-wom-sim/monacoworker.js",
+    "gifworkerjs": "/pxt-microbit-wom-sim/gifjs/gif.worker.js",
+    "serviceworkerjs": "/pxt-microbit-wom-sim/serviceworker.js",
+    "typeScriptWorkerJs": "/pxt-microbit-wom-sim/tsworker.js",
+    "pxtVersion": "13.2.16",
+    "pxtRelId": "localDirRelId",
+    "pxtCdnUrl": "/pxt-microbit-wom-sim/",
+    "commitCdnUrl": "/pxt-microbit-wom-sim/",
+    "blobCdnUrl": "/pxt-microbit-wom-sim/",
+    "cdnUrl": "/pxt-microbit-wom-sim/",
+    "targetVersion": "0.0.0",
+    "targetRelId": "",
+    "targetUrl": "",
+    "targetId": "microbit",
+    "simUrl": "/pxt-microbit-wom-sim/simulator.html",
+    "simserviceworkerUrl": "/pxt-microbit-wom-sim/simulatorserviceworker.js",
+    "simworkerconfigUrl": "/pxt-microbit-wom-sim/workerConfig.js",
+    "partsUrl": "/pxt-microbit-wom-sim/siminstructions.html",
+    "runUrl": "/pxt-microbit-wom-sim/run.html",
+    "docsUrl": "/pxt-microbit-wom-sim/docs.html",
+    "multiUrl": "/pxt-microbit-wom-sim/multi.html",
+    "asseteditorUrl": "/pxt-microbit-wom-sim/asseteditor.html",
+    "isStatic": true,
+    "kioskUrl": "/pxt-microbit-wom-sim/kiosk.html",
+    "teachertoolUrl": "/pxt-microbit-wom-sim/teachertool.html",
+    "tutorialtoolUrl": "/pxt-microbit-wom-sim/tutorialtool.html",
+    "skillmapUrl": "/pxt-microbit-wom-sim/skillmap.html",
+    "multiplayerUrl": "/pxt-microbit-wom-sim/multiplayer.html",
+    "authcodeUrl": "/pxt-microbit-wom-sim/authcode.html"
+};
+    </script>
+    <script type="text/javascript" src="/pxt-microbit-wom-sim/targetlight.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.makecode.com/blob/ec765d3ba50a09c8c8819ec80390b6ffa72e945a/target.js"></script> -->
+    <script type="text/javascript" src="/pxt-microbit-wom-sim/pxtapp.js"></script>
+    <script>
+        pxt.setAppTarget(pxtTargetBundle);
+        // This can be overridden via the messages sent to the page
+        pxt.appTarget.runtime.palette = ["#000000","#ffffff","#ff2121","#ff93c4","#ff8135","#fff609","#249ca3","#78dc52","#003fad","#87f2ff","#8e2ec4","#a4839f","#5c406c","#e5cdc4","#91463d","#000000"];
+
+        // this get rewritten to blob URLs with SHAs while uploading to the cloud
+        // keep in sync with index.html
+        window.MonacoPaths = {
+            "vs/loader": "/pxt-microbit-wom-sim/vs/loader.js",
+            "vs/base/worker/workerMain": "/pxt-microbit-wom-sim/vs/base/worker/workerMain.js",
+            "vs/basic-languages/bat/bat": "/pxt-microbit-wom-sim/vs/basic-languages/bat/bat.js",
+            "vs/basic-languages/cpp/cpp": "/pxt-microbit-wom-sim/vs/basic-languages/cpp/cpp.js",
+            "vs/basic-languages/markdown/markdown": "/pxt-microbit-wom-sim/vs/basic-languages/markdown/markdown.js",
+            "vs/basic-languages/python/python": "/pxt-microbit-wom-sim/vs/basic-languages/python/python.js",
+            "vs/basic-languages/typescript/typescript": "/pxt-microbit-wom-sim/vs/basic-languages/typescript/typescript.js",
+            "vs/editor/editor.main.css": "/pxt-microbit-wom-sim/vs/editor/editor.main.css",
+            "vs/editor/editor.main": "/pxt-microbit-wom-sim/vs/editor/editor.main.js",
+            "vs/editor/editor.main.nls": "/pxt-microbit-wom-sim/vs/editor/editor.main.nls.js",
+            "vs/language/json/jsonMode": "/pxt-microbit-wom-sim/vs/language/json/jsonMode.js",
+            "vs/language/json/jsonWorker": "/pxt-microbit-wom-sim/vs/language/json/jsonWorker.js",
+            "vs/language/typescript/tsMode": "/pxt-microbit-wom-sim/vs/language/typescript/tsMode.js",
+            "vs/language/typescript/tsWorker": "/pxt-microbit-wom-sim/vs/language/typescript/tsWorker.js",
+            "lzma/lzma_worker-min.js": "/pxt-microbit-wom-sim/lzma/lzma_worker-min.js",
+            "smoothie/smoothie_compressed.js": "/pxt-microbit-wom-sim/smoothie/smoothie_compressed.js",
+            "blockly.css": "/pxt-microbit-wom-sim/blockly.css",
+            "rtlblockly.css": "/pxt-microbit-wom-sim/rtlblockly.css",
+            "gifjs/gif.js": "/pxt-microbit-wom-sim/gifjs/gif.js",
+            "qrcode/qrcode.min.js": "/pxt-microbit-wom-sim/qrcode/qrcode.min.js",
+            "zip.js/zip.min.js": "/pxt-microbit-wom-sim/zip.js/zip.min.js",
+            "pdf-lib/pdf-lib.min.js": "/pxt-microbit-wom-sim/pdf-lib/pdf-lib.min.js",
+            "music-editor/apple.png": "/pxt-microbit-wom-sim/music-editor/apple.png",
+            "music-editor/burger.png": "/pxt-microbit-wom-sim/music-editor/burger.png",
+            "music-editor/cake.png": "/pxt-microbit-wom-sim/music-editor/cake.png",
+            "music-editor/car.png": "/pxt-microbit-wom-sim/music-editor/car.png",
+            "music-editor/cat.png": "/pxt-microbit-wom-sim/music-editor/cat.png",
+            "music-editor/cherry.png": "/pxt-microbit-wom-sim/music-editor/cherry.png",
+            "music-editor/clam.png": "/pxt-microbit-wom-sim/music-editor/clam.png",
+            "music-editor/computer.png": "/pxt-microbit-wom-sim/music-editor/computer.png",
+            "music-editor/crab.png": "/pxt-microbit-wom-sim/music-editor/crab.png",
+            "music-editor/dog.png": "/pxt-microbit-wom-sim/music-editor/dog.png",
+            "music-editor/duck.png": "/pxt-microbit-wom-sim/music-editor/duck.png",
+            "music-editor/egg.png": "/pxt-microbit-wom-sim/music-editor/egg.png",
+            "music-editor/explosion.png": "/pxt-microbit-wom-sim/music-editor/explosion.png",
+            "music-editor/fish.png": "/pxt-microbit-wom-sim/music-editor/fish.png",
+            "music-editor/ice-cream.png": "/pxt-microbit-wom-sim/music-editor/ice-cream.png",
+            "music-editor/lemon.png": "/pxt-microbit-wom-sim/music-editor/lemon.png",
+            "music-editor/snake.png": "/pxt-microbit-wom-sim/music-editor/snake.png",
+            "music-editor/star.png": "/pxt-microbit-wom-sim/music-editor/star.png",
+            "music-editor/strawberry.png": "/pxt-microbit-wom-sim/music-editor/strawberry.png",
+            "music-editor/taco.png": "/pxt-microbit-wom-sim/music-editor/taco.png",
+            "music-editor/bass-clef.svg": "/pxt-microbit-wom-sim/music-editor/bass-clef.svg",
+            "music-editor/treble-clef.svg": "/pxt-microbit-wom-sim/music-editor/treble-clef.svg",
+        }
+    </script>
+    <script type="text/javascript" src="/pxt-microbit-wom-sim/pxtasseteditor.js"></script>
+    <div id="asset-editor-field-div">
+    </div>
+</body>
+
+</html>

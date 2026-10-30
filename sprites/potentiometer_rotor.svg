@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <filter id="materialShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.24" />
+      <feDropShadow dx="0" dy="0" stdDeviation="0.5" flood-color="#000000" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <g id="potentiometer-rotor" filter="url(#materialShadow)">
+    <circle cx="12" cy="12" r="10" fill="#212121" />
+    <line x1="7" y1="17" x2="9.5" y2="14.5" stroke="#F44336" stroke-width="2" stroke-linecap="round" />
+  </g>
+</svg>

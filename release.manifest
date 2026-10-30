@@ -1,0 +1,90 @@
+CACHE MANIFEST
+
+CACHE:
+/pxt-microbit-wom-sim/semantic.js
+/pxt-microbit-wom-sim/main.js
+/pxt-microbit-wom-sim/pxtapp.js
+/pxt-microbit-wom-sim/typescript.js
+/pxt-microbit-wom-sim/marked/marked.min.js
+/pxt-microbit-wom-sim/highlight.js/highlight.pack.js
+/pxt-microbit-wom-sim/jquery.js
+/pxt-microbit-wom-sim/pxtlib.js
+/pxt-microbit-wom-sim/pxtcompiler.js
+/pxt-microbit-wom-sim/pxtpy.js
+/pxt-microbit-wom-sim/pxteditor.js
+/pxt-microbit-wom-sim/pxtsim.js
+/pxt-microbit-wom-sim/pxtembed.js
+/pxt-microbit-wom-sim/pxtworker.js
+/pxt-microbit-wom-sim/pxtweb.js
+/pxt-microbit-wom-sim/blockly.css
+/pxt-microbit-wom-sim/semantic.css
+/pxt-microbit-wom-sim/rtlsemantic.css
+
+
+/pxt-microbit-wom-sim/editor.js
+/pxt-microbit-wom-sim/fieldeditors.js
+
+# blockly
+/pxt-microbit-wom-sim/blockly/media/sprites.png
+/pxt-microbit-wom-sim/blockly/media/click.mp3
+/pxt-microbit-wom-sim/blockly/media/disconnect.wav
+/pxt-microbit-wom-sim/blockly/media/delete.mp3
+
+# monaco; keep in sync with webapp/public/index.html
+/pxt-microbit-wom-sim/vs/loader.js
+/pxt-microbit-wom-sim/vs/base/worker/workerMain.js
+/pxt-microbit-wom-sim/vs/basic-languages/bat/bat.js
+/pxt-microbit-wom-sim/vs/basic-languages/cpp/cpp.js
+/pxt-microbit-wom-sim/vs/basic-languages/python/python.js
+/pxt-microbit-wom-sim/vs/basic-languages/typescript/typescript.js
+/pxt-microbit-wom-sim/vs/basic-languages/markdown/markdown.js
+/pxt-microbit-wom-sim/vs/editor/editor.main.css
+/pxt-microbit-wom-sim/vs/editor/editor.main.js
+/pxt-microbit-wom-sim/vs/editor/editor.main.nls.js
+/pxt-microbit-wom-sim/vs/language/json/jsonMode.js
+/pxt-microbit-wom-sim/vs/language/json/jsonWorker.js
+/pxt-microbit-wom-sim/vs/language/typescript/tsMode.js
+/pxt-microbit-wom-sim/vs/language/typescript/tsWorker.js
+
+# charts
+/pxt-microbit-wom-sim/smoothie/smoothie_compressed.js
+/pxt-microbit-wom-sim/images/Bars_black.gif
+
+# gifjs
+/pxt-microbit-wom-sim/gifjs/gif.js
+
+# ai
+/pxt-microbit-wom-sim/ai.0.js
+
+/pxt-microbit-wom-sim/worker.js
+/pxt-microbit-wom-sim/monacoworker.js
+
+# ver Sat Oct 31 2026 01:09:05 GMT+0200 (Eastern European Standard Time)
+
+# target
+/pxt-microbit-wom-sim/docs/static/providers/github-mark.png
+/pxt-microbit-wom-sim/docs/static/providers/microsoft-logo.svg
+/pxt-microbit-wom-sim/docs/static/providers/google-logo.svg
+/pxt-microbit-wom-sim/docs/static/providers/clever-logo.png
+/pxt-microbit-wom-sim/docs/static/logo.portrait.white.svg
+/pxt-microbit-wom-sim/docs/static/logo.square.white.svg
+/pxt-microbit-wom-sim/docs/static/logo.portrait.black.svg
+/pxt-microbit-wom-sim/docs/static/icons/apple-touch-icon.png
+/pxt-microbit-wom-sim/docs/static/Microsoft_logo_rgb_W-white_D-square.png
+/pxt-microbit-wom-sim/docs/static/Microsoft_logo_rgb_W-white_D.png
+/pxt-microbit-wom-sim/docs/static/herogallery/hero-banner.png
+/pxt-microbit-wom-sim/docs/static/download/transfer.png
+/pxt-microbit-wom-sim/docs/static/download/connect-microbit.gif
+/pxt-microbit-wom-sim/docs/static/download/full-reset.gif
+/pxt-microbit-wom-sim/docs/static/download/selecting-microbit.gif
+/pxt-microbit-wom-sim/docs/static/download/successfully-paired.png
+/pxt-microbit-wom-sim/docs/static/download/incompatible.png
+/pxt-microbit-wom-sim/docs/static/download/device-forgotten.gif
+/pxt-microbit-wom-sim/docs/static/download/browser-unpair-image.gif
+/pxt-microbit-wom-sim/docs/static/winapp.PNG
+/pxt-microbit-wom-sim/docs/static/profile/microbit-cloud.png
+
+/pxt-microbit-wom-sim/target.js
+
+NETWORK:
+*

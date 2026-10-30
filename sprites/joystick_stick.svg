@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <!-- Perfectly symmetrical shadow for translational movement -->
+    <filter id="materialShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.24" />
+      <feDropShadow dx="0" dy="0" stdDeviation="0.5" flood-color="#000000" flood-opacity="0.12" />
+    </filter>
+
+    <!-- Dot / Speckle pattern for thumb grip texture -->
+    <pattern id="dotTexture" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="0.6" fill="#181818" />
+    </pattern>
+  </defs>
+
+  <!-- Central Joystick Cap (Monochromatic Material Design) -->
+  <g id="joystick-stick" filter="url(#materialShadow)">
+    <!-- Base Solid Charcoal Body -->
+    <circle cx="12" cy="12" r="10" fill="#212121" />
+
+    <!-- Textured Thumb Pad Area -->
+    <circle cx="12" cy="12" r="7.5" fill="url(#dotTexture)" />
+  </g>
+</svg>
