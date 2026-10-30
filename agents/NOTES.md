@@ -127,7 +127,7 @@ Per project requirements:
 
 #### Fixed-Pin & I2C Modules
 - **`ModuleWorld_PWM.RGB` & `RGB2`**: Hardcoded to `P12` (Red), `P13` (Green), `P14` (Blue).
-- **`ModuleWorld_Color` (Color Recognition Sensor)**: Hardcoded to I2C bus `P19` (SCL) and `P20` (SDA) (`i2cAddr = 0x29`).
+- **`Module_World_Color` (Color Recognition Sensor)**: Hardcoded to I2C bus `P19` (SCL) and `P20` (SDA) (`COLOR_ADD = 0x53`, registers `COLOR_R = 0x10`, `COLOR_G = 0x0D`, `COLOR_B = 0x13`).
 - **`tm1650` (4-Digit 7-Segment Display)**: Uses I2C bus `P19` (SCL) and `P20` (SDA) (`COMMAND_I2C_ADDRESS = 0x24`, `DISPLAY_I2C_ADDRESS = 0x34..0x37`).
 
 ---
@@ -150,7 +150,7 @@ All module visuals should render the PNG/SVG sprites in `/sim/sprites/<filename>
 | `wom_potentiometer` | `wom_potentiometer.png` + `potentiometer_rotor.svg` | `245x245` | **`1x1`** (Square) | Draggable rotary knob (`0–1023`, `-135°` to `+135°`) |
 | `wom_joystick` | `wom_joystick_base.png` + `joystick_stick.svg` | `362x364` | **`1x1`** (Square) | 2D draggable thumbstick (`X: 0–1023`, `Y: 0–1023`, springs back to `512,512`, `maxRadius = 12`, pointer sensitivity scaled by `0.5`) |
 | `wom_rgb` | `wom_rgb.png` | `234x234` | **`1x1`** (Square) | Glowing `<circle>` over central LED (`opacity = (R+G+B)/255`) |
-| `wom_color` | `wom_color_recognition.png` | `243x243` | **`1x1`** (Square) | Color picker (`<input type="color">`) feeding R/G/B/H |
+| `wom_color` | `wom_color_recognition.png` | `243x243` | **`1x1`** (Square) | 4 draggable colored circles (Red, Green, Blue, Yellow) with gravity (`floorY = 123`); proximity model around `(74, 72)` (`detectRadius = 42`, `deadCenterRadius = 3.5`) interpolating from `(100,100,100)` + noise (`0..10`, median `5`) to pure target RGB at dead center with 0 noise |
 | `wom_sound` | Custom PCB or shared sensor card | — | **`1x1`** (Square) | Sound level slider (`0–1023`) |
 | `wom_collision` | Custom PCB or switch card | — | **`1x1`** (Square) | Micro-lever toggle/momentary button (`collision=0`, `normal=1`) |
 | `wom_vibration` | Custom PCB or shake card | — | **`1x1`** (Square) | "Shake!" button firing `DAL.MICROBIT_PIN_EVT_FALL` + pulse |

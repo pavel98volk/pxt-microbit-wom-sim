@@ -63,6 +63,13 @@ namespace Module_World_Color {
         let Green = (buff_G[1] & 0xff) << 8 | (buff_G[0] & 0xff);
         let Blue = (buff_B[1] & 0xff) << 8 | (buff_B[0] & 0xff);
 
+        if ((Red & 0x8000) != 0) {
+            val_red = Red & 0xff;
+            val_green = Green & 0xff;
+            val_blue = Blue & 0xff;
+            return;
+        }
+
         if (Red > 4500) Red = 2300;
         if (Green > 7600) Green = 4600;
         if (Blue > 4600) Blue = 2700;
@@ -111,6 +118,7 @@ namespace Module_World_Color {
     //% color="#0000cd"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
     export function GetRGBValue(value: enGetRGB): number {
+        control.dmesg("wom:color:P19,P20:" + value);
         if (!initialized) {
             initColorI2C();
         }
