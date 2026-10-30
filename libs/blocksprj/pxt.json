@@ -5,7 +5,8 @@
         "radio": "file:../radio",
         "microphone": "file:../microphone",
         "Module-World": "file:../Module-World",
-        "tm1650": "file:../tm1650"
+        "tm1650": "file:../tm1650",
+        "module_world_color": "file:../module_world_color"
     },
     "description": "",
     "files": [

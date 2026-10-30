@@ -22,7 +22,8 @@
         "libs/color",
         "libs/audio-recording",
         "libs/Module-World",
-        "libs/tm1650"
+        "libs/tm1650",
+        "libs/module_world_color"
     ],
     "cloud": {
         "workspace": false,
