@@ -63,3 +63,17 @@ When wiring in the simulator, standard cable colors are:
 - `Signal 1`: Yellow (`#f1c40f`) or Orange (`#e67e22`)
 - `Signal 2`: Green (`#2ecc71`) or Blue (`#3498db`)
 
+---
+
+## 5. Static Assets & Module Sprites
+
+### 5.1 Directory & Asset Serving
+- Static assets for the simulator must reside in `sim/public/` so they are served by MakeCode's HTTP server (`pxt serve`).
+- The directory `sim/public/sprites/` is designated for `.png` files representing physical building-block modules.
+- In the browser/simulator iframe, files placed in `sim/public/sprites/<name>.png` are accessible via `/sim/sprites/<name>.png` (or `/sprites/<name>.png`).
+
+### 5.2 Layering Architecture in Visual Views
+- Views in `sim/visuals/*.ts` create an SVG `<image>` element to display the base PNG sprite.
+- Interactive elements (such as `<foreignObject>` containing `<input type="range">`, toggle buttons, or dynamic SVG swatches) are appended as siblings in the module `<g>` container to render directly over the base image.
+
+

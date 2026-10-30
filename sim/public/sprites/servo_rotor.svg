@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="primary-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2196F3" />
+      <stop offset="100%" stop-color="#1E88E5" />
+    </linearGradient>
+  </defs>
+
+  <!-- Servo Arm Body with True Center Cutout (Rotation-Ready, Shadow-Free) -->
+  <path fill="url(#primary-gradient)" fill-rule="evenodd" d="M 60,20
+           L 300,36
+           A 24,24 0 0,1 300,84
+           L 60,100
+           A 40,40 0 0,1 60,20
+           M 60,48
+           A 12,12 0 1,0 60,72
+           A 12,12 0 1,0 60,48 Z" />
+
+  <!-- Outer Center Mounting Ring Accent -->
+  <path fill="#1976D2" fill-rule="evenodd" opacity="0.3" d="M 60,28
+           A 32,32 0 1,1 59.9,28
+           M 60,48
+           A 12,12 0 1,0 60,72
+           A 12,12 0 1,0 60,48 Z" />
+
+  <!-- Servo Shaft Center Marker -->
+  <circle cx="60" cy="60" r="2.5" fill="#0D47A1" opacity="0.6" />
+</svg>
