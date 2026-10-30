@@ -278,7 +278,7 @@ namespace ModuleWorld_Digital {
     //% blockGap=20
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
     export function Button(value_DNum: mwDigitalNum, value: enButton): boolean {
-		
+        control.dmesg("wom:button:" + value_DNum);
 		let pin;
 		if(value_DNum == 1)	{ pin = DigitalPin.P0; }
 		else if(value_DNum == 2)	{ pin = DigitalPin.P2; }
