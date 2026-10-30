@@ -181,6 +181,7 @@ namespace pxsim {
                 setParentMuteState("disabled");
             }
             document.body.appendChild(this.view = this.viewHost.getView());
+            visuals.WomModuleManager.initBoard(this);
 
             if (msg.theme === "mbcodal") {
                 this.ensureHardwareVersion(2);
