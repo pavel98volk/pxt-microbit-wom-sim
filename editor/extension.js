@@ -8,8 +8,56 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dialogs = require("./dialogs");
 const flash = require("./flash");
 const patch = require("./patch");
+function applyGithubIoMasking() {
+    var _a, _b, _c, _d;
+    if (typeof window === "undefined" || !window.location)
+        return;
+    const isGithubIo = /github\.io$/i.test(window.location.hostname);
+    if (!isGithubIo)
+        return;
+    // 1. Disable auth in pxt.auth so pxt.auth.hasIdentity() evaluates to false
+    if ((_a = pxt.auth) === null || _a === void 0 ? void 0 : _a.enableAuth) {
+        pxt.auth.enableAuth(false);
+    }
+    // 2. Clear identity flags in cloudProviders so identityProviders() returns empty
+    if ((_c = (_b = pxt.appTarget) === null || _b === void 0 ? void 0 : _b.cloud) === null || _c === void 0 ? void 0 : _c.cloudProviders) {
+        const providers = pxt.appTarget.cloud.cloudProviders;
+        Object.keys(providers).forEach(id => {
+            if (providers[id]) {
+                providers[id].identity = false;
+            }
+        });
+    }
+    // 3. Remove help menu on github.io by emptying docMenu
+    if ((_d = pxt.appTarget) === null || _d === void 0 ? void 0 : _d.appTheme) {
+        pxt.appTarget.appTheme.docMenu = [];
+    }
+    // 4. Inject CSS safety rule to mask sign-in, profile, and help menu
+    const styleId = "pxt-githubio-cloud-mask";
+    if (typeof document !== "undefined" && !document.getElementById(styleId)) {
+        const style = document.createElement("style");
+        style.id = styleId;
+        style.textContent = `
+            #mainmenu .user-menu-item,
+            #mainmenu .signin-button,
+            #mainmenu .profile-dropdown,
+            .user-profile,
+            .signin-form,
+            #docs-menuitem,
+            .help-dropdown-menuitem,
+            #mainmenu #docs-menuitem,
+            #mainmenu .help-dropdown-menuitem {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+// Run immediately when editor extension loads
+applyGithubIoMasking();
 pxt.editor.initExtensionsAsync = function (opts) {
     pxt.debug('loading microbit target extensions...');
+    applyGithubIoMasking();
     const manyAny = Math;
     if (!manyAny.imul)
         manyAny.imul = function (a, b) {
