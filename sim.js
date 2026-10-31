@@ -8362,6 +8362,7 @@ var pxsim;
                 this.mode = "360";
                 this.modeLockedByInit = false;
                 this.currentAngle = 0;
+                this.targetAngle = 0;
                 this.targetRpm = 0;
                 this.lastFrameTime = 0;
                 this.animFrameId = null;
@@ -8421,21 +8422,54 @@ var pxsim;
             renderHornAngle(angleDeg) {
                 this.rotorGroup.setAttribute("transform", `translate(${this.shaftX}, ${this.shaftY}) scale(${this.hornScale}) rotate(${angleDeg}) translate(-60, -60)`);
             }
-            ensureContinuousLoop() {
+            ensureAnimationLoop() {
                 if (this.animFrameId !== null)
                     return;
                 this.lastFrameTime = performance.now();
                 const step = (now) => {
-                    if (!this.element.isConnected || this.mode !== "continuous" || Math.abs(this.targetRpm) < 0.5) {
+                    if (!this.element.isConnected) {
                         this.animFrameId = null;
                         return;
                     }
                     const dtSec = Math.min(0.1, (now - this.lastFrameTime) / 1000);
                     this.lastFrameTime = now;
-                    const degPerSec = (this.targetRpm / 60) * 360;
-                    this.currentAngle = (this.currentAngle + degPerSec * dtSec) % 360;
-                    this.renderHornAngle(this.currentAngle);
-                    this.animFrameId = requestAnimationFrame(step);
+                    if (this.mode === "continuous") {
+                        if (Math.abs(this.targetRpm) < 0.5) {
+                            this.animFrameId = null;
+                            return;
+                        }
+                        const degPerSec = (this.targetRpm / 60) * 360;
+                        this.currentAngle = (this.currentAngle + degPerSec * dtSec) % 360;
+                        if (this.currentAngle < 0)
+                            this.currentAngle += 360;
+                        this.renderHornAngle(this.currentAngle);
+                        this.animFrameId = requestAnimationFrame(step);
+                    }
+                    else {
+                        const diff = this.targetAngle - this.currentAngle;
+                        if (Math.abs(diff) < 0.01) {
+                            this.currentAngle = this.targetAngle;
+                            this.renderHornAngle(this.currentAngle);
+                            this.setBadgeText(`${Math.round(this.currentAngle)}°`, "#38bdf8");
+                            this.animFrameId = null;
+                            return;
+                        }
+                        const maxStep = WomServoModule.POSITIONAL_SPEED_DEG_PER_SEC * dtSec;
+                        if (Math.abs(diff) <= maxStep) {
+                            this.currentAngle = this.targetAngle;
+                        }
+                        else {
+                            this.currentAngle += Math.sign(diff) * maxStep;
+                        }
+                        this.renderHornAngle(this.currentAngle);
+                        this.setBadgeText(`${Math.round(this.currentAngle)}°`, "#38bdf8");
+                        if (Math.abs(this.targetAngle - this.currentAngle) >= 0.01) {
+                            this.animFrameId = requestAnimationFrame(step);
+                        }
+                        else {
+                            this.animFrameId = null;
+                        }
+                    }
                 };
                 this.animFrameId = requestAnimationFrame(step);
             }
@@ -8458,18 +8492,30 @@ var pxsim;
                         this.targetRpm = (delta / 1000) * 160;
                         const dir = this.targetRpm > 0 ? "CW" : "CCW";
                         this.setBadgeText(`${Math.round(Math.abs(this.targetRpm))}rpm ${dir}`, "#22c55e");
-                        this.ensureContinuousLoop();
+                        this.ensureAnimationLoop();
                     }
                 }
                 else {
+                    this.targetRpm = 0;
                     const maxAngle = this.mode === "270" ? 270 : 360;
                     const angle = ((clampedPulse - 500) / 2000) * maxAngle;
-                    this.currentAngle = angle;
-                    this.renderHornAngle(angle);
-                    this.setBadgeText(`${Math.round(angle)}°`, "#38bdf8");
+                    this.targetAngle = angle;
+                    if (Math.abs(this.targetAngle - this.currentAngle) < 0.01) {
+                        this.currentAngle = this.targetAngle;
+                        this.renderHornAngle(this.currentAngle);
+                        this.setBadgeText(`${Math.round(this.currentAngle)}°`, "#38bdf8");
+                    }
+                    else {
+                        this.ensureAnimationLoop();
+                    }
                 }
             }
         }
+        /**
+         * Positional servo rotational transition speed:
+         * 720 degrees per second (2 full rotations per second).
+         */
+        WomServoModule.POSITIONAL_SPEED_DEG_PER_SEC = 720;
         visuals.WomServoModule = WomServoModule;
         function parseServoTypeArg(val) {
             const n = parseInt(val || "1", 10);
