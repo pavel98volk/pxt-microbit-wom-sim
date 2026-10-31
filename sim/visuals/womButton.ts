@@ -13,7 +13,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_button.png",
+                sprite: "sprites/wom_button.png",
                 padEdge: "right",
                 wiredPins: [pins[0]]
             });

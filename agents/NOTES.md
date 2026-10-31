@@ -134,7 +134,18 @@ Per project requirements:
 
 ## 4. Sprite Assets & Grid Footprints (`sim/public/sprites/`)
 
-All module visuals should render the PNG/SVG sprites in `/sim/sprites/<filename>` (served from `sim/public/sprites/`). See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/public/sprites/README.md) for full details:
+All module visuals render PNG/SVG sprites located in `sim/public/sprites/`. Always specify them using relative paths (e.g. `sprites/<filename>` or through `WomModuleManager.resolveAssetUrl(url)` / `this.setImageHref(el, url)`):
+
+> **Static Deployment & URL Resolution**:
+> When deploying MakeCode via `pxt staticpkg --githubpages --route <repo-name>`, the app is hosted under `https://<user>.github.io/<repo-name>/`.
+> The simulator iframe runs at `https://<user>.github.io/<repo-name>/simulator.html`.
+> Assets in `sim/public/sprites/` are packaged alongside `simulator.html` at `https://<user>.github.io/<repo-name>/sprites/`.
+> - If code uses an absolute path `"/sim/sprites/..."`, the browser attempts to fetch `https://<user>.github.io/sim/sprites/...` (root domain + non-existent `/sim/` folder), causing a **404 Not Found**.
+> - Relative paths `"sprites/..."` resolve relative to `simulator.html` seamlessly in both `pxt serve` (`/sim/simulator.html` -> `/sim/sprites/...`) and GitHub Pages (`/<repo>/simulator.html` -> `/<repo>/sprites/...`).
+> - `WomModuleManager.resolveAssetUrl(url)` automatically strips leading `/sim/` or `/` so any legacy or absolute URLs are safely normalized.
+> - Offline caching: Both `sim/public/sim.manifest` and `sim/public/workerConfig.js` list all sprite assets so PXT's service worker caches them for offline use.
+
+See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/public/sprites/README.md) for full details:
 
 | Module ID | Sprite File(s) | Native Size | Grid Span (`colSpan x rowSpan`) | Interactive / Dynamic Overlay |
 | :--- | :--- | :---: | :---: | :--- |

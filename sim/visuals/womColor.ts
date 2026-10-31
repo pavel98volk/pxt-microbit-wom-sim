@@ -57,7 +57,7 @@ namespace pxsim.visuals {
                 pins: ["P19", "P20"],
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_color_recognition.png",
+                sprite: "sprites/wom_color_recognition.png",
                 padEdge: "left",
                 wiredPins: ["P19", "P20"]
             });

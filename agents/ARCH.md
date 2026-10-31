@@ -62,7 +62,7 @@ interface WomModuleOptions {
     pins: string[];          // Full pin set claimed by this module port, e.g. ["P0", "P1"]
     colSpan?: 1 | 2;         // 1 (148px) for square/vertical, 2 (312px) for horizontal (default: 1)
     rowSpan?: 1 | 2;         // 1 (148px) for square/horizontal, 2 (312px) for vertical (default: 1)
-    sprite?: string;         // e.g. "/sim/sprites/wom_ir.png"
+    sprite?: string;         // Relative URL, e.g. "sprites/wom_ir.png" (always avoid absolute "/sim/" prefixes for GitHub Pages compatibility)
     spriteBounds?: { x: number; y: number; width: number; height: number };
     padEdge?: "top" | "bottom" | "left" | "right"; // Edge where signal wire(s) attach (default: "top")
     wiredPins?: string[];    // Signal pins to draw wires for (default: [pins[0]]; pass `pins` for 2-wire modules)
@@ -106,7 +106,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_ir.png",
+                sprite: "sprites/wom_ir.png",
                 padEdge: "top",
                 wiredPins: [pins[0]] // Only wire the active signal pin (no GND/3v3)
             });
@@ -165,7 +165,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 2,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_ultrasonic.png",
+                sprite: "sprites/wom_ultrasonic.png",
                 padEdge: "top",
                 wiredPins: pins, // Wire both Trig (pins[0]) and Echo (pins[1]) with distinct pin colors
                 showCardBackground: true

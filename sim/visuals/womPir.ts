@@ -45,7 +45,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_pir.png",
+                sprite: "sprites/wom_pir.png",
                 padEdge: "left",
                 wiredPins: [pins[0]]
             });
@@ -87,8 +87,7 @@ namespace pxsim.visuals {
                 height: 22,
                 style: "pointer-events: none;"
             });
-            handImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/pir_hand.svg");
-            handImg.setAttribute("href", "/sim/sprites/pir_hand.svg");
+            this.setImageHref(handImg, "sprites/pir_hand.svg");
 
             // 4. Draggable Cold Robot button circle (cold slate tone with subtle blue tint)
             this.robotGroup = <SVGGElement>svg.child(this.overlayGroup, "g", {
@@ -111,8 +110,7 @@ namespace pxsim.visuals {
                 height: 22,
                 style: "pointer-events: none;"
             });
-            robotImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/pir_robot.svg");
-            robotImg.setAttribute("href", "/sim/sprites/pir_robot.svg");
+            this.setImageHref(robotImg, "sprites/pir_robot.svg");
 
             // Initialize kinematic baselines
             const initDx = this.sensorCenterX - this.handX;

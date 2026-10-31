@@ -11,7 +11,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 2,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_ultrasonic.png",
+                sprite: "sprites/wom_ultrasonic.png",
                 padEdge: "top",
                 wiredPins: pins, // Wire both Trig (pins[0]) and Echo (pins[1])
                 showCardBackground: true

@@ -24,8 +24,8 @@ namespace pxsim.visuals {
                 colSpan: 1,
                 rowSpan: 2,
                 sprite: initialMode === "continuous"
-                    ? "/sim/sprites/wom_servo_continuous.png"
-                    : "/sim/sprites/wom_servo.png",
+                    ? "sprites/wom_servo_continuous.png"
+                    : "sprites/wom_servo.png",
                 padEdge: "top",
                 wiredPins: [pins[0]],
                 showCardBackground: false
@@ -54,8 +54,7 @@ namespace pxsim.visuals {
                 width: 400,
                 height: 120
             });
-            rotorImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/servo_rotor.svg");
-            rotorImg.setAttribute("href", "/sim/sprites/servo_rotor.svg");
+            this.setImageHref(rotorImg, "sprites/servo_rotor.svg");
 
             this.applyModeVisuals();
             this.renderHornAngle(0);
@@ -76,12 +75,9 @@ namespace pxsim.visuals {
 
         private applyModeVisuals(): void {
             const spriteHref = this.mode === "continuous"
-                ? "/sim/sprites/wom_servo_continuous.png"
-                : "/sim/sprites/wom_servo.png";
-            if (this.spriteEl) {
-                this.spriteEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", spriteHref);
-                this.spriteEl.setAttribute("href", spriteHref);
-            }
+                ? "sprites/wom_servo_continuous.png"
+                : "sprites/wom_servo.png";
+            this.setSpriteHref(spriteHref);
             if (this.mode === "continuous") {
                 this.cardModeText.textContent = "";
             } else {

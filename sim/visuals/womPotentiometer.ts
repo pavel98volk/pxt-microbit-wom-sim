@@ -15,7 +15,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_potentiometer.png",
+                sprite: "sprites/wom_potentiometer.png",
                 padEdge: "right",
                 wiredPins: [pins[0]]
             });
@@ -37,8 +37,7 @@ namespace pxsim.visuals {
                 width: rotorSize,
                 height: rotorSize
             });
-            rotorImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/potentiometer_rotor.svg");
-            rotorImg.setAttribute("href", "/sim/sprites/potentiometer_rotor.svg");
+            this.setImageHref(rotorImg, "sprites/potentiometer_rotor.svg");
 
             let dragging = false;
 

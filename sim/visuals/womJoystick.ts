@@ -20,13 +20,13 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_joystick_base.png",
+                sprite: "sprites/wom_joystick_base.png",
                 padEdge: "right",
                 wiredPins: pins // Wire both X (pins[0]) and Y (pins[1])
             });
 
             const { group } = this.addSvgOverlay(
-                "/sim/sprites/joystick_stick.svg",
+                "sprites/joystick_stick.svg",
                 this.centerX - this.stickSize / 2,
                 this.centerY - this.stickSize / 2,
                 this.stickSize,

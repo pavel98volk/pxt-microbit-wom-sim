@@ -45,7 +45,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_dht11.png",
+                sprite: "sprites/wom_dht11.png",
                 padEdge: "left",
                 wiredPins: [pins[0]]
             });
@@ -438,11 +438,11 @@ namespace pxsim.visuals {
          * 0% to 9% -> Sahara dune
          */
         private getWeatherIconHref(hum: number): string {
-            if (hum >= 100) return "/sim/sprites/dht_rain.svg";
-            if (hum >= 75) return "/sim/sprites/dht_clouds.svg";
-            if (hum >= 30) return "/sim/sprites/dht_sun_cloud.svg";
-            if (hum >= 10) return "/sim/sprites/dht_sun.svg";
-            return "/sim/sprites/dht_dune.svg";
+            if (hum >= 100) return "sprites/dht_rain.svg";
+            if (hum >= 75) return "sprites/dht_clouds.svg";
+            if (hum >= 30) return "sprites/dht_sun_cloud.svg";
+            if (hum >= 10) return "sprites/dht_sun.svg";
+            return "sprites/dht_dune.svg";
         }
 
         private updateVisuals(): void {

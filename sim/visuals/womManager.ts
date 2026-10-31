@@ -139,7 +139,7 @@ namespace pxsim.visuals {
         pins: string[];
         colSpan?: 1 | 2;
         rowSpan?: 1 | 2;
-        /** Optional sprite URL, e.g. "/sim/sprites/wom_ir.png" */
+        /** Optional sprite URL, e.g. "sprites/wom_ir.png" */
         sprite?: string;
         /** Custom sprite bounds inside the module cell (defaults to centered automatic layout) */
         spriteBounds?: { x: number; y: number; width: number; height: number };
@@ -215,8 +215,9 @@ namespace pxsim.visuals {
                     width: b.width,
                     height: b.height
                 });
-                this.spriteEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", opts.sprite);
-                this.spriteEl.setAttribute("href", opts.sprite);
+                const resolved = WomModuleManager.resolveAssetUrl(opts.sprite);
+                this.spriteEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", resolved);
+                this.spriteEl.setAttribute("href", resolved);
             }
 
             this.overlayGroup = <SVGGElement>svg.child(this.element, "g", {
@@ -295,9 +296,28 @@ namespace pxsim.visuals {
                 width,
                 height
             });
-            image.setAttributeNS("http://www.w3.org/1999/xlink", "href", href);
-            image.setAttribute("href", href);
+            const resolved = WomModuleManager.resolveAssetUrl(href);
+            image.setAttributeNS("http://www.w3.org/1999/xlink", "href", resolved);
+            image.setAttribute("href", resolved);
             return { group, image };
+        }
+
+        /** Resolve an asset URL to relative "sprites/..." format */
+        public resolveAssetUrl(url: string): string {
+            return WomModuleManager.resolveAssetUrl(url);
+        }
+
+        /** Set href on an SVG image element with normalized URL resolution */
+        public setImageHref(image: SVGImageElement, url: string): void {
+            const resolved = WomModuleManager.resolveAssetUrl(url);
+            image.setAttributeNS("http://www.w3.org/1999/xlink", "href", resolved);
+            image.setAttribute("href", resolved);
+        }
+
+        /** Update the main background sprite href with normalized URL resolution */
+        public setSpriteHref(url: string): void {
+            if (!this.spriteEl) return;
+            this.setImageHref(this.spriteEl, url);
         }
 
         /**
@@ -454,6 +474,27 @@ namespace pxsim.visuals {
             for (const addr of addresses) {
                 WomModuleManager.i2cHandlers[addr] = handler;
             }
+        }
+
+        /**
+         * Resolves a sprite or vector overlay URL so it works in both local dev server
+         * (where simulator runs at /sim/simulator.html) and static production deployments
+         * like GitHub Pages (where simulator runs at /<route>/simulator.html).
+         *
+         * Absolute paths like "/sim/sprites/..." incorrectly resolve against the domain root
+         * on GitHub Pages (e.g. https://user.github.io/sim/sprites/...) causing 404s.
+         * Relative paths ("sprites/...") resolve seamlessly relative to simulator.html
+         * in all environments.
+         */
+        public static resolveAssetUrl(url: string): string {
+            if (!url) return url;
+            if (url.startsWith("/sim/")) {
+                return url.substring(5);
+            }
+            if (url.startsWith("/")) {
+                return url.substring(1);
+            }
+            return url;
         }
 
         /**

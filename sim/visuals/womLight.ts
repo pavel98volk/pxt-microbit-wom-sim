@@ -12,7 +12,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 1,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_photoresistor.png",
+                sprite: "sprites/wom_photoresistor.png",
                 padEdge: "right",
                 wiredPins: [pins[0]]
             });

@@ -97,7 +97,7 @@ namespace pxsim.visuals {
                 pins,
                 colSpan: 2,
                 rowSpan: 1,
-                sprite: "/sim/sprites/wom_tm1650.png",
+                sprite: "sprites/wom_tm1650.png",
                 spriteBounds: WomTm1650Module.SPRITE_BOUNDS,
                 padEdge: "top",
                 wiredPins: ["P19", "P20"],
