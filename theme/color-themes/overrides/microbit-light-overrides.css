@@ -12,13 +12,54 @@
 }
 
 #filelist, #editortools {
-    /* Special textured backgrounds, but we only have assets for light theme */
-    background: #fff url("/static/logo_texture.png") 0 0 repeat !important;
+    /* Dotted background with bigger, pale dots instead of white */
+    background-color: #ffffff !important;
+    background-image: radial-gradient(circle, rgba(255, 139, 39, 0.22) 2.5px, transparent 2.5px) !important;
+    background-size: 28px 28px !important;
 }
 
 /*
- * Adjustments to match the original micro:bit theme
+ * Editor dotted background with bigger, pale dots instead of plain white
  */
+svg.blocklySvg,
+#blocksArea,
+.injectionDiv,
+.monaco-editor,
+.monaco-editor .monaco-editor-background,
+.monaco-editor .margin,
+#simulator .editor-sidebar,
+.simView #boardview,
+.fullscreensim #boardview {
+    background-color: #ffffff !important;
+    background-image: radial-gradient(circle, rgba(255, 139, 39, 0.22) 2.5px, transparent 2.5px) !important;
+    background-size: 28px 28px !important;
+}
+
+.blocklyMainBackground {
+    fill: transparent !important;
+}
+
+/*
+ * Adjustments to match the signature orange editor theme
+ */
+#mainmenu.ui.inverted.menu,
+#mainmenu.ui.link.inverted.menu {
+    background-color: var(--pxt-header-background) !important;
+}
+
+#mainmenu.ui.inverted.menu .item,
+#mainmenu.ui.inverted.menu .item > i,
+#mainmenu.ui.inverted.menu .item > span,
+#mainmenu.ui.inverted.menu .header,
+#mainmenu.ui.inverted.menu a {
+    color: var(--pxt-header-foreground) !important;
+}
+
+#mainmenu.ui.inverted.menu .item:hover,
+#mainmenu.ui.inverted.menu .item.active {
+    background-color: var(--pxt-header-background-hover) !important;
+    color: var(--pxt-header-foreground-hover) !important;
+}
 path.blocklyFlyoutBackground {
     fill: #4b4949 !important;
 }
@@ -57,5 +98,5 @@ path.blocklyFlyoutBackground {
 
 .ui.dimmer {
     /* Matches color specified in dimmer.variables, but with partial transparency */
-    background-color: rgba(52, 84, 209, 0.4) !important;
+    background-color: rgba(255, 139, 39, 0.35) !important;
 }

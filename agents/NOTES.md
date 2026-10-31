@@ -166,3 +166,19 @@ See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-
 | `wom_collision` | Custom PCB or switch card | — | **`1x1`** (Square) | Micro-lever toggle/momentary button (`collision=0`, `normal=1`) |
 | `wom_vibration` | Custom PCB or shake card | — | **`1x1`** (Square) | "Shake!" button firing `DAL.MICROBIT_PIN_EVT_FALL` + pulse |
 | `wom_vibmot` | Custom PCB or motor card | — | **`1x1`** (Square) | Vibrating motor animation when PWM/digital output > 0 |
+
+---
+
+## 4. Editor Signature Theme & Background Grid Customization
+
+- **Signature Orange Theme & Site Icon**:
+  - The signature theme has been customized to micro:bit orange (`#ff8b27`) in `theme/color-themes/microbit-light.json`, `theme/site/globals/site.variables`, `theme/style.less`, and `pxtarget.json` (`appTheme.accentColor: "#ff8b27"`).
+  - In `microbit-light.json`: `pxt-header-background`, `pxt-secondary-background`, and `pxt-tertiary-background` are set to `#ff8b27`, with foreground `#FFFFFF`, hover `#e67613`, and stencil `#cc6600`.
+  - In `theme/site/globals/site.variables`: `@mainMenuInvertedBackground: @orange;`, `@tutorialSelectedMenuColor: @orange;`, `@cloudCardBackground: @orange;`, `@cloudStatusColor: @orange;`, and `@teachingBubbleBackgroundColor: @orange;`.
+  - In `theme/style.less`: `.time-machine-header { background-color: @orange; color: #fff; }`.
+  - In `theme/color-themes/overrides/microbit-light-overrides.css`: `#mainmenu.ui.inverted.menu` items and icons use `color: var(--pxt-header-foreground) !important;`.
+  - **Site Favicon & App Icons**: All site icons (`docs/static/icons/apple-touch-icon*.png`, `android-chrome*.png`, `favicon-16x16.png`, `favicon-32x32.png`, `favicon.ico`, `docs/favicon.ico`, and `docs/static/favicon.png`) have been regenerated with the vibrant `#ff8b27` orange background and clean centered white micro:bit logo. `faviconDescription.json` and `pxtarget.json` reflect the updated orange background color and theme color.
+- **Dotted Background with Bigger, Pale Dots**:
+  - In `pxtarget.json`: `blocklyOptions.grid` is configured as `{ "spacing": 28, "length": 2, "colour": "rgba(255, 139, 39, 0.22)", "snap": false }`.
+  - In `theme/color-themes/overrides/microbit-light-overrides.css`: Applied a repeating pale radial dot pattern (`radial-gradient(circle, rgba(255, 139, 39, 0.22) 2.5px, transparent 2.5px)` with `background-size: 28px 28px`) across `svg.blocklySvg`, `#blocksArea`, `.injectionDiv`, `.monaco-editor`, `#filelist, #editortools`, `#simulator .editor-sidebar`, and `#boardview`. Set `.blocklyMainBackground { fill: transparent !important; }` so the CSS dotted pattern shines cleanly through the Blockly SVG layer.
+

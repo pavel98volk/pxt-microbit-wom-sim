@@ -6,11 +6,11 @@
         "/overrides/microbit-light-overrides.css"
     ],
     "colors": {
-        "pxt-header-background": "#3454D1",
+        "pxt-header-background": "#ff8b27",
         "pxt-header-foreground": "#FFFFFF",
-        "pxt-header-background-hover": "#1d3282",
+        "pxt-header-background-hover": "#e67613",
         "pxt-header-foreground-hover": "#FFFFFF",
-        "pxt-header-stencil": "#2742ab",
+        "pxt-header-stencil": "#cc6600",
 
         "pxt-primary-background": "#6633cc",
         "pxt-primary-foreground": "#FFFFFF",
@@ -18,27 +18,27 @@
         "pxt-primary-foreground-hover": "#FFFFFF",
         "pxt-primary-accent": "#5229A3",
 
-        "pxt-secondary-background": "#3454D1",
+        "pxt-secondary-background": "#ff8b27",
         "pxt-secondary-foreground": "#FFFFFF",
-        "pxt-secondary-background-hover": "#2742ab",
+        "pxt-secondary-background-hover": "#e67613",
         "pxt-secondary-foreground-hover": "#FFFFFF",
-        "pxt-secondary-accent": "#516DD8",
+        "pxt-secondary-accent": "#cc6600",
 
-        "pxt-tertiary-background": "#3454D1",
+        "pxt-tertiary-background": "#ff8b27",
         "pxt-tertiary-foreground": "#FFFFFF",
-        "pxt-tertiary-background-hover": "#2742ab",
+        "pxt-tertiary-background-hover": "#e67613",
         "pxt-tertiary-foreground-hover": "#FFFFFF",
-        "pxt-tertiary-accent": "#1d3282",
+        "pxt-tertiary-accent": "#cc6600",
 
-        "pxt-target-background1": "#ECF0F1",
+        "pxt-target-background1": "#FFFFFF",
         "pxt-target-foreground1": "#000000",
-        "pxt-target-background1-hover": "#cfd9db",
+        "pxt-target-background1-hover": "#f5f5f5",
         "pxt-target-foreground1-hover": "#000000",
         "pxt-target-stencil1": "#e1e1e1",
 
-        "pxt-target-background2": "#FDFDFF",
+        "pxt-target-background2": "#FFFFFF",
         "pxt-target-foreground2": "#000000",
-        "pxt-target-background2-hover": "#cacaff",
+        "pxt-target-background2-hover": "#f5f5f5",
         "pxt-target-foreground2-hover": "#000000",
         "pxt-target-stencil2": "#e1e1e1",
 

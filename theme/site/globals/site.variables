@@ -31,12 +31,12 @@
    Menu
 --------------------*/
 
-@mainMenuInvertedBackground: @blue;
+@mainMenuInvertedBackground: @orange;
 @mainMenuTutorialBackground: @purple;
 
 @mainMenuBlocksJsToggleColor: @primaryColor;
 
-@tutorialSelectedMenuColor: @blue;
+@tutorialSelectedMenuColor: @orange;
 
 /*-------------------
    Layout
@@ -50,10 +50,10 @@
    Background
 --------------------*/
 
-@simulatorBackground: #FDFDFF;
+@simulatorBackground: #ffffff;
 @editorToolsBackground: @simulatorBackground;
-@blocklySvgColor: #ecf0f1;
-@cloudCardBackground: lighten(@blue, 7);
+@blocklySvgColor: #ffffff;
+@cloudCardBackground: @orange;
 
 /*-------------------
    Side Docs
@@ -100,11 +100,11 @@
 /*---------------------------
    Cloud Status
 ----------------------------*/
-@cloudStatusColor: @blue;
+@cloudStatusColor: @orange;
 
 /*---------------------------
    Teaching Bubble
 ----------------------------*/
-@teachingBubbleBackgroundColor: @blue;
+@teachingBubbleBackgroundColor: @orange;
 @teachingBubbleTextColor: @white;
 @teachingBubbleStepsColor: @lightGrey;
