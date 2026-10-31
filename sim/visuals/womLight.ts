@@ -21,7 +21,7 @@ namespace pxsim.visuals {
             this.glowCircle = this.addCircleOverlay(74, 72, 26, "#facc15", 0.35);
             this.glowCircle.setAttribute("opacity", String((this.lightLevel / 1023) * 0.85));
 
-            const { container } = this.addControlForeignObject(16, 86, 116, 44);
+            const { container } = this.addControlForeignObject(16, 100, 116, 44);
             container.style.cssText =
                 "background:rgba(15,23,42,0.82);border-radius:6px;padding:3px 6px;color:#f8fafc;font-family:sans-serif;font-size:10px;display:flex;flex-direction:column;gap:2px;user-select:none;";
 

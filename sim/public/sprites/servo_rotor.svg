@@ -23,6 +23,6 @@
            A 13,13 0 1,0 60,73
            A 13,13 0 1,0 60,47 Z" />
 
-  <!-- Servo Shaft Center Marker -->
-  <circle cx="60" cy="60" r="2.5" fill="#0D47A1" opacity="0.6" />
+  <!-- Red Cross Axle in Rotational Center (3x enlarged, slightly rounded outer corners) -->
+  <path fill="#ef4444" stroke="#991b1b" stroke-width="3" stroke-linejoin="round" d="M 51,30 a 3,3 0 0,1 3,-3 h 12 a 3,3 0 0,1 3,3 v 21 h 21 a 3,3 0 0,1 3,3 v 12 a 3,3 0 0,1 -3,3 h -21 v 21 a 3,3 0 0,1 -3,3 h -12 a 3,3 0 0,1 -3,-3 v -21 h -21 a 3,3 0 0,1 -3,-3 v -12 a 3,3 0 0,1 3,-3 h 21 Z" />
 </svg>
