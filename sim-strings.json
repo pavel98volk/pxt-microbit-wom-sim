@@ -1,4 +1,5 @@
 {
+    "0 degree position": "0 degree position",
     "Light level": "Light level",
     "Pin 0": "Pin 0",
     "Pin 1": "Pin 1",
@@ -33,6 +34,8 @@
     "acceleration.x": "acceleration.x",
     "acceleration.y": "acceleration.y",
     "acceleration.z": "acceleration.z",
+    "back side": "back side",
+    "front side": "front side",
     "heading": "heading",
     "lightLevel": "lightLevel",
     "logo touch (micro:bit v2 needed)": "logo touch (micro:bit v2 needed)",

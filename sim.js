@@ -7761,7 +7761,7 @@ var pxsim;
                 // Warm yellow glow over the photoresistor proportional to light intensity
                 this.glowCircle = this.addCircleOverlay(74, 72, 26, "#facc15", 0.35);
                 this.glowCircle.setAttribute("opacity", String((this.lightLevel / 1023) * 0.85));
-                const { container } = this.addControlForeignObject(16, 86, 116, 44);
+                const { container } = this.addControlForeignObject(16, 100, 116, 44);
                 container.style.cssText =
                     "background:rgba(15,23,42,0.82);border-radius:6px;padding:3px 6px;color:#f8fafc;font-family:sans-serif;font-size:10px;display:flex;flex-direction:column;gap:2px;user-select:none;";
                 const header = document.createElement("div");
@@ -8344,6 +8344,54 @@ var pxsim;
 (function (pxsim) {
     var visuals;
     (function (visuals) {
+        const UK_SERVO_TRANSLATIONS = {
+            "front side": "Передня сторона",
+            "back side": "Задня сторона",
+            "0 degree position": "Позиція в стані 0"
+        };
+        function isUkrainianLocale() {
+            try {
+                // 1. Check parent window's MakeCode internal userLanguage()
+                const parentWin = typeof window !== "undefined" ? window.parent : null;
+                if (parentWin && parentWin.pxt && parentWin.pxt.Util && parentWin.pxt.Util.userLanguage) {
+                    const lang = parentWin.pxt.Util.userLanguage();
+                    if (typeof lang === "string" && lang.toLowerCase().startsWith("uk"))
+                        return true;
+                }
+                // 2. Check MakeCode PXT_LANG cookie (shared across same origin)
+                if (typeof document !== "undefined" && document.cookie) {
+                    const m = /(?:^|;\s*)PXT_LANG=([a-zA-Z\-]+)/.exec(document.cookie);
+                    if (m && m[1].toLowerCase().startsWith("uk"))
+                        return true;
+                }
+                // 3. Check parent document's html lang attribute
+                if (parentWin && parentWin.document && parentWin.document.documentElement && parentWin.document.documentElement.lang) {
+                    if (parentWin.document.documentElement.lang.toLowerCase().startsWith("uk"))
+                        return true;
+                }
+                // 4. Check parent window's actual URL query/hash if present
+                if (parentWin && parentWin.location && parentWin.location.href) {
+                    if (/[\?&#](?:lang|language)=uk/i.test(parentWin.location.href))
+                        return true;
+                }
+            }
+            catch (_a) { }
+            return false;
+        }
+        function getServoLocalizedTooltip(key) {
+            if (isUkrainianLocale()) {
+                return UK_SERVO_TRANSLATIONS[key] || key;
+            }
+            if (typeof pxsim !== "undefined" && pxsim.localization && pxsim.localization.lf) {
+                if (key === "front side")
+                    return pxsim.localization.lf("front side");
+                if (key === "back side")
+                    return pxsim.localization.lf("back side");
+                if (key === "0 degree position")
+                    return pxsim.localization.lf("0 degree position");
+            }
+            return key;
+        }
         class WomServoModule extends visuals.WomModuleBase {
             constructor(pins, initialMode = "360", locked = false) {
                 super({
@@ -8361,6 +8409,8 @@ var pxsim;
                 });
                 this.mode = "360";
                 this.modeLockedByInit = false;
+                this.isBack = false;
+                this.defaultRotation = 0;
                 this.currentAngle = 0;
                 this.targetAngle = 0;
                 this.targetRpm = 0;
@@ -8371,10 +8421,10 @@ var pxsim;
                 this.hornScale = 0.28;
                 this.mode = initialMode;
                 this.modeLockedByInit = locked;
-                // Mode label ("360" or "270") displayed on the lower recessed card of positional servos
+                // Mode label ("360" or "270") displayed on the servo body
                 this.cardModeText = pxsim.svg.child(this.overlayGroup, "text", {
                     x: this.width / 2,
-                    y: 235,
+                    y: 205,
                     "text-anchor": "middle",
                     fill: "#334155",
                     "font-family": "monospace, sans-serif",
@@ -8382,7 +8432,22 @@ var pxsim;
                     "font-weight": "bold",
                     style: "pointer-events: none; user-select: none;"
                 });
+                // "Geekservo" unselectable string across the servo on front side, 5% smaller and 2x more transparent
+                this.geekservoText = pxsim.svg.child(this.overlayGroup, "text", {
+                    x: this.width / 2,
+                    y: 228,
+                    "text-anchor": "middle",
+                    fill: "#0f172a",
+                    opacity: "0.22",
+                    "font-family": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                    "font-size": "19px",
+                    "font-weight": "900",
+                    "letter-spacing": "1.5px",
+                    style: "pointer-events: none; user-select: none;"
+                });
+                this.geekservoText.textContent = "Geekservo";
                 // Rotating horn (/sim/sprites/servo_rotor.svg, viewBox 400x120, pivot at (60, 60))
+                // Placed after cardModeText in DOM so it visually occludes the mode text when rotated downward
                 this.rotorGroup = pxsim.svg.child(this.overlayGroup, "g", {});
                 const rotorImg = pxsim.svg.child(this.rotorGroup, "image", {
                     x: 0,
@@ -8391,6 +8456,14 @@ var pxsim;
                     height: 120
                 });
                 this.setImageHref(rotorImg, "sprites/servo_rotor.svg");
+                // Circular toggle button ('f' / 'b') on top of the bottom left corner
+                this.createFaceToggleButton();
+                // Circular 0 degree selection button on the bottom right (positional servos only)
+                this.createZeroPositionButton();
+                // Position statusText snugly below the servo sprite (eliminating the ~48px gap from rowSpan 2 cell height)
+                if (this.statusText) {
+                    this.statusText.setAttribute("y", "275");
+                }
                 this.applyModeVisuals();
                 this.renderHornAngle(0);
                 this.updateState();
@@ -8418,9 +8491,20 @@ var pxsim;
                 else {
                     this.cardModeText.textContent = this.mode;
                 }
+                if (this.zeroPosBtnGroup) {
+                    this.zeroPosBtnGroup.style.display = this.mode === "continuous" ? "none" : "block";
+                }
             }
             renderHornAngle(angleDeg) {
-                this.rotorGroup.setAttribute("transform", `translate(${this.shaftX}, ${this.shaftY}) scale(${this.hornScale}) rotate(${angleDeg}) translate(-60, -60)`);
+                // angleDeg is the servo state (rotation degrees relative to 0).
+                // The default rotation relative to upwards is applied before back mode translation:
+                const frontAngle = (angleDeg + this.defaultRotation) % 360;
+                const normFront = frontAngle < 0 ? frontAngle + 360 : frontAngle;
+                const angleFromUp = this.isBack
+                    ? (360 - normFront) % 360
+                    : normFront;
+                const visualDeg = angleFromUp - 90;
+                this.rotorGroup.setAttribute("transform", `translate(${this.shaftX}, ${this.shaftY}) scale(${this.hornScale}) rotate(${visualDeg}) translate(-60, -60)`);
             }
             ensureAnimationLoop() {
                 if (this.animFrameId !== null)
@@ -8473,11 +8557,163 @@ var pxsim;
                 };
                 this.animFrameId = requestAnimationFrame(step);
             }
+            createFaceToggleButton() {
+                const initialTitle = getServoLocalizedTooltip("front side");
+                const btnGroup = pxsim.svg.child(this.overlayGroup, "g", {
+                    class: "wom-servo-face-btn",
+                    style: "cursor: pointer;"
+                });
+                btnGroup.setAttribute("title", initialTitle);
+                this.faceBtnTitle = pxsim.svg.child(btnGroup, "title", {});
+                this.faceBtnTitle.textContent = initialTitle;
+                this.faceBtnCircle = pxsim.svg.child(btnGroup, "circle", {
+                    cx: 30,
+                    cy: 238,
+                    r: 14.3,
+                    fill: "#1e293b",
+                    stroke: "#475569",
+                    "stroke-width": 1.5,
+                    style: "cursor: pointer;"
+                });
+                this.faceBtnText = pxsim.svg.child(btnGroup, "text", {
+                    x: 30,
+                    y: 243.5,
+                    "text-anchor": "middle",
+                    fill: "#94a3b8",
+                    "font-family": "monospace, sans-serif",
+                    "font-size": "15px",
+                    "font-weight": "bold",
+                    style: "pointer-events: none; user-select: none;"
+                });
+                this.faceBtnText.textContent = "f";
+                btnGroup.addEventListener("mouseenter", () => {
+                    this.faceBtnCircle.setAttribute("stroke", "#38bdf8");
+                });
+                btnGroup.addEventListener("mouseleave", () => {
+                    this.faceBtnCircle.setAttribute("stroke", this.isBack ? "#38bdf8" : "#475569");
+                });
+                btnGroup.addEventListener("pointerdown", (e) => {
+                    e.stopPropagation();
+                });
+                btnGroup.addEventListener("mousedown", (e) => {
+                    e.stopPropagation();
+                });
+                btnGroup.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    this.toggleFace();
+                });
+                this.faceBtnGroup = btnGroup;
+            }
+            createZeroPositionButton() {
+                const title = getServoLocalizedTooltip("0 degree position");
+                const btnGroup = pxsim.svg.child(this.overlayGroup, "g", {
+                    class: "wom-servo-zero-btn",
+                    style: "cursor: pointer;"
+                });
+                btnGroup.setAttribute("title", title);
+                const titleEl = pxsim.svg.child(btnGroup, "title", {});
+                titleEl.textContent = title;
+                this.zeroPosBtnCircle = pxsim.svg.child(btnGroup, "circle", {
+                    cx: 118,
+                    cy: 238,
+                    r: 14.3,
+                    fill: "#ffffff",
+                    stroke: "#94a3b8",
+                    "stroke-width": 1.5,
+                    style: "cursor: pointer;"
+                });
+                // Clipped container for miniature rotor horn centered at (118, 238)
+                const clipId = `wom-zero-clip-${this.pinKey}`;
+                const clip = pxsim.svg.child(this.overlayGroup, "clipPath", { id: clipId });
+                pxsim.svg.child(clip, "circle", { cx: 118, cy: 238, r: 13.8 });
+                const miniRotorG = pxsim.svg.child(btnGroup, "g", {
+                    "clip-path": `url(#${clipId})`,
+                    style: "pointer-events: none;"
+                });
+                this.miniRotorImg = pxsim.svg.child(miniRotorG, "image", {
+                    x: 0,
+                    y: 0,
+                    width: 400,
+                    height: 120
+                });
+                this.setImageHref(this.miniRotorImg, "sprites/servo_rotor.svg");
+                this.updateZeroPositionButtonVisuals();
+                btnGroup.addEventListener("mouseenter", () => {
+                    this.zeroPosBtnCircle.setAttribute("stroke", "#38bdf8");
+                });
+                btnGroup.addEventListener("mouseleave", () => {
+                    this.zeroPosBtnCircle.setAttribute("stroke", "#94a3b8");
+                });
+                btnGroup.addEventListener("pointerdown", (e) => {
+                    e.stopPropagation();
+                });
+                btnGroup.addEventListener("mousedown", (e) => {
+                    e.stopPropagation();
+                });
+                btnGroup.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    this.cycleDefaultRotation();
+                });
+                this.zeroPosBtnGroup = btnGroup;
+                this.zeroPosBtnGroup.style.display = this.mode === "continuous" ? "none" : "block";
+            }
+            updateZeroPositionButtonVisuals() {
+                if (!this.miniRotorImg)
+                    return;
+                const btnAngleFromUp = this.isBack
+                    ? (360 - this.defaultRotation) % 360
+                    : this.defaultRotation;
+                const visualDeg = btnAngleFromUp - 90;
+                this.miniRotorImg.setAttribute("transform", `translate(118, 238) rotate(${visualDeg}) scale(0.0426) translate(-60, -60)`);
+            }
+            cycleDefaultRotation() {
+                if (this.mode === "continuous")
+                    return;
+                this.defaultRotation = (this.defaultRotation + 90) % 360;
+                this.updateZeroPositionButtonVisuals();
+                this.renderHornAngle(this.currentAngle);
+                if (typeof pxsim.runtime !== "undefined" && pxsim.runtime) {
+                    pxsim.runtime.queueDisplayUpdate();
+                }
+            }
+            toggleFace() {
+                this.isBack = !this.isBack;
+                this.updateFaceButtonVisuals();
+                this.updateZeroPositionButtonVisuals();
+                if (this.mode === "continuous") {
+                    this.targetRpm = -this.targetRpm;
+                    if (Math.abs(this.targetRpm) >= 0.5) {
+                        const dir = (this.isBack ? -this.targetRpm : this.targetRpm) > 0 ? "CW" : "CCW";
+                        this.setBadgeText(`${Math.round(Math.abs(this.targetRpm))}rpm ${dir}`, "#22c55e");
+                    }
+                    this.renderHornAngle(this.currentAngle);
+                }
+                else {
+                    this.renderHornAngle(this.currentAngle);
+                    this.setBadgeText(`${Math.round(this.currentAngle)}°`, "#38bdf8");
+                }
+            }
+            updateFaceButtonVisuals() {
+                const label = this.isBack ? "b" : "f";
+                const tooltip = getServoLocalizedTooltip(this.isBack ? "back side" : "front side");
+                this.faceBtnText.textContent = label;
+                this.faceBtnText.setAttribute("fill", this.isBack ? "#38bdf8" : "#94a3b8");
+                this.faceBtnCircle.setAttribute("stroke", this.isBack ? "#38bdf8" : "#475569");
+                this.faceBtnCircle.setAttribute("fill", this.isBack ? "#0f172a" : "#1e293b");
+                this.faceBtnGroup.setAttribute("title", tooltip);
+                this.faceBtnTitle.textContent = tooltip;
+                if (this.geekservoText) {
+                    this.geekservoText.style.display = this.isBack ? "none" : "block";
+                }
+            }
             updateState() {
                 const pin = visuals.getPinInstance(this.pins[0]);
                 const pulse = pin ? pin.womServoPulse : undefined;
                 if (pulse === undefined) {
-                    this.setBadgeText(this.mode === "continuous" ? "0 rpm" : "0°", "#64748b");
+                    const idleText = this.mode === "continuous"
+                        ? "0 rpm"
+                        : `${Math.round(this.currentAngle)}°`;
+                    this.setBadgeText(idleText, "#64748b");
                     return;
                 }
                 const clampedPulse = Math.max(500, Math.min(2500, pulse));
@@ -8490,7 +8726,7 @@ var pxsim;
                     }
                     else {
                         this.targetRpm = (delta / 1000) * 160;
-                        const dir = this.targetRpm > 0 ? "CW" : "CCW";
+                        const dir = (this.isBack ? -this.targetRpm : this.targetRpm) > 0 ? "CW" : "CCW";
                         this.setBadgeText(`${Math.round(Math.abs(this.targetRpm))}rpm ${dir}`, "#22c55e");
                         this.ensureAnimationLoop();
                     }
