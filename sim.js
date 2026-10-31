@@ -5855,8 +5855,9 @@ var pxsim;
                         width: b.width,
                         height: b.height
                     });
-                    this.spriteEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", opts.sprite);
-                    this.spriteEl.setAttribute("href", opts.sprite);
+                    const resolved = WomModuleManager.resolveAssetUrl(opts.sprite);
+                    this.spriteEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", resolved);
+                    this.spriteEl.setAttribute("href", resolved);
                 }
                 this.overlayGroup = pxsim.svg.child(this.element, "g", {
                     class: "wom-overlay-layer"
@@ -5918,9 +5919,26 @@ var pxsim;
                     width,
                     height
                 });
-                image.setAttributeNS("http://www.w3.org/1999/xlink", "href", href);
-                image.setAttribute("href", href);
+                const resolved = WomModuleManager.resolveAssetUrl(href);
+                image.setAttributeNS("http://www.w3.org/1999/xlink", "href", resolved);
+                image.setAttribute("href", resolved);
                 return { group, image };
+            }
+            /** Resolve an asset URL to relative "sprites/..." format */
+            resolveAssetUrl(url) {
+                return WomModuleManager.resolveAssetUrl(url);
+            }
+            /** Set href on an SVG image element with normalized URL resolution */
+            setImageHref(image, url) {
+                const resolved = WomModuleManager.resolveAssetUrl(url);
+                image.setAttributeNS("http://www.w3.org/1999/xlink", "href", resolved);
+                image.setAttribute("href", resolved);
+            }
+            /** Update the main background sprite href with normalized URL resolution */
+            setSpriteHref(url) {
+                if (!this.spriteEl)
+                    return;
+                this.setImageHref(this.spriteEl, url);
             }
             /**
              * Add an HTML control container inside a <foreignObject> that automatically
@@ -6073,6 +6091,27 @@ var pxsim;
                 for (const addr of addresses) {
                     WomModuleManager.i2cHandlers[addr] = handler;
                 }
+            }
+            /**
+             * Resolves a sprite or vector overlay URL so it works in both local dev server
+             * (where simulator runs at /sim/simulator.html) and static production deployments
+             * like GitHub Pages (where simulator runs at /<route>/simulator.html).
+             *
+             * Absolute paths like "/sim/sprites/..." incorrectly resolve against the domain root
+             * on GitHub Pages (e.g. https://user.github.io/sim/sprites/...) causing 404s.
+             * Relative paths ("sprites/...") resolve seamlessly relative to simulator.html
+             * in all environments.
+             */
+            static resolveAssetUrl(url) {
+                if (!url)
+                    return url;
+                if (url.startsWith("/sim/")) {
+                    return url.substring(5);
+                }
+                if (url.startsWith("/")) {
+                    return url.substring(1);
+                }
+                return url;
             }
             static isLedShowing(ledState) {
                 if (!ledState)
@@ -6591,7 +6630,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_button.png",
+                    sprite: "sprites/wom_button.png",
                     padEdge: "right",
                     wiredPins: [pins[0]]
                 });
@@ -6635,7 +6674,7 @@ var pxsim;
                     pins: ["P19", "P20"],
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_color_recognition.png",
+                    sprite: "sprites/wom_color_recognition.png",
                     padEdge: "left",
                     wiredPins: ["P19", "P20"]
                 });
@@ -7030,7 +7069,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_dht11.png",
+                    sprite: "sprites/wom_dht11.png",
                     padEdge: "left",
                     wiredPins: [pins[0]]
                 });
@@ -7407,14 +7446,14 @@ var pxsim;
              */
             getWeatherIconHref(hum) {
                 if (hum >= 100)
-                    return "/sim/sprites/dht_rain.svg";
+                    return "sprites/dht_rain.svg";
                 if (hum >= 75)
-                    return "/sim/sprites/dht_clouds.svg";
+                    return "sprites/dht_clouds.svg";
                 if (hum >= 30)
-                    return "/sim/sprites/dht_sun_cloud.svg";
+                    return "sprites/dht_sun_cloud.svg";
                 if (hum >= 10)
-                    return "/sim/sprites/dht_sun.svg";
-                return "/sim/sprites/dht_dune.svg";
+                    return "sprites/dht_sun.svg";
+                return "sprites/dht_dune.svg";
             }
             updateVisuals() {
                 // 1. Update Thermometer
@@ -7507,7 +7546,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_ir.png",
+                    sprite: "sprites/wom_ir.png",
                     padEdge: "top",
                     wiredPins: [pins[0]]
                 });
@@ -7548,7 +7587,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_joystick_base.png",
+                    sprite: "sprites/wom_joystick_base.png",
                     padEdge: "right",
                     wiredPins: pins // Wire both X (pins[0]) and Y (pins[1])
                 });
@@ -7561,7 +7600,7 @@ var pxsim;
                 this.centerY = 72;
                 this.maxRadius = 12;
                 this.stickSize = 60;
-                const { group } = this.addSvgOverlay("/sim/sprites/joystick_stick.svg", this.centerX - this.stickSize / 2, this.centerY - this.stickSize / 2, this.stickSize, this.stickSize);
+                const { group } = this.addSvgOverlay("sprites/joystick_stick.svg", this.centerX - this.stickSize / 2, this.centerY - this.stickSize / 2, this.stickSize, this.stickSize);
                 this.stickGroup = group;
                 this.stickGroup.style.cursor = "grab";
                 let dragging = false;
@@ -7714,7 +7753,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_photoresistor.png",
+                    sprite: "sprites/wom_photoresistor.png",
                     padEdge: "right",
                     wiredPins: [pins[0]]
                 });
@@ -7786,7 +7825,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_pir.png",
+                    sprite: "sprites/wom_pir.png",
                     padEdge: "left",
                     wiredPins: [pins[0]]
                 });
@@ -7846,8 +7885,7 @@ var pxsim;
                     height: 22,
                     style: "pointer-events: none;"
                 });
-                handImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/pir_hand.svg");
-                handImg.setAttribute("href", "/sim/sprites/pir_hand.svg");
+                this.setImageHref(handImg, "sprites/pir_hand.svg");
                 // 4. Draggable Cold Robot button circle (cold slate tone with subtle blue tint)
                 this.robotGroup = pxsim.svg.child(this.overlayGroup, "g", {
                     transform: `translate(${this.robotX}, ${this.robotY})`,
@@ -7869,8 +7907,7 @@ var pxsim;
                     height: 22,
                     style: "pointer-events: none;"
                 });
-                robotImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/pir_robot.svg");
-                robotImg.setAttribute("href", "/sim/sprites/pir_robot.svg");
+                this.setImageHref(robotImg, "sprites/pir_robot.svg");
                 // Initialize kinematic baselines
                 const initDx = this.sensorCenterX - this.handX;
                 const initDy = this.sensorCenterY - this.handY;
@@ -8144,7 +8181,7 @@ var pxsim;
                     pins,
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_potentiometer.png",
+                    sprite: "sprites/wom_potentiometer.png",
                     padEdge: "right",
                     wiredPins: [pins[0]]
                 });
@@ -8169,8 +8206,7 @@ var pxsim;
                     width: rotorSize,
                     height: rotorSize
                 });
-                rotorImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/potentiometer_rotor.svg");
-                rotorImg.setAttribute("href", "/sim/sprites/potentiometer_rotor.svg");
+                this.setImageHref(rotorImg, "sprites/potentiometer_rotor.svg");
                 let dragging = false;
                 const updateFromPointer = (clientX, clientY) => {
                     const rect = this.element.getBoundingClientRect();
@@ -8262,7 +8298,7 @@ var pxsim;
                     pins: ["P12", "P13", "P14"],
                     colSpan: 1,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_rgb.png",
+                    sprite: "sprites/wom_rgb.png",
                     padEdge: "right",
                     wiredPins: ["P12", "P13", "P14"]
                 });
@@ -8317,8 +8353,8 @@ var pxsim;
                     colSpan: 1,
                     rowSpan: 2,
                     sprite: initialMode === "continuous"
-                        ? "/sim/sprites/wom_servo_continuous.png"
-                        : "/sim/sprites/wom_servo.png",
+                        ? "sprites/wom_servo_continuous.png"
+                        : "sprites/wom_servo.png",
                     padEdge: "top",
                     wiredPins: [pins[0]],
                     showCardBackground: false
@@ -8353,8 +8389,7 @@ var pxsim;
                     width: 400,
                     height: 120
                 });
-                rotorImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", "/sim/sprites/servo_rotor.svg");
-                rotorImg.setAttribute("href", "/sim/sprites/servo_rotor.svg");
+                this.setImageHref(rotorImg, "sprites/servo_rotor.svg");
                 this.applyModeVisuals();
                 this.renderHornAngle(0);
                 this.updateState();
@@ -8373,12 +8408,9 @@ var pxsim;
             }
             applyModeVisuals() {
                 const spriteHref = this.mode === "continuous"
-                    ? "/sim/sprites/wom_servo_continuous.png"
-                    : "/sim/sprites/wom_servo.png";
-                if (this.spriteEl) {
-                    this.spriteEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", spriteHref);
-                    this.spriteEl.setAttribute("href", spriteHref);
-                }
+                    ? "sprites/wom_servo_continuous.png"
+                    : "sprites/wom_servo.png";
+                this.setSpriteHref(spriteHref);
                 if (this.mode === "continuous") {
                     this.cardModeText.textContent = "";
                 }
@@ -8545,7 +8577,7 @@ var pxsim;
                     pins,
                     colSpan: 2,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_tm1650.png",
+                    sprite: "sprites/wom_tm1650.png",
                     spriteBounds: WomTm1650Module.SPRITE_BOUNDS,
                     padEdge: "top",
                     wiredPins: ["P19", "P20"],
@@ -8722,7 +8754,7 @@ var pxsim;
                     pins,
                     colSpan: 2,
                     rowSpan: 1,
-                    sprite: "/sim/sprites/wom_ultrasonic.png",
+                    sprite: "sprites/wom_ultrasonic.png",
                     padEdge: "top",
                     wiredPins: pins,
                     showCardBackground: true

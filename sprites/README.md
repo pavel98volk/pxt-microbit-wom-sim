@@ -13,8 +13,8 @@ In the simulator view (`sim/visuals/`):
 
 ```svg
 <g class="wom-module wom-ultrasonic">
-  <!-- 1. Base Block Sprite PNG -->
-  <image href="/sim/sprites/wom_ultrasonic.png" x="0" y="0" width="200" height="130" />
+  <!-- 1. Base Block Sprite PNG (relative path resolves correctly in both pxt serve and GitHub Pages) -->
+  <image href="sprites/wom_ultrasonic.png" x="0" y="0" width="200" height="130" />
   
   <!-- 2. Overlaid Interactive Controls (<foreignObject>) -->
   <foreignObject x="20" y="70" width="160" height="40">
@@ -30,11 +30,16 @@ In the simulator view (`sim/visuals/`):
 
 ## 2. Serving & URL Resolution
 
-- Files placed in `sim/public/sprites/` are statically served by the MakeCode local server (`pxt serve`) and the web client at:
+- Files placed in `sim/public/sprites/` are packaged alongside `simulator.html` in both local dev server (`pxt serve`) and static builds (`pxt staticpkg`).
+- Always use relative paths:
   ```
-  /sim/sprites/<filename>.png
+  sprites/<filename>.png
   ```
-- MakeCode's `server.js` includes `sim/public` in its static asset lookup paths, automatically serving PNG files with the proper `image/png` MIME header.
+  (or pass through `WomModuleManager.resolveAssetUrl(url)` / `this.setImageHref(el, url)`).
+- **Why relative paths**:
+  - In `pxt serve`, the simulator runs at `http://localhost:3232/sim/simulator.html`. A relative path `sprites/<filename>.png` resolves to `/sim/sprites/<filename>.png`.
+  - In static deployments (such as GitHub Pages with `--route <repo-name>`), the simulator runs at `https://<user>.github.io/<repo-name>/simulator.html`. A relative path `sprites/<filename>.png` resolves to `/<repo-name>/sprites/<filename>.png`.
+  - An absolute path like `"/sim/sprites/..."` incorrectly resolves against the domain root (`https://<user>.github.io/sim/sprites/...`), resulting in a 404 Not Found error!
 
 ---
 
