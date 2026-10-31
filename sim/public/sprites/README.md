@@ -80,4 +80,6 @@ In the simulator view (`sim/visuals/`):
 | **DHT11 Sun & Cloud Icon** | `dht_sun_cloud.svg` | Simplistic material design sun with cloud for 30%–74% humidity |
 | **DHT11 Sun Icon** | `dht_sun.svg` | Simplistic material design sun with radiating rays for 10%–29% humidity |
 | **DHT11 Sahara Dune Icon** | `dht_dune.svg` | Simplistic material design desert sand dunes with hot sun for 0%–9% humidity |
+| **Color Sensor Camera Icon** | `color_camera.svg` | Grey camera icon button (`24x24`) toggled to green in code when camera mode is active on the Color Recognition module |
+
 

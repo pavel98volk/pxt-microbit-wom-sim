@@ -2,6 +2,7 @@
 if (typeof self !== "undefined" && self.setSimulatorWorkerOptions) {
     self.setSimulatorWorkerOptions({
         urls: [
+            "/sim/sprites/color_camera.svg",
             "/sim/sprites/dht_clouds.svg",
             "/sim/sprites/dht_dune.svg",
             "/sim/sprites/dht_rain.svg",

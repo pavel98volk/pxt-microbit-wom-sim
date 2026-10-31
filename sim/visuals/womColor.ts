@@ -1,4 +1,5 @@
 /// <reference path="./womManager.ts" />
+/// <reference path="./womColorCamera.ts" />
 
 namespace pxsim.visuals {
     interface ColorBall {
@@ -39,11 +40,20 @@ namespace pxsim.visuals {
         private balls: ColorBall[] = [];
         private activeRegister: number = WomColorModule.REG_R;
 
-        /** Latest sampled RGB values (0..255) including distance-scaled noise */
+        /** Latest sampled RGB values (0..255) */
         private currentR = 105;
         private currentG = 105;
         private currentB = 105;
         private lastNoiseTime = 0;
+
+        /** Camera mode state & UI elements */
+        private cameraMode = false;
+        private cameraToggling = false;
+        private readonly camera = new WomColorCamera();
+        private cameraBtnGroup: SVGGElement;
+        private cameraBtnCircle: SVGCircleElement;
+        private cameraBtnIcon: SVGImageElement;
+        private cameraGreenFilterId: string;
 
         private centerSwatch: SVGCircleElement;
         private rangeRing: SVGCircleElement;
@@ -61,6 +71,8 @@ namespace pxsim.visuals {
                 padEdge: "left",
                 wiredPins: ["P19", "P20"]
             });
+
+            this.cameraGreenFilterId = `wom-cam-green-${this.pinKey.replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
             // 1. Always-lit white illumination LED glow at (74, 54)
             const whiteLed = this.addCircleOverlay(74, 54, 8, "#ffffff", 0.55);
@@ -147,9 +159,154 @@ namespace pxsim.visuals {
                 });
             }
 
+            // 5. Camera mode toggle button in top-left corner of sensor
+            this.createCameraButton();
+
             this.setupDragging();
             this.sampleRgb(true);
             this.ensurePhysicsLoop();
+        }
+
+        private createCameraButton(): void {
+            const defs = svg.child(this.overlayGroup, "defs", {});
+            const filter = svg.child(defs, "filter", {
+                id: this.cameraGreenFilterId,
+                "color-interpolation-filters": "sRGB"
+            });
+            // Recolor the grey sprite (#64748b) to vibrant green (#22c55e -> R:0.133, G:0.773, B:0.369)
+            svg.child(filter, "feColorMatrix", {
+                type: "matrix",
+                values: "0 0 0 0 0.133  0 0 0 0 0.773  0 0 0 0 0.369  0 0 0 1 0"
+            });
+
+            const btnX = 27;
+            const btnY = 25;
+            const btnRadius = 11.5;
+            const iconSize = 15;
+
+            const btnGroup = <SVGGElement>svg.child(this.overlayGroup, "g", {
+                class: "wom-color-camera-btn",
+                style: "cursor: pointer;"
+            });
+
+            const titleEl = <SVGTitleElement>svg.child(btnGroup, "title", {});
+            titleEl.textContent = "Camera mode";
+
+            this.cameraBtnCircle = <SVGCircleElement>svg.child(btnGroup, "circle", {
+                cx: btnX,
+                cy: btnY,
+                r: btnRadius,
+                fill: "#f8fafc",
+                "fill-opacity": 0.9,
+                stroke: "#94a3b8",
+                "stroke-width": 1.4,
+                style: "cursor: pointer;"
+            });
+
+            this.cameraBtnIcon = <SVGImageElement>svg.child(btnGroup, "image", {
+                x: btnX - iconSize / 2,
+                y: btnY - iconSize / 2,
+                width: iconSize,
+                height: iconSize,
+                style: "pointer-events: none;"
+            });
+            this.setImageHref(this.cameraBtnIcon, "sprites/color_camera.svg");
+
+            btnGroup.addEventListener("mouseenter", () => {
+                this.cameraBtnCircle.setAttribute(
+                    "stroke",
+                    this.cameraMode ? "#16a34a" : "#64748b"
+                );
+            });
+            btnGroup.addEventListener("mouseleave", () => {
+                this.cameraBtnCircle.setAttribute(
+                    "stroke",
+                    this.cameraMode ? "#22c55e" : "#94a3b8"
+                );
+            });
+            btnGroup.addEventListener("pointerdown", (e) => {
+                e.stopPropagation();
+            });
+            btnGroup.addEventListener("mousedown", (e) => {
+                e.stopPropagation();
+            });
+            btnGroup.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggleCameraMode();
+            });
+
+            this.cameraBtnGroup = btnGroup;
+            this.updateCameraButtonVisuals();
+        }
+
+        private updateCameraButtonVisuals(): void {
+            if (!this.cameraBtnCircle || !this.cameraBtnIcon) return;
+            if (this.cameraMode) {
+                this.cameraBtnIcon.setAttribute("filter", `url(#${this.cameraGreenFilterId})`);
+                this.cameraBtnCircle.setAttribute("stroke", "#22c55e");
+                this.cameraBtnCircle.setAttribute("fill", "#f0fdf4");
+            } else {
+                this.cameraBtnIcon.removeAttribute("filter");
+                this.cameraBtnCircle.setAttribute("stroke", "#94a3b8");
+                this.cameraBtnCircle.setAttribute("fill", "#f8fafc");
+            }
+        }
+
+        private setBallsVisible(visible: boolean): void {
+            for (const ball of this.balls) {
+                if (!visible) {
+                    ball.isDragging = false;
+                    ball.vy = 0;
+                    ball.group.style.cursor = "grab";
+                    ball.circle.setAttribute("stroke-width", "1.6");
+                    ball.group.style.display = "none";
+                } else {
+                    ball.group.style.display = "";
+                }
+            }
+        }
+
+        private async toggleCameraMode(): Promise<void> {
+            if (this.cameraToggling) return;
+
+            if (this.cameraMode) {
+                this.exitCameraMode();
+                return;
+            }
+
+            this.cameraToggling = true;
+            // Show immediate visual feedback while awaiting camera permission / stream startup
+            this.cameraBtnCircle.setAttribute("stroke", "#22c55e");
+            const started = await this.camera.start();
+            this.cameraToggling = false;
+
+            if (!started || !this.element.isConnected) {
+                this.exitCameraMode();
+                return;
+            }
+
+            this.cameraMode = true;
+            this.setBallsVisible(false);
+            this.updateCameraButtonVisuals();
+            // Ensure camera button stays above any previously dragged circles
+            this.overlayGroup.appendChild(this.cameraBtnGroup);
+            this.sampleRgb(true);
+            this.ensurePhysicsLoop();
+            if (typeof runtime !== "undefined" && runtime) {
+                runtime.queueDisplayUpdate();
+            }
+        }
+
+        private exitCameraMode(): void {
+            this.cameraMode = false;
+            this.camera.stop();
+            this.setBallsVisible(true);
+            this.updateCameraButtonVisuals();
+            this.sampleRgb(true);
+            this.ensurePhysicsLoop();
+            if (typeof runtime !== "undefined" && runtime) {
+                runtime.queueDisplayUpdate();
+            }
         }
 
         private setupDragging(): void {
@@ -157,6 +314,7 @@ namespace pxsim.visuals {
 
             for (const ball of this.balls) {
                 ball.group.addEventListener("pointerdown", (e: PointerEvent) => {
+                    if (this.cameraMode) return;
                     e.stopPropagation();
                     e.preventDefault();
                     activeBall = ball;
@@ -164,8 +322,11 @@ namespace pxsim.visuals {
                     ball.vy = 0;
                     ball.group.style.cursor = "grabbing";
                     ball.circle.setAttribute("stroke-width", "2.4");
-                    // Bring dragged circle to front of overlayGroup
+                    // Bring dragged circle to front of overlayGroup, keeping camera button on top
                     this.overlayGroup.appendChild(ball.group);
+                    if (this.cameraBtnGroup) {
+                        this.overlayGroup.appendChild(this.cameraBtnGroup);
+                    }
                     try {
                         ball.group.setPointerCapture(e.pointerId);
                     } catch (_) {}
@@ -173,7 +334,7 @@ namespace pxsim.visuals {
             }
 
             const onPointerMove = (e: PointerEvent) => {
-                if (!activeBall) return;
+                if (!activeBall || this.cameraMode) return;
                 e.stopPropagation();
                 e.preventDefault();
                 const rect = this.element.getBoundingClientRect();
@@ -231,7 +392,7 @@ namespace pxsim.visuals {
         }
 
         /**
-         * Run gravity simulation so any un-dragged circle above floorY falls to the bottom.
+         * Run gravity simulation in ball mode or continuous frame sampling in camera mode.
          */
         private ensurePhysicsLoop(): void {
             if (this.animFrameId !== null) return;
@@ -240,6 +401,21 @@ namespace pxsim.visuals {
             const step = (now: number) => {
                 if (!this.element.isConnected) {
                     this.animFrameId = null;
+                    if (this.cameraMode || this.camera.isActive()) {
+                        this.camera.stop();
+                        this.cameraMode = false;
+                    }
+                    return;
+                }
+
+                if (this.cameraMode) {
+                    if (!this.camera.isActive()) {
+                        this.animFrameId = null;
+                        this.exitCameraMode();
+                        return;
+                    }
+                    this.sampleRgb(false);
+                    this.animFrameId = requestAnimationFrame(step);
                     return;
                 }
 
@@ -366,9 +542,25 @@ namespace pxsim.visuals {
         }
 
         /**
-         * Sample RGB values from the proximity + noise model and update visual overlays.
+         * Sample RGB values from the active mode (camera mean RGB or ball proximity + noise)
+         * and update visual overlays.
          */
         public sampleRgb(forceNewNoise = false): [number, number, number] {
+            if (this.cameraMode) {
+                const sampled = this.camera.sampleAverageRgb();
+                if (sampled) {
+                    this.currentR = sampled[0];
+                    this.currentG = sampled[1];
+                    this.currentB = sampled[2];
+                }
+                const rgbCss = `rgb(${this.currentR}, ${this.currentG}, ${this.currentB})`;
+                this.centerSwatch.setAttribute("fill", rgbCss);
+                this.rangeRing.setAttribute("stroke", rgbCss);
+                this.rangeRing.setAttribute("opacity", "1");
+                this.setBadgeText(`${this.currentR},${this.currentG},${this.currentB}`, rgbCss);
+                return [this.currentR, this.currentG, this.currentB];
+            }
+
             const now = performance.now();
             const model = this.computeProximityModel();
 
@@ -469,4 +661,3 @@ namespace pxsim.visuals {
         }
     });
 }
-

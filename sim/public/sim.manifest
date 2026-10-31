@@ -15,6 +15,7 @@ CACHE:
 /sim/sounds/twinkle.wav
 /sim/sounds/yawn.wav
 
+/sim/sprites/color_camera.svg
 /sim/sprites/dht_clouds.svg
 /sim/sprites/dht_dune.svg
 /sim/sprites/dht_rain.svg
