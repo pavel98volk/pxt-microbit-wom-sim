@@ -60,6 +60,13 @@ svg.blocklySvg,
     background-color: var(--pxt-header-background-hover) !important;
     color: var(--pxt-header-foreground-hover) !important;
 }
+
+#mainmenu #editordropdown .menu .item,
+#mainmenu #editordropdown .menu .item:hover,
+#mainmenu #editordropdown .menu .item * {
+    color: #000000 !important;
+}
+
 path.blocklyFlyoutBackground {
     fill: #4b4949 !important;
 }

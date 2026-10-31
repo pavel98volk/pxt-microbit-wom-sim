@@ -7,8 +7,59 @@ import * as dialogs from "./dialogs";
 import * as flash from "./flash";
 import * as patch from "./patch";
 
+function applyGithubIoMasking() {
+    if (typeof window === "undefined" || !window.location) return;
+    const isGithubIo = /github\.io$/i.test(window.location.hostname);
+    if (!isGithubIo) return;
+
+    // 1. Disable auth in pxt.auth so pxt.auth.hasIdentity() evaluates to false
+    if ((pxt as any).auth?.enableAuth) {
+        (pxt as any).auth.enableAuth(false);
+    }
+
+    // 2. Clear identity flags in cloudProviders so identityProviders() returns empty
+    if (pxt.appTarget?.cloud?.cloudProviders) {
+        const providers = pxt.appTarget.cloud.cloudProviders as any;
+        Object.keys(providers).forEach(id => {
+            if (providers[id]) {
+                providers[id].identity = false;
+            }
+        });
+    }
+
+    // 3. Remove help menu on github.io by emptying docMenu
+    if (pxt.appTarget?.appTheme) {
+        pxt.appTarget.appTheme.docMenu = [];
+    }
+
+    // 4. Inject CSS safety rule to mask sign-in, profile, and help menu
+    const styleId = "pxt-githubio-cloud-mask";
+    if (typeof document !== "undefined" && !document.getElementById(styleId)) {
+        const style = document.createElement("style");
+        style.id = styleId;
+        style.textContent = `
+            #mainmenu .user-menu-item,
+            #mainmenu .signin-button,
+            #mainmenu .profile-dropdown,
+            .user-profile,
+            .signin-form,
+            #docs-menuitem,
+            .help-dropdown-menuitem,
+            #mainmenu #docs-menuitem,
+            #mainmenu .help-dropdown-menuitem {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Run immediately when editor extension loads
+applyGithubIoMasking();
+
 pxt.editor.initExtensionsAsync = function (opts: pxt.editor.ExtensionOptions): Promise<pxt.editor.ExtensionResult> {
     pxt.debug('loading microbit target extensions...')
+    applyGithubIoMasking();
 
     const manyAny = Math as any;
     if (!manyAny.imul)

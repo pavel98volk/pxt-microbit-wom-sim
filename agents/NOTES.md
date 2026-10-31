@@ -213,4 +213,19 @@ See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-
   4. Returns the URL and iframe embed markup directly to the Share dialog.
 - The standard MakeCode Share dialog immediately transitions to the published state with the generated link and **Copy** button, working 100% client-side with zero backend dependency.
 
+### 5.4 Conditional UI Masking for `github.io`
+- In `editor/extension.tsx`, `applyGithubIoMasking()` checks `window.location.hostname`.
+- If it ends in `github.io`:
+  1. Calls `pxt.auth.enableAuth(false)` so `pxt.auth.hasIdentity()` evaluates to `false` across the entire application.
+  2. Clears `identity` flags from `pxt.appTarget.cloud.cloudProviders` so `identityProviders()` returns empty.
+  3. Injects a safety CSS rule into `document.head` (`#mainmenu .user-menu-item, #mainmenu .signin-button, #mainmenu .profile-dropdown, .user-profile, .signin-form { display: none !important; }`).
+- This completely hides the broken cloud "Sign in" / user profile button on GitHub Pages while leaving local development or custom hosted environments unaffected.
+
+### 5.5 Editor Toggle (Blocks / JavaScript / Python) Dropdown Styling
+- In `theme/color-themes/overrides/microbit-light-overrides.css`:
+  - Active tab on `#editortoggle`: `color: #ff8b27 !important; background: transparent !important; font-weight: 600;` on top of the white sliding pill (`.active ~ .item.toggle { background: #ffffff !important; }`).
+  - Chevron dropdown `#editordropdown.active`: `background: #ffffff !important; color: #ff8b27 !important;` attaching seamlessly to the white pill.
+  - Dropdown popup `#editordropdown .menu`: `#ffffff` background with crisp dark text `rgba(0, 0, 0, 0.87)` for both JavaScript and Python (`.base-menuitem`), light gray hover, and orange text + checkmark for the selected language.
+
+
 
