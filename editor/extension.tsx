@@ -41,5 +41,36 @@ pxt.editor.initExtensionsAsync = function (opts: pxt.editor.ExtensionOptions): P
     res.mkPacketIOWrapper = flash.mkDAPLinkPacketIOWrapper;
     res.blocklyPatch = patch.patchBlocks;
     res.showProgramTooLargeErrorAsync = dialogs.showProgramTooLargeErrorAsync;
+
+    // Zero-backend share link handler: generate self-contained #project:<base64> link
+    if (opts && opts.projectView) {
+        const pv = opts.projectView as any;
+        const origPublishAsync = pv.publishAsync ? pv.publishAsync.bind(pv) : null;
+        pv.publishAsync = async function (name: string, description?: string, screenshotUri?: string, forceAnonymous?: boolean) {
+            try {
+                if (name && pv.state?.projectName !== name) {
+                    await pv.updateHeaderNameAsync(name, description);
+                }
+                const base64: string = await pv.exportAsync();
+                const shareBase = pxt.appTarget?.appTheme?.shareUrl || (window.location.origin + window.location.pathname);
+                const baseUrl = shareBase.replace(/\/$/, "");
+                const shareUrl = `${baseUrl}/#project:${base64}`;
+
+                return {
+                    url: shareUrl,
+                    embed: {
+                        url: shareUrl,
+                        editor: `<iframe src="${shareUrl}" width="100%" height="500" frameborder="0" sandbox="allow-popups allow-forms allow-scripts allow-same-origin"></iframe>`,
+                        code: `<iframe src="${shareUrl}" width="100%" height="500" frameborder="0" sandbox="allow-popups allow-forms allow-scripts allow-same-origin"></iframe>`
+                    }
+                };
+            } catch (err) {
+                pxt.error("Failed to generate project share link", err);
+                if (origPublishAsync) return origPublishAsync(name, description, screenshotUri, forceAnonymous);
+                return { url: "", embed: {}, error: err };
+            }
+        };
+    }
+
     return Promise.resolve<pxt.editor.ExtensionResult>(res);
 }

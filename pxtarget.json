@@ -412,9 +412,9 @@
             "cardType": "tutorial"
         },
         "homeScreenHeroGallery": "/hero-banner",
-        "homeUrl": "https://makecode.microbit.org/",
-        "embedUrl": "https://makecode.microbit.org/",
-        "shareUrl": "https://makecode.microbit.org/",
+        "homeUrl": "https://pavel98volk.github.io/pxt-microbit-wom-sim/",
+        "embedUrl": "https://pavel98volk.github.io/pxt-microbit-wom-sim/",
+        "shareUrl": "https://pavel98volk.github.io/pxt-microbit-wom-sim/",
         "privacyUrl": "https://makecode.com/privacy",
         "termsOfUseUrl": "https://makecode.com/termsofuse",
         "githubUrl": "https://github.com/Microsoft/pxt-microbit",

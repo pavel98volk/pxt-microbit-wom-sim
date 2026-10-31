@@ -185,9 +185,32 @@ See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-
   - In `microbit-light.json`: `pxt-header-background`, `pxt-secondary-background`, and `pxt-tertiary-background` are set to `#ff8b27`, with foreground `#FFFFFF`, hover `#e67613`, and stencil `#cc6600`.
   - In `theme/site/globals/site.variables`: `@mainMenuInvertedBackground: @orange;`, `@tutorialSelectedMenuColor: @orange;`, `@cloudCardBackground: @orange;`, `@cloudStatusColor: @orange;`, and `@teachingBubbleBackgroundColor: @orange;`.
   - In `theme/style.less`: `.time-machine-header { background-color: @orange; color: #fff; }`.
-  - In `theme/color-themes/overrides/microbit-light-overrides.css`: `#mainmenu.ui.inverted.menu` items and icons use `color: var(--pxt-header-foreground) !important;`.
+  - In `theme/color-themes/overrides/microbit-light-overrides.css`: `#mainmenu.ui.inverted.menu` items and icons use `color: var(--pxt-header-foreground) !important;`. Dropdown popup menus (`#mainmenu .ui.dropdown .menu`, including `?` Help and Settings gear) explicitly enforce crisp dark text (`rgba(0, 0, 0, 0.87)`), white background, and light gray hover so external link items (like `Support` and `Buy` `<a>` tags) are never white-on-white.
   - **Site Favicon & App Icons**: All site icons (`docs/static/icons/apple-touch-icon*.png`, `android-chrome*.png`, `favicon-16x16.png`, `favicon-32x32.png`, `favicon.ico`, `docs/favicon.ico`, and `docs/static/favicon.png`) have been regenerated with the vibrant `#ff8b27` orange background and clean centered white micro:bit logo. `faviconDescription.json` and `pxtarget.json` reflect the updated orange background color and theme color.
 - **Dotted Background with Bigger, Pale Dots**:
   - In `pxtarget.json`: `blocklyOptions.grid` is configured as `{ "spacing": 28, "length": 2, "colour": "rgba(255, 139, 39, 0.22)", "snap": false }`.
   - In `theme/color-themes/overrides/microbit-light-overrides.css`: Applied a repeating pale radial dot pattern (`radial-gradient(circle, rgba(255, 139, 39, 0.22) 2.5px, transparent 2.5px)` with `background-size: 28px 28px`) across `svg.blocklySvg`, `#blocksArea`, `.injectionDiv`, `.monaco-editor`, `#filelist, #editortools`, `#simulator .editor-sidebar`, and `#boardview`. Set `.blocklyMainBackground { fill: transparent !important; }` so the CSS dotted pattern shines cleanly through the Blockly SVG layer.
+
+---
+
+## 5. Zero-Backend Project Sharing Architecture (GitHub Pages Compatible)
+
+### 5.1 Why the Stock Share Button Hangs on Custom / GitHub Pages Deployments
+- By default, MakeCode's `publishAsync` makes an HTTP `POST` to `https://www.makecode.com/api/scripts` to store the project anonymously in Microsoft Azure.
+- When running a custom simulator fork on GitHub Pages (`https://pavel98volk.github.io/pxt-microbit-wom-sim`) or locally, this request times out, hits CORS, or gets rejected, causing the Share dialog to freeze/spin.
+- Setting `"disableCloudServices": true` in `pxtarget.json` is fictitious (ignored by PXT).
+
+### 5.2 The Native `#project:<base64>` Protocol
+- MakeCode's URL router has built-in support for `#project:<base64-compressed-mkcd>` (`main.js` hash routing: `n.importProjectFromFileAsync(ae.stringToUint8Array(atob(e.arg)))`).
+- When a user visits `https://<site>/#project:<base64>`, MakeCode decompresses the LZMA payload and restores all blocks, code, and assets into the workspace without contacting any server.
+
+### 5.3 Implementation in `editor/extension.tsx`
+- In `editor/extension.tsx`, `pxt.editor.initExtensionsAsync(opts)` receives `opts.projectView`.
+- Overriding `opts.projectView.publishAsync` intercepts the Share modal's "Publish project" click:
+  1. Updates the project name if renamed in the modal (`pv.updateHeaderNameAsync`).
+  2. Compresses the project into a base64 string using `await pv.exportAsync()`.
+  3. Formats the URL: `${pxt.appTarget.appTheme.shareUrl}#project:${base64}` (`https://pavel98volk.github.io/pxt-microbit-wom-sim/#project:...`).
+  4. Returns the URL and iframe embed markup directly to the Share dialog.
+- The standard MakeCode Share dialog immediately transitions to the published state with the generated link and **Copy** button, working 100% client-side with zero backend dependency.
+
 
