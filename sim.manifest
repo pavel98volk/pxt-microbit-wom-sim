@@ -15,6 +15,7 @@ CACHE:
 /pxt-microbit-wom-sim/sounds/twinkle.wav
 /pxt-microbit-wom-sim/sounds/yawn.wav
 
+/pxt-microbit-wom-sim/sprites/color_camera.svg
 /pxt-microbit-wom-sim/sprites/dht_clouds.svg
 /pxt-microbit-wom-sim/sprites/dht_dune.svg
 /pxt-microbit-wom-sim/sprites/dht_rain.svg

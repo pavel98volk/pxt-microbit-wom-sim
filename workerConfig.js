@@ -2,6 +2,7 @@
 if (typeof self !== "undefined" && self.setSimulatorWorkerOptions) {
     self.setSimulatorWorkerOptions({
         urls: [
+            "/pxt-microbit-wom-sim/sprites/color_camera.svg",
             "/pxt-microbit-wom-sim/sprites/dht_clouds.svg",
             "/pxt-microbit-wom-sim/sprites/dht_dune.svg",
             "/pxt-microbit-wom-sim/sprites/dht_rain.svg",
