@@ -1719,9 +1719,9 @@
     input.temperature(), 0
     )</code></pre><p>Alternatively, you can the <code>||serial:serial write value||</code> block from the <code>||serial:serial||</code> toolbox in the <strong>Advanced</strong> tool section. This can be useful if you need to send different values, like temperature and light.</p>
 <pre><code class="lang-blocks">serial.writeValue("Celsius", input.temperature())</code></pre><p>When the program is running, a purple <strong>Show data Device</strong> button shows up under the Simulator. By clicking on the button the data being observed can be monitored and graphed in the <strong>Show data Device</strong> window.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/data-collection/show-data-device.jpg" alt="Show data device button" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/data-collection/show-data-device.jpg" alt="Show data device button" loading="lazy" /></p>
 <p>The graph is highlighted with the blue box. The <strong>Download</strong> button in the red highlighted box allows the downloading of the recorded data as a CSV file which can be opened in a spreadsheet and analyzed.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/data-collection/temperature-graph.jpg" alt="Graph of recorded temperature values" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/data-collection/temperature-graph.jpg" alt="Graph of recorded temperature values" loading="lazy" /></p>
 <h3>Option 3 - Remote radio collecting to receiving radio displaying</h3><p>Two micro:bits can be used to collect and record data using the radio commands. One micro:bit can be setup remotely and the other micro:bit can be used to observe the data. The first micro:bit can send the data it observes to the second micro:bit for the observer to record. To set up 2 micro:bits so they can communicate over the radio they need to be on the same radio group.</p>
 <h4>micro:bit radio sending code</h4><p>In the starting of the code the title is displayed, radio group 99 is setup, and the initial <code>temperature</code> variable is set to <code>0</code>.</p>
 <p>In the forever loop the temperature is collected from the micro:bit sensor and stored in the <code>temperature</code> variable. The temperature is displayed on the LED display. A radio signal is sent to all micro:bit radios in group <code>99</code>. The program pauses for 1000 milliseconds and then loops again.</p>
@@ -1769,11 +1769,11 @@ radio.setGroup(99)
 radio.onReceivedNumber(function (receivedNumber) {
     serial.writeValue("gravity", receivedNumber)
 })</code></pre><h3>Monitoring, downloading, and analyzing the data</h3><p>With the micro:bit code downloaded from MakeCode to the micro:bit and the USB cable connected it will start receiving data from the first micro:bit. Under the simulator in the MakeCode a purple outlined button shows up <strong>Show data Device</strong>.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/data-collection/show-data-device.jpg" alt="Show data device button" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/data-collection/show-data-device.jpg" alt="Show data device button" loading="lazy" /></p>
 <p>By clicking on the <strong>Show data Device</strong> button a window opens up to the right showing values and graph of the gravity data being received (The dips in the graph are 3 tosses of the micro:bit in the air).</p>
-<p><img class="ui image" src="/static/courses/ucp-science/data-collection/acceleration-graph.jpg" alt="Graph of acceleration values" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/data-collection/acceleration-graph.jpg" alt="Graph of acceleration values" loading="lazy" /></p>
 <p>The <strong>Download</strong> button in the red highlighted box allows the downloading of about the last 20 seconds of recorded data as a CSV file.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/data-collection/temperature-graph.jpg" alt="Graph with download button" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/data-collection/temperature-graph.jpg" alt="Graph with download button" loading="lazy" /></p>
 <p>When the data recorded is downloaded as a CSV spreadsheet file, it is named <code>"data.csv"</code>.</p>
 
     <div class="ui info message">
@@ -1785,9 +1785,10 @@ radio.onReceivedNumber(function (receivedNumber) {
 
     <a class="ui primary button docbutton" href="/pxt-microbit-wom-sim/docs/courses/ucp-science/data-collection/resources.html"><p>NEXT: Resources</p>
 </a>
-<p><br /></p>
+<br />
+Adapted from "[Microbit Data Collection Methods](https://drive.google.com/open?id=13Mi6caoelyzgch6tUj-wlw0bmgS7ikGEwYR2a37mEww)" by [C Lyman](http://utahcoding.org) [![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-<p>Adapted from "<a target="_blank" href="https://drive.google.com/open?id=13Mi6caoelyzgch6tUj-wlw0bmgS7ikGEwYR2a37mEww">Microbit Data Collection Methods</a>" by <a target="_blank" href="http://utahcoding.org">C Lyman</a> <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img class="ui image" src="https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png" alt="CC BY-NC-SA" loading="lazy" /></a></p>
+
 <pre><code class="lang-package">radio</code></pre>
     </div>
 

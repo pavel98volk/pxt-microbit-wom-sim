@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/blocks2js/toggle.gif" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/blocks2js/toggle.gif" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1717,7 +1717,7 @@ You can do that by stacking two <code>||basic:show leds||</code> blocks in a <co
         . . . . .
         `)
 })</code></pre><h2>Step 2 - Converting blocks to JavaScript</h2><p>Click on the <strong>{} JavaScript</strong> button on the top of the editor to <strong>convert your blocks into JavaScript</strong>.</p>
-<p><img class="ui image" src="/static/mb/blocks2js/toggle.gif" alt="Toggle to JavaScript" loading="lazy" /></p>
+<p><img src="/static/mb/blocks2js/toggle.gif" alt="Toggle to JavaScript" loading="lazy" /></p>
 <p>Once the JavaScript editor is loaded, your code will look like this:</p>
 <pre><code class="lang-typescript">basic.forever(function () {
     basic.showLeds(`
@@ -1778,15 +1778,15 @@ basic.forever(function () {
         `)
 })</code></pre><h2>Step 4 - "I broke my code!"</h2><p>Javascript can be very picky with the <em>syntax</em> (syntax is the proper use of words and symbols) of your code. Just one misplaced letter and it will refuse to run again. <strong>It is quite normal to make lots of mistakes!</strong> Let's see how you can handle most situations with a magical trick: <strong>Undo</strong>.</p>
 <p>Let's break the code by adding some random text in the editor. After a few seconds, you should see squiggles show up under the code, just like you do a typo when writing a message.</p>
-<p><img class="ui image" src="/static/mb/blocks2js/squiggles.png" alt="JavaScript with squiggles" loading="lazy" /></p>
+<p><img src="/static/mb/blocks2js/squiggles.png" alt="JavaScript with squiggles" loading="lazy" /></p>
 <p>The code editor really needs this error fixed before it can run your code. If you hover over the squiggle with your mouse, you'll get an explanation for what's wrong... that might sound even more confusing! </p>
-<p><img class="ui image" src="/static/mb/blocks2js/squigglesmessage.png" alt="JavaScript with squiggles and message" loading="lazy" /></p>
+<p><img src="/static/mb/blocks2js/squigglesmessage.png" alt="JavaScript with squiggles and message" loading="lazy" /></p>
 <p>This is OK, simply use <strong>Undo</strong> to trace back your changes until you are back to code that does not have any errors.</p>
 <ul>
 <li>Click the <strong>Undo</strong> button (bottom toolbar) until your code is correct again. </li>
 <li>If you go too far in undoing, click <strong>Redo</strong> to bring the previous code back.</li>
 </ul>
-<h2>Step 5 - Dragging code from the toolbox</h2><p><img class="ui image" src="/static/mb/blocks2js/dragblock.gif" alt="Example of dragging a code snippet" loading="lazy" /></p>
+<h2>Step 5 - Dragging code from the toolbox</h2><p><img src="/static/mb/blocks2js/dragblock.gif" alt="Example of dragging a code snippet" loading="lazy" /></p>
 <p>Writing new code is a bit harder than modifying it since you don't know the syntax yet.
 Good news though, you can drag snippets of code from the toolbox... just like in blocks. Click on the <strong>Basic</strong> category, then drag the <code>||basic:show leds||</code> code block into the JavaScript editor to add a new image.</p>
 <pre><code class="lang-typescript">basic.forever(function () {

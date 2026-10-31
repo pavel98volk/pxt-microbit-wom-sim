@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/line_chart.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/line_chart.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1694,17 +1694,14 @@
         <h1>charting quiz answers</h1><p>Measure the acceleration on the micro:bit in the "x" direction. </p>
 <h2>Name</h2><h2>Directions</h2><p>Use this activity document to guide your work in the <a href="/pxt-microbit-wom-sim/docs/lessons/charting.html">charting activity</a></p>
 <p>Answer the questions while completing the tutorial. Pay attention to the dialogues!</p>
-<h2>1. Why are you creating a 'forever' loop?</h2><p><br /></p>
-
+<h2>1. Why are you creating a 'forever' loop?</h2><br />
 
 <p>We are creating a forever loop to constantly display the appropriate brightness on the LED display.</p>
-<h2>2. Write the line of code to measure the acceleration with respect to the "x" axis and display this value in a bar graph.</h2><p><br /></p>
+<h2>2. Write the line of code to measure the acceleration with respect to the "x" axis and display this value in a bar graph.</h2><br />
 
+<pre><code class="lang-blocks">led.plotBarGraph(input.acceleration(Dimension.X), 0)</code></pre><h2>3. After vigarously moving the micro:bit from side to side along the "x" axis for a sufficient amount of time,insert the Excel graph for displaying a line chart used to display trends over time.</h2><br />
 
-<pre><code class="lang-blocks">led.plotBarGraph(input.acceleration(Dimension.X), 0)</code></pre><h2>3. After vigarously moving the micro:bit from side to side along the "x" axis for a sufficient amount of time,insert the Excel graph for displaying a line chart used to display trends over time.</h2><p><br /></p>
-
-
-<p><img class="ui image" src="/static/mb/line_chart.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/line_chart.png" alt="" loading="lazy" /></p>
 
     </div>
 

@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/types/sound/sound-editor.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/types/sound/sound-editor.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1704,65 +1704,65 @@ music.play(mySound, music.PlaybackMode.UntilDone)</code></pre>
         </div>
     </div>
 <h2>Sound Editing</h2><p>When you click on the waveform in the <code>||music:play sound||</code> block, the sound editor will display. The sound editor defines the sound expression parameter with choices for the <strong>waveform</strong>, sound <strong>duration</strong> time, <strong>frequency</strong> range, <strong>volume</strong> range, <strong>effect</strong>, and <strong>interpolation</strong>.</p>
-<p><img class="ui image" src="/static/types/sound/sound-editor.png" alt="Sound Editor" loading="lazy" /></p>
+<p><img src="/static/types/sound/sound-editor.png" alt="Sound Editor" loading="lazy" /></p>
 <p>Both the frequency and volume can start and end with different values across the duration of the sound.</p>
 <h2>Wave shape</h2><p>The wave shape is chosen to create a natural sound or a synthetic sound. Some wave shapes can also serve to generate signals when played to a pin instead of a speaker or headphones.</p>
 <h3>Sine wave</h3><p>The waveform that matches natural sound is the sine wave. This is the wave type in music and voice.</p>
-<p><img class="ui image" src="/static/types/sound/sine-wave.png" alt="Sine wave" loading="lazy" /></p>
+<p><img src="/static/types/sound/sine-wave.png" alt="Sine wave" loading="lazy" /></p>
 <h3>Sawtooth wave</h3><p>A sawtooth wave has a vertical rising edge and a linear falling edge. It's shape looks like the teeth on a saw.</p>
-<p><img class="ui image" src="/static/types/sound/sawtooth-wave.png" alt="Sawtooth wave" loading="lazy" /></p>
+<p><img src="/static/types/sound/sawtooth-wave.png" alt="Sawtooth wave" loading="lazy" /></p>
 <h3>Triangle wave</h3><p>The triangle wave is has symmetrical a rising and a falling edge. It makes the shape of triangles in the waveform.</p>
-<p><img class="ui image" src="/static/types/sound/triangle-wave.png" alt="Triangle wave" loading="lazy" /></p>
+<p><img src="/static/types/sound/triangle-wave.png" alt="Triangle wave" loading="lazy" /></p>
 <h3>Square wave</h3><p>A square wave has both vertical rising and falling edges with a flat section on the top and bottom. The flat sections match the volume set for the sound. Square waves are sometimes used to represent digital data and will make an "electronic" sound.</p>
-<p><img class="ui image" src="/static/types/sound/square-wave.png" alt="Square wave" loading="lazy" /></p>
+<p><img src="/static/types/sound/square-wave.png" alt="Square wave" loading="lazy" /></p>
 <h3>Noise wave</h3><p>The noise wave is created using random frequencies and volume. Setting the frequency parameters for the sound expression creates a "tuning" range for the noise sound effect.</p>
-<p><img class="ui image" src="/static/types/sound/noise-wave.png" alt="Noise wave" loading="lazy" /></p>
+<p><img src="/static/types/sound/noise-wave.png" alt="Noise wave" loading="lazy" /></p>
 <h2>Duration</h2><p>The sound has a length of time that it plays for. This is set as a number of milliseconds (<strong>ms</strong>).</p>
 <h2>Volume</h2><p>The volume controls the loudness (amplitude) of the sound. The sound can start with one volume setting and end with another. It can begin loud and end quiet, or the other way around. The volume control has start and end points that can be adjusted higher and lower. Grab them and move them up or down.</p>
-<h3>High to low</h3><p><img class="ui image" src="/static/types/sound/volume-hilo.png" alt="Volume from high to low" loading="lazy" /></p>
-<h3>Low to High</h3><p><img class="ui image" src="/static/types/sound/volume-lohi.png" alt="Volume from low to high" loading="lazy" /></p>
-<h3>Constant volume</h3><p><img class="ui image" src="/static/types/sound/volume-constant.png" alt="Constant volume" loading="lazy" /></p>
+<h3>High to low</h3><p><img src="/static/types/sound/volume-hilo.png" alt="Volume from high to low" loading="lazy" /></p>
+<h3>Low to High</h3><p><img src="/static/types/sound/volume-lohi.png" alt="Volume from low to high" loading="lazy" /></p>
+<h3>Constant volume</h3><p><img src="/static/types/sound/volume-constant.png" alt="Constant volume" loading="lazy" /></p>
 <h2>Frequency</h2><p>Frequency is how fast a wave repeats itself from the zero line to its peak down to its trough and back to the zero line. If it does this 1000 times in one second then the frequency has 1000 cycles per second and is measured in units of Hertz (1000 Hz). The frequency of the sound at any point in time is its current <em>pitch</em>. Musical notes and parts of speech are different frequencies that last for short periods of time in a sound.</p>
 <p>A sound expression has both a starting frequency and an ending frequency. The frequency can start low and end high, start high and end low, or remain the same for the duration of the sound.</p>
-<h3>High to low</h3><p><img class="ui image" src="/static/types/sound/freq-hilo.png" alt="Frequency from high to low" loading="lazy" /></p>
-<h3>Low to High</h3><p><img class="ui image" src="/static/types/sound/freq-lohi.png" alt="Frequency from low to high" loading="lazy" /></p>
+<h3>High to low</h3><p><img src="/static/types/sound/freq-hilo.png" alt="Frequency from high to low" loading="lazy" /></p>
+<h3>Low to High</h3><p><img src="/static/types/sound/freq-lohi.png" alt="Frequency from low to high" loading="lazy" /></p>
 <h3>Effect</h3><p>Effects add small changes to the waveform but can make a big change in how it sounds to a listener. There are a few effects available to apply to a sound.</p>
 <ul>
 <li><strong>Tremolo</strong>: add slight changes in volume of the sound expression.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/types/sound/effect-tremolo.png" alt="Tremolo effect setting" loading="lazy" /></p>
+<p><img src="/static/types/sound/effect-tremolo.png" alt="Tremolo effect setting" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li><strong>Vibrato</strong>: add slight changes in frequency to the sound expression.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/types/sound/effect-vibrato.png" alt="Vibrato effect setting" loading="lazy" /></p>
+<p><img src="/static/types/sound/effect-vibrato.png" alt="Vibrato effect setting" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li><strong>Warble</strong>: similar to Vibrato but with faster variations in the frequency changes.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/types/sound/effect-warble.png" alt="Warble effect setting" loading="lazy" /></p>
+<p><img src="/static/types/sound/effect-warble.png" alt="Warble effect setting" loading="lazy" /></p>
 </blockquote>
 <h3>Interpolation</h3><p>Interpolation is how the sound expression will make the changes in frequency or volume of the sound. These changes can occur at a constant rate along duration of the sound or more suddenly at the beginning.</p>
 <ul>
 <li><strong>Linear</strong>: The change in frequency is constant for the duration of the sound.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/types/sound/interp-linear.png" alt="Frequency from low to high" loading="lazy" /></p>
+<p><img src="/static/types/sound/interp-linear.png" alt="Frequency from low to high" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li><strong>Curve</strong>: The change in frequency is faster at the beginning of the sound and slows toward the end.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/types/sound/interp-curve.png" alt="Frequency from low to high" loading="lazy" /></p>
+<p><img src="/static/types/sound/interp-curve.png" alt="Frequency from low to high" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li><strong>Logarithmic</strong>: The change in frequency is rapid during the very first part of the sound.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/types/sound/interp-log.png" alt="Frequency from low to high" loading="lazy" /></p>
+<p><img src="/static/types/sound/interp-log.png" alt="Frequency from low to high" loading="lazy" /></p>
 </blockquote>
 <h2>See also</h2><p><a href="/pxt-microbit-wom-sim/docs/reference/music/play.html">play</a>,
 <a href="/pxt-microbit-wom-sim/docs/reference/music/create-sound-expression.html">create sound expression</a></p>

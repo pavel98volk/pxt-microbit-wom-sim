@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/device/data-analysis/line-parabola.jpg" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/device/data-analysis/line-parabola.jpg" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1698,7 +1698,7 @@
     serial.writeValue("x", x)
     serial.writeValue("y", (x - 5)**2)
     basic.pause(1000)
-}</code></pre><p><img class="ui image" src="/static/mb/device/data-analysis/line-parabola.jpg" alt="Charts of line and parabola" loading="lazy" /></p>
+}</code></pre><p><img src="/static/mb/device/data-analysis/line-parabola.jpg" alt="Charts of line and parabola" loading="lazy" /></p>
 <p>Since we used <code>||serial:serial write value||</code> for each value, there are two charts, one for the <code>x</code> stream and the other for the <code>y</code> stream. Also, the values shown in the console window are formatted as name value pairs:</p>
 <pre><code>x:0
 y:25
@@ -1708,7 +1708,7 @@ y:16
 <pre><code class="lang-blocks">for (let x = 0; x &lt;= 10; x++) {
     serial.writeNumbers([x, (x - 5) ** 2])
     basic.pause(1000)
-}</code></pre><p><img class="ui image" src="/static/mb/device/data-analysis/line-parabola2.jpg" alt="One chart of both line and parabola" loading="lazy" /></p>
+}</code></pre><p><img src="/static/mb/device/data-analysis/line-parabola2.jpg" alt="One chart of both line and parabola" loading="lazy" /></p>
 <p>This time both values are shown on the same chart. We used <code>||serial:serial write numbers||</code> to send both values at the same time. Instead of being written as name value pairs, the values are combined into one line of comma separated values (CSV). The Data Viewer recognizes the values as one stream and puts multiple data lines on the same chart. The console shows the data in CSV format:</p>
 <pre><code>0,25
 1,16
@@ -1716,9 +1716,9 @@ y:16
 3,4
 ...</code></pre><h2>Raw data</h2><p>The data in the console window appears exactly like it's written by your program. The data your program writes is called "raw" data. The Data Viewer reads the data and "cooks" it by deciding how to display it in a way that's useful to you.</p>
 <p>You can select and copy the raw data from the console and paste it into another program if you want to work with it outside of the MakeCode editor. Also, there is a copy button next to the console window that let's you easily copy the raw data with one click.</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/copy-button.gif" alt="Copy button for console data" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/copy-button.gif" alt="Copy button for console data" loading="lazy" /></p>
 <h2>Downloading your data</h2><p>You can download your data to save it to view in another program. Click the <strong>Download</strong> button above the chart view.</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/download-button.jpg" alt="Download button highlighted" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/download-button.jpg" alt="Download button highlighted" loading="lazy" /></p>
 <p>The data is formatted again and saved in file with a name like:</p>
 <p><code>microbit-data-13-20-2018-14-18-15-0700.csv</code></p>
 <p>The filename contains the date and time when the data was downloaded. If you open the file in an editor you can see how the Data Viewer reformatted it from how it was in the console.</p>
@@ -1738,9 +1738,9 @@ time (source1)	x	time (source1)	y
 10.148	10	10.16	25</code></pre><p>The first line says what character is used as the value separator. Characters other than a comma can be used as separators. The Data Viewer choose to use a <code>TAB</code> character. The next line contains the headings for the values. These are the names of each value when name value pairs are written to the console. Also, a time value (timestamp) is included for each value. The timestamp is the amount of time since the start of the program when the value was written.</p>
 <p>The remaining lines contain the data values and their timestamps. Each line has one occurrence of each value. So, for the example data above, each new <code>x</code> and <code>y</code> value is put together on the same line.</p>
 <h3>Loading into a spreadsheet</h3><p>Each line of data is placed into a row in the spreadsheet. The separators tell the spreadsheet which column the values go into.</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/spreadsheet-data.jpg" alt="CSV data in spreadsheet" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/spreadsheet-data.jpg" alt="CSV data in spreadsheet" loading="lazy" /></p>
 <h3>Analyze in the spreadsheet</h3><p>Spreadsheets are powerful tools for analyzing and looking at relationships in your data. Most spreadsheet programs can do advanced charting too. Here's a chart of our example data. You'll notice that it looks similar to the chart displayed by the MakeCode editor.</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/spreadsheet-chart.jpg" alt="Spreadsheet with chart" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/spreadsheet-chart.jpg" alt="Spreadsheet with chart" loading="lazy" /></p>
 <p>The spreadsheet knows how to take the headings from the download file and use them as labels for the individual data lines.</p>
 
     </div>

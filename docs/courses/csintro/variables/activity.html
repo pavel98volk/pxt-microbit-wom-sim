@@ -1701,8 +1701,8 @@
 <p>First, let's consider the names of our variables. In general, variable names should clearly describe what type of information they hold. They should be clear and easy for a reader to understand regardless of their familiarity with your program.
 	
 In MakeCode, from the Variables menu, make and name these three variables: <code>PlayerAWins</code>, <code>PlayerBWins</code>, <code>PlayersTie</code>.</p>
-<p><img class="ui image" src="/static/courses/csintro/variables/make-a-variable.png" alt="Make a new variable" loading="lazy" /></p>
-<p><img class="ui image" src="/static/courses/csintro/variables/new-variable.png" alt="Set new variable name" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/make-a-variable.png" alt="Make a new variable" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/new-variable.png" alt="Set new variable name" loading="lazy" /></p>
 <h2>Initializing the variable value</h2><p>It is important to give your variables an initial value. The initial value is the value the variable will hold each time the program starts. For our counter program, we will give each variable the value 0 (zero) at the start of the program.</p>
 <pre><code class="lang-blocks">let PlayerAWins = 0
 let PlayerBWins = 0
@@ -1720,10 +1720,10 @@ let PlayersTie = 0</code></pre><h2>Updating the variable value</h2><p>In our pro
 <li>Each time the scorekeeper presses both button A and button B at the same time to record a tie, we want to add 1 to the current value of the variable <code>PlayersTie</code>.</li>
 </ul>
 <p>From the Input menu, drag 3 of the 'on button A pressed' event handlers to your Programming Workspace.</p>
-<p><img class="ui image" src="/static/courses/csintro/variables/on-button-pressed.png" alt="onButtonPressed A" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/on-button-pressed.png" alt="onButtonPressed A" loading="lazy" /></p>
 <p>Leave one block with 'A'. Use the drop-down menu in the block to choose 'B' for the second block and 'A+B' for the third block.</p>
 <p>From the Variables menu, drag 3 of the 'change PlayersTie by 1' blocks to your Programming Workspace.</p>
-<p><img class="ui image" src="/static/courses/csintro/variables/change-variable.png" alt="Change variable" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/change-variable.png" alt="Change variable" loading="lazy" /></p>
 <p>Place one change block into each of the Button Pressed blocks. </p>
 <p>Choose the appropriate variable from the pull down menus in the change blocks.</p>
 <pre><code class="lang-blocks">let PlayerAWins = 0
@@ -1745,7 +1745,7 @@ input.onButtonPressed(Button.AB, () =&gt; {
 <li>a 'T' for each time the user presses both button A and button B together to record a tie.</li>
 </ul>
 <p>We can display an 'A', 'B', or 'T' using either the 'show leds' block or the 'show string' block.</p>
-<p><img class="ui image" src="/static/courses/csintro/variables/show-leds.png" alt="Show LEDs" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/show-leds.png" alt="Show LEDs" loading="lazy" /></p>
 <p>In this example, we have used the 'show leds' block.</p>
 <pre><code class="lang-blocks">let PlayerAWins = 0
 let PlayerBWins = 0
@@ -1877,8 +1877,8 @@ PlayersTie = 0</code></pre>
 <li>The blocks for the mathematical operations adding, subtracting, multiplying, and dividing are listed in the Math section of the Toolbox. 
 <strong>Note:</strong> Even though there are four blocks shown for these four operations, you can access any of the four operations from any of the four blocks, and you can also access the exponent operation from these blocks.</li>
 </ul>
-<p><img class="ui image" src="/static/courses/csintro/variables/adding-block.png" alt="Adding block" loading="lazy" /></p>
-<p><img class="ui image" src="/static/courses/csintro/variables/operator-selector.png" alt="Operator selector" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/adding-block.png" alt="Adding block" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/variables/operator-selector.png" alt="Operator selector" loading="lazy" /></p>
 <ul>
 <li>Replace the default values of zero with the names of the variables we want to add together.
 Notice that because we are adding three variables together we need a second math block. First we add the values for <code>PlayerAWins</code> and <code>PlayerBWins</code>, then add <code>PlayersTie</code>.</li>

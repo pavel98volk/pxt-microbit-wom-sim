@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/courses/logic-lab/pld/mbit-pld.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/courses/logic-lab/pld/mbit-pld.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1695,40 +1695,40 @@
 <p>Most integrated circuits contain a specific arrangement logic gates at the time they are manufactured. Because of their physical and chemical properties, some semiconductors can let you change connections between the gates after the device is manufactured. By applying special voltages at programming pins, a custom arrangement of gates can be "programmed" into the integrated circuit. These types of semiconductors are part of a category of electronics called <em>Programmable Logic Devices (PLD)</em>. There are many different kinds. Some of them you program only once and others you can erase the original gate arrangement and program in new ones multiple times.</p>
 <p>We can use the micro:bit to create our own PLD. The digital pins are the inputs for the logic circuits. The logic gates we program are logical expressions in code that combine the digital inputs we read from the pins. The result of the expression is written to a digital output pin.</p>
 <h2>Board PLD</h2><p>The physical idea of using your board as a PLD looks like this:</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/mbit-pld.png" alt="Board with to logic inputs and one output" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/mbit-pld.png" alt="Board with to logic inputs and one output" loading="lazy" /></p>
 <p>The logic inputs for <code>A</code> and <code>B</code> are connected to digital input pins. The resulting output <code>Q</code> is connected to a digital output pin. We can make a general representation of your board as a PLD by selecting some digital pins to use as inputs and outputs for our programmable logic.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/generic-pld.png" alt="Generic PLD representation" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/generic-pld.png" alt="Generic PLD representation" loading="lazy" /></p>
 <p>By "connecting" the pins together with code, we can program virtual logic gates and make the board act like a PLD. With multiple pins and some more code, we can even create a combined logic circuit.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/not-and-or.png" alt="Gates inside the PLD diagram" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/not-and-or.png" alt="Gates inside the PLD diagram" loading="lazy" /></p>
 <h2>Programmable NOT gate</h2><p>The <strong>NOT</strong> gate takes the logic value of the input and inverts it at the output. This is a single input gate using just the <strong>P0</strong> pin for input.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/not-gate-pins.png" alt="NOT gate with pin assignments" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/not-gate-pins.png" alt="NOT gate with pin assignments" loading="lazy" /></p>
 <p>The <strong>NOT</strong> gate is wired using alligator test clips as shown in the following diagram. The output clip is connected to pin <strong>P2</strong>.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/not-gate-pld.png" alt="NOT gate wiring diagram" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/not-gate-pld.png" alt="NOT gate wiring diagram" loading="lazy" /></p>
 <p>The script to program the <strong>NOT</strong> gate is simply a logical inverse of <code>||pins:digital read pin||</code> written to an output pin with <code>||pins:digital write pin||</code>.</p>
 <pre><code class="lang-block">if (pins.digitalReadPin(DigitalPin.P0) &gt; 0) {
     pins.digitalWritePin(DigitalPin.P2, 0)
 } else {
     pins.digitalWritePin(DigitalPin.P2, 1)
 }</code></pre><h2>Programmable OR gate</h2><p>The <strong>OR</strong> gate takes two inputs and makes the output <code>true</code> if any input is <code>true</code>. The <strong>P0</strong> and <strong>P1</strong> pins are the inputs.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/or-gate-pins.png" alt="OR gate with pin assignments" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/or-gate-pins.png" alt="OR gate with pin assignments" loading="lazy" /></p>
 <p>The <strong>OR</strong> gate is wired using alligator test clips as shown in this diagram. The output clip is connected to pin <strong>P2</strong>.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/or-gate-pld.png" alt="OR gate wiring diagram" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/or-gate-pld.png" alt="OR gate wiring diagram" loading="lazy" /></p>
 <p>The script to program an <strong>OR</strong> gate is two <code>||pins:digital read pin||</code> blocks, evaluated with an <code>||logic:or||</code>, and the result is written to an output pin with <code>||pins:digital write pin||</code>.</p>
 <pre><code class="lang-block">if ((pins.digitalReadPin(DigitalPin.P0) &gt; 0) || pins.digitalReadPin(DigitalPin.P1) &gt; 0) {
     pins.digitalWritePin(DigitalPin.P2, 1)
 } else {
     pins.digitalWritePin(DigitalPin.P2, 0)
 }</code></pre><h2>Programmable AND gate</h2><p>The <strong>AND</strong> gate takes two inputs and makes the output <code>true</code> if both inputs are <code>true</code>. The <strong>P0</strong> and <strong>P1</strong> pins are the inputs.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/and-gate-pins.png" alt="AND gate with pin assignments" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/and-gate-pins.png" alt="AND gate with pin assignments" loading="lazy" /></p>
 <p>The <strong>AND</strong> gate is wired using alligator test clips as shown in the next diagram. The output pin is connected to pin <strong>A2</strong>.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/and-gate-pld.png" alt="AND gate wiring diagram" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/and-gate-pld.png" alt="AND gate wiring diagram" loading="lazy" /></p>
 <p>The script for an <strong>AND</strong> gate is two <code>||pins:digital read pin||</code> blocks, evaluated with an <code>||logic:and||</code>, and the result is written to an output pin with <code>||pins:digital write pin||</code>.</p>
 <pre><code class="lang-block">if ((pins.digitalReadPin(DigitalPin.P0) &gt; 0) &amp;&amp; pins.digitalReadPin(DigitalPin.P1) &gt; 0) {
     pins.digitalWritePin(DigitalPin.P2, 1)
 } else {
     pins.digitalWritePin(DigitalPin.P2, 0)
 }</code></pre><h2>Combined logic</h2><p>You can program your board to have multiple logic gates that operate on the two inputs. Just combine the three logic gate scripts from above into one <code>||loops:forever||</code> loop. If you have an expansion connector for your micro:bit, you could program multiple outputs for your logic system. You could also use one extra input pin as an observer pin to test the outputs of your combined logic. The different outputs feedback to the observer pin so it will see what their logic levels are. Here's a schematic for a multiple gate system.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/not-and-or-pld.png" alt="micro:bit NOT, AND, OR gate PLD" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/not-and-or-pld.png" alt="micro:bit NOT, AND, OR gate PLD" loading="lazy" /></p>
 <p>The combined logic for our multiple gate PLD is programmed like this:</p>
 <pre><code class="lang-blocks">let A = false
 let B = false
@@ -1792,10 +1792,12 @@ if (pins.digitalReadPin(DigitalPin.P6) &gt; 0) {
 <td>GND</td>
 <td><code>[basic.showString("F")]</code></td>
 </tr>
+<tr>
+<td><br /></td>
+<td></td>
+<td></td>
+</tr>
 </tbody></table>
-<p><br /></p>
-
-
 <p>Do test connections for the inputs, then check and record the results for the <strong>OR</strong> and <strong>AND</strong> outputs.</p>
 <h4>OR truth table</h4><table>
 <thead>
@@ -1869,9 +1871,9 @@ if (pins.digitalReadPin(DigitalPin.P6) &gt; 0) {
 <pre><code class="lang-block">let A = false
 let B = false
 let Q = (!A &amp;&amp; B) || (A &amp;&amp; !B)</code></pre><p>We'll make an <strong>XOR</strong> gate by programming a combined logic device for it. This time let's say that the whole micro:bit is a programmed <strong>XOR</strong> gate. </p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/xor-mbit.png" alt="XOR symbol with board image" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/xor-mbit.png" alt="XOR symbol with board image" loading="lazy" /></p>
 <p>Let's use the same wiring diagram as we did for the <strong>OR</strong> gate using <strong>P0</strong> and <strong>P1</strong> as input pins with <strong>P2</strong> as the output pin.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/pld/xor-gate-pld.png" alt="XOR gate wiring diagram" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/pld/xor-gate-pld.png" alt="XOR gate wiring diagram" loading="lazy" /></p>
 <p>Our logic gate script is a bit different this time. To simplify forming the expression for <strong>XOR</strong>, we'll assign variables to the input and output values. </p>
 <pre><code class="lang-blocks">let A = false
 let B = false

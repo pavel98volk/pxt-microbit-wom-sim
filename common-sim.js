@@ -338,9 +338,9 @@ var pxsim;
             this.accelerometer = new Accelerometer(runtime);
         }
         attachEvents(element) {
-            this.detachEvents();
             this.element = element;
-            this.moveHandler = (ev) => {
+            this.tiltDecayer = 0;
+            this.element.addEventListener(pxsim.pointerEvents.move, (ev) => {
                 if (!this.accelerometer.isActive)
                     return;
                 if (this.tiltDecayer) {
@@ -356,8 +356,8 @@ var pxsim;
                 let z = Math.floor((z2 > 0 ? -1 : 1) * Math.sqrt(Math.abs(z2)));
                 this.accelerometer.update(-x, y, z);
                 this.updateTilt();
-            };
-            this.leaveHandler = () => {
+            }, false);
+            this.element.addEventListener(pxsim.pointerEvents.leave, (ev) => {
                 if (!this.accelerometer.isActive)
                     return;
                 if (!this.tiltDecayer) {
@@ -378,20 +378,7 @@ var pxsim;
                         this.updateTilt();
                     }, 50);
                 }
-            };
-            this.element.addEventListener(pxsim.pointerEvents.move, this.moveHandler, false);
-            this.element.addEventListener(pxsim.pointerEvents.leave, this.leaveHandler, false);
-        }
-        detachEvents() {
-            if (this.element) {
-                this.element.removeEventListener(pxsim.pointerEvents.move, this.moveHandler, false);
-                this.element.removeEventListener(pxsim.pointerEvents.leave, this.leaveHandler, false);
-            }
-            clearInterval(this.tiltDecayer);
-            this.tiltDecayer = 0;
-            this.element = undefined;
-            this.moveHandler = undefined;
-            this.leaveHandler = undefined;
+            }, false);
         }
         updateTilt() {
             if (!this.accelerometer.isActive || !this.element)
@@ -3664,6 +3651,7 @@ var pxsim;
             if (!onStopAllSetup) {
                 onStopAllSetup = true;
                 pxsim.AudioContextManager.onStopAll(() => {
+                    pxsim.AudioContextManager.muteAllChannels();
                     if (sequencers) {
                         for (const seq of sequencers) {
                             seq.sequencer.stop();

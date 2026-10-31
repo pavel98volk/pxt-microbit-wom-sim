@@ -1692,7 +1692,7 @@
 					
     <div class="ui text">
         <h1>Rotary Dial Radio</h1><p>Rotary dial phones may not be one of the latest tech fashions but they've still got some wings if you pair them with a micro:bit. If you are lucky enough to still own one of these antiques, follow this guide and you can bring it into the 21st century.</p>
-<p><img class="ui image" src="/static/mb/projects/rotary-dial-radio/final.jpg" alt="A rotary dial phone connected to a micro:bit" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rotary-dial-radio/final.jpg" alt="A rotary dial phone connected to a micro:bit" loading="lazy" /></p>
 <p>This guide is mainly a journal of notes and techniques used to convert a 1945 rotary dial into a micro:bit radio encoder. This is an example of <strong>reverse engineering</strong>, a treasure hunt for engineers if you wish.</p>
 
     <div class="ui info message">
@@ -1702,10 +1702,10 @@
         </div>
     </div>
 <h2>What is Pulse dialing?</h2><p>The phone below is a Belgium rotary dial phone from 1945. It's really heavy and the dial makes a wonderful clicking noise when it turns.</p>
-<p><img class="ui image" src="/static/mb/projects/rotary-dial-radio/oldphone.jpg" alt="Antique rotary dial phone" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rotary-dial-radio/oldphone.jpg" alt="Antique rotary dial phone" loading="lazy" /></p>
 <p>If you skim through the WikiPedia on "rotary dial phones", you'll quickly learn that they operated by using something called <strong>pulse dialing</strong> (<a target="_blank" href="https://en.wikipedia.org/wiki/Pulse_dialing">https://en.wikipedia.org/wiki/Pulse_dialing</a>). In a nutshell, the dialing mechanism opens and closes a circuit while it rotates which sends a series of electrical pulses on the phone line. One pulse for number 1, two pulses for number 2, and so on. (Hey, what about 0?)</p>
 <h2>Digging into the phone</h2><p>Fortunately for us, the bottom of the phone is easily removed by pressing lever. It reveals the internals of the phone. One can see the two massive bells to ring the phone and some other capacitors and circuitry. </p>
-<p><img class="ui image" src="/static/mb/projects/rotary-dial-radio/guts.jpg" alt="Inside of a rotary phone" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rotary-dial-radio/guts.jpg" alt="Inside of a rotary phone" loading="lazy" /></p>
 <p>Most interestingly, there are 8 terminals near the 2 holes in the case for wires.</p>
 <ul>
 <li>The 2 terminals on each side are connected by a black wire. This is most likely the ground wire.</li>
@@ -1720,7 +1720,7 @@
 <li><strong>3v</strong> pin connects at the positive terminal on the phone line</li>
 <li><strong>P0</strong> is attacned to one of the headset lines (not <strong>GND</strong>)</li>
 </ul>
-<p><img class="ui image" src="/static/mb/projects/rotary-dial-radio/wired.jpg" alt="Wiring" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rotary-dial-radio/wired.jpg" alt="Wiring" loading="lazy" /></p>
 <p>In the MakeCode, we upload a program that reads the analog input on <strong>P0</strong> and plots it on the screen. If you pair your micro:bit, you can also see the data in the console view.</p>
 <pre><code class="lang-blocks">basic.forever(function () {
     led.plotBarGraph(

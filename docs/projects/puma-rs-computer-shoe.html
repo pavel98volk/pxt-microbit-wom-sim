@@ -1706,12 +1706,12 @@
 </ul>
 <h2>How did the shoe work?</h2><p>In today's world, one can easily use GPS to measure precisely the distance travelled. Back in the 80's, engineers had to be more creative. At that time, they were able to build a shoe that could measure running time and steps from foot impact. They could count steps and time - just like in the micro:bit step counter activity.</p>
 <h3>How do you measure distance?</h3><p>To compute the distance, the engineers relied on the relationship between stride time and running speed (the algorithm is described in <a href="/pxt-microbit-wom-sim/docs/static/mb/projects/puma-rs-computer-shoe/patent.pdf.html">US Patent 4,771,394</a> starting on line 65, column 6). The faster you run, the faster your stride and the less time between foot strikes. The runner had to go through a calibration of the shoe and then it was able to estimate distance <strong>without a GPS</strong>!</p>
-<p><a href="/pxt-microbit-wom-sim/docs/static/mb/projects/puma-rs-computer-shoe/patent.pdf.html"><img class="ui image" src="/static/mb/projects/puma-rs-computer-shoe/uspatent.png" alt="Screenshot of the US patent" loading="lazy" /></a></p>
+<p><a href="/pxt-microbit-wom-sim/docs/static/mb/projects/puma-rs-computer-shoe/patent.pdf.html"><img src="/static/mb/projects/puma-rs-computer-shoe/uspatent.png" alt="Screenshot of the US patent" loading="lazy" /></a></p>
 <p>Assuming <code>T</code> is the elapsed time, <code>S</code> is the number of foot strikes
 and <code>A</code>, <code>B</code> are constants that have been identified in the calibration phase, the 
 speed <code>V</code> is computed as follows:</p>
 <pre><code>V = A * T / S + B</code></pre><p>Once the speed <code>V</code> is estimated and the running time <code>T</code> is known, then distance <code>D</code> can be calculated.</p>
-<pre><code>D = V * T</code></pre><p><img class="ui image" src="/static/mb/projects/puma-rs-computer-shoe/physics.png" alt="Physics section in patent" loading="lazy" /></p>
+<pre><code>D = V * T</code></pre><p><img src="/static/mb/projects/puma-rs-computer-shoe/physics.png" alt="Physics section in patent" loading="lazy" /></p>
 <h3>How do you measure calories?</h3><p>The relationship between distance run and caloric cost is something referred to in the literature as “the oxygen cost of transport” or more simply “running economy” and, after accounting for body weight, is considered to be independent of speed.</p>
 <p>There are actually many subtleties to this relationship (level of fitness, footwear, weather, change in elevation, individual running biomechanics and anatomy, some speed dependence at the higher running speeds - see <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/25681108">Lacour-Bourdin</a>) but the first approximation is that <strong><a target="_blank" href="https://www.healthline.com/health/fitness-exercise/running-burn-calories-per-mile#per-mile">the cost of running is 100 calories per mile</a></strong> – and that this needs to be modified based on body weight.</p>
 <h2>Let's do it</h2><p>The project consists of 3 phases that collect data, calibrate, and measure distance. </p>
@@ -1721,9 +1721,9 @@ speed <code>V</code> is computed as follows:</p>
 <li><a href="/pxt-microbit-wom-sim/docs/projects/puma-rs-computer-shoe/measuring-distance.html">Measuring distance</a>: build the shoe software that computes distance</li>
 </ul>
 <h2>The reissued modern shoe</h2><p>For the 30th anniversary of the shoe, Puma reissued a limited number of RS Computer shoes updated with modern hardware.</p>
-<p><img class="ui image" src="/static/mb/projects/puma-rs-computer-shoe/packaging.gif" alt="The modern shoe" loading="lazy" /></p>
+<p><img src="/static/mb/projects/puma-rs-computer-shoe/packaging.gif" alt="The modern shoe" loading="lazy" /></p>
 <h2>Acknowledgements</h2><p>This activity was developed in collaboration with <a target="_blank" href="https://www.linkedin.com/in/thecharliehaus">Charles Johnson</a>, Global Director of Innovation at Puma.</p>
-<p><img class="ui image" src="/static/mb/projects/puma-rs-computer-shoe/puma.png" alt="Puma logo" loading="lazy" /></p>
+<p><img src="/static/mb/projects/puma-rs-computer-shoe/puma.png" alt="Puma logo" loading="lazy" /></p>
 
     </div>
 

@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/blocks/lessons/graphics-0.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/blocks/lessons/graphics-0.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1696,7 +1696,7 @@
 <pre><code class="lang-blocks">basic.showString("HI!");</code></pre><p>The micro:bit has a grid of 25 LEDs, so we can use these to display images.</p>
 <p>We’ve already experimented with the <code>show string</code> block that displays a string (some text) that we program it to. However we can use more blocks from the <strong>Images</strong> drawer to render or display images in different ways.</p>
 <h2>Pixel Art</h2><p>We can draw little images from the LEDs by ticking boxes. Drag a <code>show image</code> block from the <strong>Images</strong> drawer and connect in a <code>create image</code> block. You can customize this image by clicking boxes to tick whether the LED will turn on or off. For example, if we were creating a music player we may want to the show the <code>play</code> block:</p>
-<p><img class="ui image" src="/static/mb/blocks/lessons/graphics-0.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/blocks/lessons/graphics-0.png" alt="" loading="lazy" /></p>
 <h2>Plotting points</h2><p>We can also code our bug to plot a point by giving an x (horizontal) and y (vertical) coordinates, from 0 to 4. Click the <strong>LED</strong> drawer and drag a <code>plot</code> block. Try changing the coordinates and see the effect this has on the micro:bit.</p>
 <p>We can also unplot a point (turn the LED off again) using the <code>unplot</code> block. So we could create a flashing LED program, using the <code>pause</code> block to create a delay.</p>
 <pre><code class="lang-blocks">basic.forever(() =&gt; {
@@ -1722,7 +1722,7 @@ For example, we could draw a straight line with this code:</p>
 })</code></pre><h2>Animations</h2><p>Animations are changes happening at a certain rate. For example, we could add the <code>pause</code> block from the <strong>Basic</strong> drawer with our square algorithm – this will slowly draw a square (as an animation).</p>
 <p>We could create more complex animations, for example we could make our micro:bit display an explosion or fireworks.</p>
 <h2>Image variables</h2><p>We can create image variables so we can easily display an image at a later point. For example:</p>
-<p><img class="ui image" src="/static/mb/blocks/lessons/graphics-4.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/blocks/lessons/graphics-4.png" alt="" loading="lazy" /></p>
 <p>This uses the blocks from the <strong>Variable</strong> drawer, and the <strong>create image</strong> block from the <strong>Image</strong> drawer. This means our image can be displayed without having to replicate the <code>create image</code> block each time.</p>
 
     </div>

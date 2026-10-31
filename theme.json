@@ -89,9 +89,9 @@
     },
     "blocklyOptions": {
         "grid": {
-            "spacing": 45,
-            "length": 7,
-            "colour": "rgba(189, 195, 199, 0.30)",
+            "spacing": 28,
+            "length": 2,
+            "colour": "rgba(255, 139, 39, 0.22)",
             "snap": false
         }
     },
@@ -151,7 +151,7 @@
         "zh-TW"
     ],
     "monacoColors": {
-        "editor.background": "#ecf0f1"
+        "editor.background": "#ffffff"
     },
     "monacoFieldEditors": [
         "soundeffect-editor",

@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/courses/ucp-science/spoon-race/extension.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/courses/ucp-science/spoon-race/extension.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1706,7 +1706,7 @@
 <li>Create a new project.</li>
 <li>Click on <strong>Extensions</strong> in the Toolbox and add the Data Logger Extension.</li>
 </ul>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/extension.png" alt="Select Datalogger extension" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/extension.png" alt="Select Datalogger extension" loading="lazy" /></p>
 <p><strong>Note</strong>: The Data Logger extension allows you to collect data from the micro:bit sensors and store in a file on the micro:bit device. Because of this, it is good for long-running experiments, or experiments where the micro:bit is away from the computer. The micro:bit v2 has 512 KB of flash memory, so be careful of how much data you collect - once you reach the limit, you won’t be able to collect any more!</p>
 <ul>
 <li>Log data every 1 second - from the <code>||loops:Loops||</code> category, drag an <code>||loops:every 500ms||</code> block out on the workspace.</li>
@@ -1736,7 +1736,7 @@
         datalogger.createCV("AZ", input.acceleration(Dimension.Z))
     )
 })</code></pre><p>Notice in the micro:bit simulator, you can start to see simulated data. Click the <strong>Show data</strong> Simulator button. Try moving your mouse cursor over the on-screen micro:bit to simulate movement and see how the accelerometer values that are logged every 1 second change. Click on the Go back button to return to the editor.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/simulator.png" alt="Simulator with logged data" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/simulator.png" alt="Simulator with logged data" loading="lazy" /></p>
 <p>Now that we are collecting accelerometer data, we need a way to start and stop data collection. To do this, we will use a flag. A flag is a Boolean variable - meaning, that it can only hold true or false values. You can think of a flag as a light switch - it is either on or off. Software developers often use feature flags to enable or disable certain features in a product.</p>
 <ul>
 <li>From the <code>||input:Input||</code> category, drag two <code>||input:on button pressed||</code> blocks onto the workspace.</li>
@@ -1805,41 +1805,41 @@ loops.everyInterval(1000, function () {
     }
 })</code></pre><p>Sample code file: <a target="_blank" href="https://makecode.microbit.org/_Ur50YwCAxeEf">https://makecode.microbit.org/_Ur50YwCAxeEf</a></p>
 <p>Try it out in the simulator by pressing the A button to start collecting data, and press the B button to stop data collection.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/sim-data.gif" alt="Data collection run in simulator" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/sim-data.gif" alt="Data collection run in simulator" loading="lazy" /></p>
 <p>Download the code onto the micro:bit, and then connect the micro:bit to a battery pack.</p>
 <h2>Let’s Race!</h2><p>After coding the micro:bit, assemble it together on a spoon. You can either place it by itself, or construct some sort of carrier to make it easier to carry with a spoon. Just be sure you can access the A and B buttons.</p>
 <p>A micro:bit paper holder that comes with the Go Kit:</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spoon-1.jpg" alt="Spoon with a micro:bit and paper holder" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spoon-1.jpg" alt="Spoon with a micro:bit and paper holder" loading="lazy" /></p>
 <p>Affixing the micro:bit to an egg:</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spoon-2.jpg" alt="Spoon with egg attached to micro:bit" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spoon-2.jpg" alt="Spoon with egg attached to micro:bit" loading="lazy" /></p>
 <p>Carrying it loose:</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spoon-3.jpg" alt="Spoon with just a micro:bit" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spoon-3.jpg" alt="Spoon with just a micro:bit" loading="lazy" /></p>
 <p>When you are ready to race, press button A to start the race, and press button B to end the race. Do not press the buttons again until you can download your data from the micro:bit.</p>
 <h2>Analyze the Data</h2><p>After the race, plug your micro:bit back into a computer using the USB cable. Use the file explorer, navigate to the MICROBIT drive, and double click the <strong>MY_DATA.htm</strong> file.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/my-data-htm.png" alt="Finding the MY_DATA.HTM file" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/my-data-htm.png" alt="Finding the MY_DATA.HTM file" loading="lazy" /></p>
 <p>You will see your data from the race in a table format.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/my-data-table.png" alt="Viewing the MY_DATA.HTM file as a table" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/my-data-table.png" alt="Viewing the MY_DATA.HTM file as a table" loading="lazy" /></p>
 <p>You can click to see a visual preview of the data as well.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/my-data-graph.png" alt="Viewing the MY_DATA.HTM file as a graph" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/my-data-graph.png" alt="Viewing the MY_DATA.HTM file as a graph" loading="lazy" /></p>
 <p>Click the Download button to download your data to a <strong>microbit.csv</strong> file, then open it with Excel. Create a line chart for the data table with time on the X axis.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spreadsheet-1.png" alt="Spreadsheet with line chart on x-axis" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spreadsheet-1.png" alt="Spreadsheet with line chart on x-axis" loading="lazy" /></p>
 <p>Perform the following calculations:</p>
 <ul>
 <li>Calculate Time Elapsed: End_Time – Start_Time</li>
 </ul>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spreadsheet-2.png" alt="Spreadsheet of elapsed time" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spreadsheet-2.png" alt="Spreadsheet of elapsed time" loading="lazy" /></p>
 <ul>
 <li>Calculate the difference between the acceleration values for AX, AY and AZ columns: Maximum_Value – Minimum_Value</li>
 </ul>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spreadsheet-3.png" alt="Spreadsheet of max/min difference of acceleration" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spreadsheet-3.png" alt="Spreadsheet of max/min difference of acceleration" loading="lazy" /></p>
 <ul>
 <li>Calculate the average of the three axis of movement: Average(AX, AY, AZ)</li>
 </ul>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spreadsheet-4.png" alt="Spreadsheet of average of 3-axis movement" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spreadsheet-4.png" alt="Spreadsheet of average of 3-axis movement" loading="lazy" /></p>
 <ul>
 <li>Compare each student’s time and average spread of motion results in a table. The student with the shortest time, and the lowest average acceleration value spread wins the race!</li>
 </ul>
-<p><img class="ui image" src="/static/courses/ucp-science/spoon-race/spreadsheet-5.png" alt="Spreadsheet of time and average variance" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/spoon-race/spreadsheet-5.png" alt="Spreadsheet of time and average variance" loading="lazy" /></p>
 <p>See sample result data: <a target="_blank" href="https://aka.ms/SpoonRaceExcel">https://aka.ms/SpoonRaceExcel</a></p>
 <h2>Debrief</h2><p>Discuss the results of the experiment:</p>
 <ul>

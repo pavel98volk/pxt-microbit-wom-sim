@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/lessons/seis_challenge01.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/lessons/seis_challenge01.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1707,7 +1707,7 @@
 <li>Tape</li>
 <li>Scissors</li>
 </ul>
-<p><img class="ui image" src="/static/mb/lessons/seis_challenge01.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seis_challenge01.png" alt="" loading="lazy" /></p>
 <h2>Before we get started</h2><p>Complete the <a href="/pxt-microbit-wom-sim/docs/lessons/seismograph/activity.html">seismograph</a> activity and your code will look like this:</p>
 <pre><code class="lang-blocks">basic.forever(() =&gt; {
     led.plotBarGraph(input.acceleration(Dimension.Strength) - 1023, 0);
@@ -1751,41 +1751,41 @@ radio.onReceivedNumber(function (receivedNumber) {
         </div>
     </div>
 <h1>Science Steps</h1><h2>6.</h2><p>First, notice that moving the 1st micro:bit in the simulator in any direction, you will change the acceleration value of the 2nd micro:bit. Also, notice that by moving the micro:bit simulator, there is a changing acceleration value of the second micro:bit. Second, the flat colored horizontal line will start a waving line on the 2nd micro:bit to display the value of the strength as measured in milli-gravities. Finally, notice that the LED display will fluctate based on the movement of the 2nd micro:bit simulator.</p>
-<p><img class="ui image" src="/static/mb/lessons/seis_challenge02.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seis_challenge02.png" alt="" loading="lazy" /></p>
 <h2>7.</h2><p>Connect the 2nd micro:bit to your computer using your USB cable. We should have two micro:bit devices attached to the computer.</p>
-<p><img class="ui image" src="/static/mb/lessons/seismograph33.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seismograph33.png" alt="" loading="lazy" /></p>
 <h2>8.</h2><p>Click or tap the <strong>Download</strong> button for the seismograph program to run the program on the 1st micro:bit and 2nd micro:bit.</p>
 <h2>9.</h2><p>The black lines should appear directly beneath the colored lines. The black lines measure the micro:bit acceleration. And the colored lines measures micro:bit simulator acceleration.</p>
-<p><img class="ui image" src="/static/mb/lessons/seis_challenge05.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seis_challenge05.png" alt="" loading="lazy" /></p>
 <p>Run the acceleration experiment by vigarously moving the plate in any direction or move the object below the micro:bit (such as a table).</p>
-<p><img class="ui image" src="/static/mb/lessons/seis_challenge06.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seis_challenge06.png" alt="" loading="lazy" /></p>
 <p>Every time the micro:bit moves in any direction, you generate data points that can be reviewed in Excel later. The more attempts to move the micro:bit, the more data to be reviewed in Excel. Notice that the LED on the 2nd micro:bit changes to communicate the movement of the 1st micro:bit.</p>
-<p><img class="ui image" src="/static/mb/lessons/seis_challenge04.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seis_challenge04.png" alt="" loading="lazy" /></p>
 <p>Now we are ready to graph or chart the accceleration of the micro:bit. We want a printout of the micro:bit acceleration graphed in Excel.</p>
 <h2>10.</h2><p>In order to receive the the data plotted by Excel, click or tap anywhere in the on the chart data.</p>
-<p><img class="ui image" src="/static/mb/lessons/seis_challenge07.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seis_challenge07.png" alt="" loading="lazy" /></p>
 <h2>11.</h2><p>You have two options to Analyze Data:</p>
 <ul>
 <li>Local File: Save the data to your local Downloads folder and open it in Excel.</li>
 <li>Stream to Cloud: Upload your data to Microsoft Azure to analyze it.</li>
 </ul>
 <p>Click or tap Download data</p>
-<p><img class="ui image" src="/static/mb/lessons/seismograph9.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/seismograph9.png" alt="" loading="lazy" /></p>
 <h2>12.</h2><p>A CSV file will be generated to display the data points collected by the micro:bit. Click or tap on the data Excel file that was downloaded to your local Downloads Folder.</p>
-<p><img class="ui image" src="/static/mb/lessons/analyze9.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/analyze9.png" alt="" loading="lazy" /></p>
 <h2>13.</h2><p>Select the data that you want to include in your chart. The chart should include the first two columns: time and acceleration.</p>
 <p>Click or tap on the first two columns (A, B) to include time and acceleration data from the micro:bit. We only need the first two columns (A, B) because the 2nd micro:bit changes have been communicated by the 1st micro:bit. So the data points of the seismograph are being recorded on the 1st micro:bit.</p>
 <h2>14.</h2><p>Click or tap on Insert then select Recommended Charts. We can select a chart that’s just right for the data.</p>
-<p><img class="ui image" src="/static/mb/analyze3.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/analyze3.png" alt="" loading="lazy" /></p>
 <p>On the Recommended Charts tab, scroll through the list of chart types that Excel recommends for your data.</p>
 <p>We want to select the chart called Line. A line chart is used to display trends over time. We will use the line chart because there are many data points over time.</p>
 <p>Click on the chart type to see how your data will look in that format. When you find the chart type that you want, click it, and then click OK.</p>
-<p><img class="ui image" src="/static/mb/lessons/analyze16.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/analyze16.png" alt="" loading="lazy" /></p>
 <p>Tip: If you don’t see the line chart, click the All Charts tab to see the line chart.</p>
 <h2>15.</h2><p>Use the Chart Elements, Chart Styles, and Chart Filters buttons next to the upper-right corner of the chart to add chart elements like axis titles or data labels, to customize the look of your chart</p>
 <p>Alternatively, click or tap on the Design Ribbon.</p>
 <p>Let's select Style 10 as an example.</p>
-<p><img class="ui image" src="/static/mb/lessons/analyze19.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/lessons/analyze19.png" alt="" loading="lazy" /></p>
 <ul>
 <li>Have fun reviewing your seismograph data and analyzing the acceleration with Excel.</li>
 <li>The first person and second person take shaking or moving the micor:bit in any direction while the other player charts the data on the micro:bit!</li>

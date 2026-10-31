@@ -1692,7 +1692,7 @@
 					
     <div class="ui text">
         <h1>Activity: Binary transmogrifier</h1><p>In this activity, you'll build a binary transmogrifier (converter) that converts between binary (base-2) and decimal (base-10) numbers.</p>
-<p><img class="ui image" src="/static/courses/csintro/binary/transmogrifier.png" alt="Transmogrifier cartoon" loading="lazy" />
+<p><img src="/static/courses/csintro/binary/transmogrifier.png" alt="Transmogrifier cartoon" loading="lazy" />
 Calvin &amp; Hobbes</p>
 <p>The user will be able to use the buttons to enter binary 0s and 1s and will be able to press A+B at any time to display the decimal equivalent of the number that has been entered. </p>
 <h2>Create the Variables</h2><p>First, you'll need to create a number variable to hold the running decimal total.
@@ -1701,10 +1701,10 @@ Then, you should create a string variable to hold the current binary number.</p>
 <li>In Microsoft MakeCode, start a new project and name it something like <strong>binary calculator</strong> or <strong>binary converter.</strong> Either delete the <strong>'forever'</strong> block in the coding Workspace or move it to the side as it's not used in the activity. Then from the <strong>Variables</strong> menu, select the <strong>Make a Variable</strong> button to make two variables. Name one: <strong>decimal</strong> and the other: <strong>binary</strong></li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/binary/make-a-variable.png" alt="Make a variable" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/binary/make-a-variable.png" alt="Make a variable" loading="lazy" /></p>
 </blockquote>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/binary/name-a-variable.png" alt="Name a variable" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/binary/name-a-variable.png" alt="Name a variable" loading="lazy" /></p>
 </blockquote>
 <h2>Initialize the Variables</h2><p>When the program starts up, you should initialize your variables to starting values.</p>
 <ul>
@@ -1714,7 +1714,7 @@ Then, you should create a string variable to hold the current binary number.</p>
 <ul>
 <li>Select the Advanced tab in the Toolbox to open up more Toolbox categories. Then select the Text Toolbox drawer to find the empty string oval block. Drag one onto the Workspace and drop it into the <strong>'set binary to'</strong> block replacing the 0.</li>
 </ul>
-<p><img class="ui image" src="/static/courses/csintro/binary/select-text-blocks.png" alt="Select text on block menu" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/binary/select-text-blocks.png" alt="Select text on block menu" loading="lazy" /></p>
 <pre><code class="lang-blocks">let binary = ""
 let decimal = 0</code></pre><p>By setting the binary variable to an initial value of " " you tell the micro:bit that it is a string variable: a literal string of characters. This is important because you will be adding to this string character by character.</p>
 <h2>Ready, set, calculate!</h2><p>We are ready to start entering numbers. Remember that binary numbers are calculated based on the number of place values ("bits"), and as you enter 1s and 0s, the value changes. One way to calculate the decimal value is to wait until the user presses A+B, and then calculate the entire number based on the value of the string.</p>
@@ -1732,7 +1732,7 @@ let decimal = 0</code></pre><p>By setting the binary variable to an initial valu
 <p>At that point, you either have a 10 or an 11 in your binary string. Let's take 10 as an example. The decimal value of binary 10 is 2. If the third number entered is a 0, then your new decimal value goes from 2 to 4. If the third number entered is a 1, then your new decimal value goes from 2 to 5.</p>
 <p>If, on the other hand, you have 11 in your binary string, then your decimal value is 3. If the third number entered is a 0, then your new decimal value goes from 3 to 6. If the third number entered is a 1, then your new decimal value goes from 3 to 7.</p>
 <p>See if you can spot a pattern that will help you figure out, for any given decimal value, what the new decimal value should be if the user enters a 0, or if the user enters a 1.</p>
-<p><img class="ui image" src="/static/courses/csintro/binary/binary-patterns.png" alt="Binary number patterns" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/binary/binary-patterns.png" alt="Binary number patterns" loading="lazy" /></p>
 <h2>Pseudocode</h2><p>The input for this program will be the buttons. Try to write out what should happen when each of the buttons is pressed. Here is one possible solution. Your own pseudocode might be different and that's okay. Remember: there can always be different approaches in coding.</p>
 <p>When Button A is pressed:</p>
 <ul>

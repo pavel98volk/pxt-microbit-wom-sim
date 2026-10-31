@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="https://img.youtube.com/vi/S8NppVT_paw/0.jpg" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="https://img.youtube.com/vi/S8NppVT_paw/0.jpg" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1692,7 +1692,7 @@
 					
     <div class="ui text">
         <h1>Code</h1><p>You will code your moisture meter using a pot of dry dirt and wet dirt. This is so you can set the micro:bit to know what both dry and wet conditions are.</p>
-<h2>Step 1: Measuring moisture</h2><p><img class="ui image" src="/static/mb/projects/soil-moisture/nailsv3.jpg" alt="" loading="lazy" /></p>
+<h2>Step 1: Measuring moisture</h2><p><img src="/static/mb/projects/soil-moisture/nailsv3.jpg" alt="" loading="lazy" /></p>
 <p>The soil itself has some electrical resistance which depends on the amount of water and nutrients in it. It acts like a variable resistor in an electronic circuit. The water is not conductive but the nutrient content is. The combination of water and soil nutrients makes the soil have some conductivity. So, the more water there is, combined with the nutrients, the less the soil will have electrical resistance.</p>
 <p>To measure this, we read the voltage on pin <strong>P0</strong> using <code>||pins:analog read pin||</code>
 which returns a value between <code>0</code> (no current) and <code>1023</code> (maximum current). The value is graph on the screen using <code>||led:plot bar graph||</code>.</p>
@@ -1742,17 +1742,10 @@ basic.forever(function () {
 <td>1000</td>
 </tr>
 </tbody></table>
-<p><br /></p>
+<br />
+### @youtube S8NppVT_paw
 
-
-    <div class="ui grid">
-        <div class="ten wide column">
-            <div class="ui embed mdvid" data-source="youtube" data-id="S8NppVT_paw"
-                data-placeholder="https://img.youtube.com/vi/S8NppVT_paw/0.jpg">
-            </div>
-        </div>
-    </div>
-<h2>Step 3: Don't waste energy!</h2><p><img class="ui image" src="/static/mb/projects/soil-moisture/nailsp1.jpg" alt="" loading="lazy" /></p>
+<h2>Step 3: Don't waste energy!</h2><p><img src="/static/mb/projects/soil-moisture/nailsp1.jpg" alt="" loading="lazy" /></p>
 <p>We want our soil probes to work for a long time and to save our battery power, so we need to tweak our code so our moisture sensor doesn't use too much energy.</p>
 <ul>
 <li>Our circuit connects directly to the <strong>3V</strong> pin so it is always using electricity. Instead, 

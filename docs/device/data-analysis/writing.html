@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/device/data-analysis/console-output.jpg" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/device/data-analysis/console-output.jpg" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1713,7 +1713,7 @@ serial.writeLine("")</code></pre><p>Text output is used mostly for messages sinc
 <pre><code class="lang-block">for (let i = 0; i &lt; 4; i++) {
     serial.writeLine("Hello from micro:bit " + i)
 }</code></pre><p>The four messages appear in the console window:</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/console-output.jpg" alt="Console output" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/console-output.jpg" alt="Console output" loading="lazy" /></p>
 <h2>Writing numbers</h2><p>In order for the Data Viewer to recognize a number as value and show in the chart, it has to be in a line by itself. So, numbers written individually won't be charted:</p>
 <pre><code class="lang-block">serial.writeNumber(1)
 serial.writeNumber(2)
@@ -1733,7 +1733,7 @@ serial.writeLine("")</code></pre><p>Here's a way to chart the numbers individual
 basic.forever(() =&gt; {
     serial.writeNumbers(values)
 })</code></pre><p>Data lines are shown for each value in the array:</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/data-lines.jpg" alt="Data lines on chart" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/data-lines.jpg" alt="Data lines on chart" loading="lazy" /></p>
 <p>Give this example a try and watch the chart make a diamond pattern from two triangle waves:</p>
 <pre><code class="lang-blocks">let diamond: number[] = []
 basic.forever(() =&gt; {
@@ -1749,7 +1749,7 @@ basic.forever(() =&gt; {
         basic.pause(500)
     }
 })</code></pre><p>It will look like this:</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/diamond-chart.jpg" alt="Data pattern on chart" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/diamond-chart.jpg" alt="Data pattern on chart" loading="lazy" /></p>
 <h2>Name value pairs</h2><p>A very common way to report and record data is to use a <em>name value pair</em> (NVP). A value is given a name so you know what it's for or where it came from. The name value pair is written with the format of <em>name:value</em>. There is a name, a colon character, and the value all together on one line. The line is written to the output and the Data Viewer recognizes it as a value and charts it as part of a value stream. The value stream is based on the name so any new values received with the same name are displayed on the chart that's showing values for that name. If more than one type of name value pair is found, the Data Viewer makes another value stream and shows those values on a different chart.</p>
 <p>If you want to report the values for both temperature and light, you can make separate name value pairs for them. The name value pairs are written using <code>||serial:serial write value||</code>. This function writes the values to the output as lines in a format like this:</p>
 <pre><code>temp:17
@@ -1760,9 +1760,9 @@ light:117</code></pre><pre><code class="lang-blocks">basic.forever(() =&gt; {
     serial.writeValue("light", input.lightLevel())
     basic.pause(5000)
 })</code></pre><p>Two charts display each value stream:</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/two-value-chart.jpg" alt="Two charts for each value type" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/two-value-chart.jpg" alt="Two charts for each value type" loading="lazy" /></p>
 <p>The console output shows the different name value pairs too:</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/two-value-console.jpg" alt="Two values in console output" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/two-value-console.jpg" alt="Two values in console output" loading="lazy" /></p>
 <h3>Writing subvalues</h3><p>Similar to number arrays, different name value pairs are shown on one chart by using <em>subvalues</em>. You make a subvalue by combining a first-level name and a second-level name with a <code>'.'</code>:</p>
 <p><code>"firstLevel.secondLevel"</code></p>
 <p>The first-level name is value name for the chart. The second-level name is the name for the actual value displayed.</p>
@@ -1774,7 +1774,7 @@ light:117</code></pre><pre><code class="lang-blocks">basic.forever(() =&gt; {
     serial.writeValue("acceleration.z", input.acceleration(Dimension.Z))
     basic.pause(500)
 }) </code></pre><p>Each subvalue <code>'x'</code>, <code>'y'</code>, and <code>'z'</code> is displayed on the chart named <code>"acceleration"</code> in the Data Viewer.</p>
-<p><img class="ui image" src="/static/mb/device/data-analysis/combined-values.jpg" alt="Three subvalues of acceleration in one chart" loading="lazy" /></p>
+<p><img src="/static/mb/device/data-analysis/combined-values.jpg" alt="Three subvalues of acceleration in one chart" loading="lazy" /></p>
 
     </div>
 

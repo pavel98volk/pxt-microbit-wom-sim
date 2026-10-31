@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/device/windows-microbit-drive.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/device/windows-microbit-drive.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1700,7 +1700,7 @@
         </div>
     </div>
 <h2>Step 1: Check your cable</h2><p>Make sure that your micro:bit is connected to your computer with a micro USB cable. For example, in Windows Explorer you should see a <strong>MICROBIT</strong> drive appear when it's connected. </p>
-<p><img class="ui image" src="/static/mb/device/windows-microbit-drive.png" alt="MICROBIT drive" loading="lazy" /></p>
+<p><img src="/static/mb/device/windows-microbit-drive.png" alt="MICROBIT drive" loading="lazy" /></p>
 <p><strong>If you can see the MICROBIT drive go to step 2</strong>.</p>
 <p>If you can't see the drive:</p>
 <ul>
@@ -1714,15 +1714,15 @@
 <h2>Step 2: Check your firmware version</h2><p>If your downloads still aren't working, it's possible that the firmware version on the micro:bit needs an update. Let's check:</p>
 <h3>1. Go to the MICROBIT drive</h3><p>Navigate to the <strong>MICROBIT</strong> drive in the computer's File Explorer.</p>
 <h3>2. Open the DETAILS.TXT file</h3><p>Look for the <strong>DETAILS.TXT</strong> file and open it.</p>
-<p><img class="ui image" src="/static/mb/device/mb-drive-contents.jpg" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/device/mb-drive-contents.jpg" alt="" loading="lazy" /></p>
 <h3>3. Find the firmware version number</h3><p>Look for a line in the file that says the version number. It should say <strong>Version</strong>:</p>
-<p><img class="ui image" src="/static/mb/device/details-txt.jpg" alt="Firmware version number in DETAILS.TXT" loading="lazy" /></p>
+<p><img src="/static/mb/device/details-txt.jpg" alt="Firmware version number in DETAILS.TXT" loading="lazy" /></p>
 <p>or <strong>Interface Version</strong>:</p>
-<p><img class="ui image" src="/static/mb/device/details-243.png" alt="Interface version number in DETAILS.TXT" loading="lazy" /></p>
+<p><img src="/static/mb/device/details-243.png" alt="Interface version number in DETAILS.TXT" loading="lazy" /></p>
 <p>If the version is <strong>0234</strong>, <strong>0241</strong>, <strong>0243</strong> you <strong>NEED</strong> to update the <a href="/pxt-microbit-wom-sim/docs/device/firmware.html">firmware</a> on your micro:bit. Go to <strong>Step 3</strong> and follow the upgrade instructions.</p>
 <p>If the version is <strong>0249</strong>, <strong>0250</strong> or higher, <strong>you have the right firmware</strong> go to step <strong>4</strong>. </p>
 <h2>Step 3: Upgrade the firmware</h2><h3>1. Put your micro:bit into <strong>MAINTENANCE Mode</strong></h3><p>To do this, unplug the USB cable from the micro:bit and then reconnect the USB cable while you hold down the reset button. Once you insert the cable, you can release the reset button. You should now see a <strong>MAINTENANCE</strong> drive instead of the <strong>MICROBIT</strong> drive like before. Also, a yellow LED light will stay on next to the reset button.</p>
-<p><img class="ui image" src="/static/mb/device/maintenance.gif" alt="MAINTENANCE gesture" loading="lazy" /></p>
+<p><img src="/static/mb/device/maintenance.gif" alt="MAINTENANCE gesture" loading="lazy" /></p>
 <h3>2. Download the firmware file</h3><p>Download the <strong><a target="_blank" href="https://microbit.org/guide/firmware/">firmware .hex</a></strong> file.</p>
 <h3>3. Transfer to the MAINTENANCE drive</h3><p>Drag and drop that file onto the <strong>MAINTENANCE</strong> drive.</p>
 <h3>4. Look for the flashing LED</h3><p>The yellow LED will flash while the <code>HEX</code> file is copying. When the copy finishes, the LED will go off and the micro:bit resets. The <strong>MAINTENANCE</strong> drive now changes back to <strong>MICROBIT</strong>.</p>
@@ -1756,9 +1756,9 @@
 <td>Not supported</td>
 </tr>
 </tbody></table>
-<p><br /></p>
+<br />
+For other browsers, see the supported versions in the **[Can I use?](https://caniuse.com/?search=webusb)** table for WebUSB.
 
-<p>For other browsers, see the supported versions in the <strong><a target="_blank" href="https://caniuse.com/?search=webusb">Can I use?</a></strong> table for WebUSB.</p>
 <h2>Step 5: Pair device</h2><p>Once you've updated the firmware, open the <strong>Chrome Browser</strong>, go to the editor and click on <strong>Pair Device</strong> in the gearwheel menu.
 See <a href="/pxt-microbit-wom-sim/docs/device/usb/webusb.html">WebUSB</a> for pairing instructions.</p>
 <p>Enjoy fast downloads!</p>

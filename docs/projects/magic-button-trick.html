@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/projects/magic-button-trick/magnets.jpg" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/projects/magic-button-trick/magnets.jpg" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1702,7 +1702,7 @@
 <p>This is a simple magic trick you can perform to amaze your friends! When you move the sticky labels on your micro:bit's <strong>A</strong> and <strong>B</strong> button, you appear to make the buttons really switch over. To see the trick performed watch the video below.</p>
 <h2>How the trick works</h2><p>The <strong>magic</strong> here is really in the code. This trick uses a magnet, hidden in your hand, to tell the micro:bit to swap over the buttons. When the magnet is near the micro:bit, the <strong>A</strong> button starts working like the <strong>B</strong> button and the <strong>B</strong> button starts working like the <strong>A</strong> button. Tricky!</p>
 <h2>What you need</h2><p>The only things you need for this trick are your micro:bit and any magnet that is small enough to fit in your hand, even a fridge magnet will work.</p>
-<p><img class="ui image" src="/static/mb/projects/magic-button-trick/magnets.jpg" alt="" title="Magnets" loading="lazy" /></p>
+<p><img src="/static/mb/projects/magic-button-trick/magnets.jpg" alt="" title="Magnets" loading="lazy" /></p>
 <h2>Step 1: Getting the buttons to display <strong>A</strong> and <strong>B</strong></h2><p>Before we code the trick itself, we need to get the buttons working as you would expect them to such that pressing button <strong>A</strong> displays 'A' and pressing button <strong>B</strong> displays 'B':</p>
 <pre><code class="lang-blocks">input.onButtonPressed(Button.A, function () {
     basic.showString("A")

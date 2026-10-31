@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/teachertool/new-rubric.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/teachertool/new-rubric.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1693,14 +1693,14 @@
     <div class="ui text">
         <h1>Code Evaluation Tool</h1><h2>Overview</h2><p>The <a target="_blank" href="https://microbit.makecode.com/--eval">Code Evaluation Tool</a> is a mechanism for constructing a checklist of requirements for an assignment and running that list automatically against projects in quick succession. This allows teachers to build a checklist, then easily evaluate any number of projects based on that checklist. Projects are evaluated one at a time, but with auto-run enabled, you can update the loaded project by providing a new share link, at which point the rules will automatically be re-run on the new project.</p>
 <h2>Code Evaluation Tool Features</h2><h3>Creating, Editing, and Running a Checklist</h3><h4>1. Creating a new checklist</h4><p>Create a new checklist using the <strong>New Checklist</strong> card. If there is already an "in progress" checklist, a warning will appear asking if it is okay to overwrite it.</p>
-<p><img class="ui image" src="/static/teachertool/new-rubric.png" alt="New Checklist" loading="lazy" /></p>
-<p><img class="ui image" src="/static/teachertool/new-rubric-from-menu.png" alt="New Checklist from menu" loading="lazy" /></p>
+<p><img src="/static/teachertool/new-rubric.png" alt="New Checklist" loading="lazy" /></p>
+<p><img src="/static/teachertool/new-rubric-from-menu.png" alt="New Checklist from menu" loading="lazy" /></p>
 <h4>2. Naming a checklist</h4><p>The checklist is given a name.</p>
-<p><img class="ui image" src="/static/teachertool/checklist-name.png" alt="Checklist name" loading="lazy" /></p>
+<p><img src="/static/teachertool/checklist-name.png" alt="Checklist name" loading="lazy" /></p>
 <h4>3. Add Criteria</h4><p>One or more <strong><em>criteria</em></strong> are added from the catalog using the <strong>Add Criteria</strong> button.</p>
-<p><img class="ui image" src="/static/teachertool/add-criteria.png" alt="Add Criteria" loading="lazy" /></p>
+<p><img src="/static/teachertool/add-criteria.png" alt="Add Criteria" loading="lazy" /></p>
 <p>Some criteria (like <code>[block] used [count] times</code>) can be added multiple times, others (like <code>Read a GPIO pin</code> can only be added once).</p>
-<p><img class="ui image" src="/static/teachertool/criteria-items.png" alt="Criteria items" loading="lazy" /></p>
+<p><img src="/static/teachertool/criteria-items.png" alt="Criteria items" loading="lazy" /></p>
 <h4>4. Fill in Parameters</h4><p>Parameters for the criteria item are filled in for a criteria item.</p>
 
     <div class="ui positive message">
@@ -1716,33 +1716,33 @@
         </div>
     </div>
 <p>Here a block is selected and used 3 times:</p>
-<p><img class="ui image" src="/static/teachertool/parameters-1.png" alt="Criteria parameters 1" loading="lazy" /></p>
+<p><img src="/static/teachertool/parameters-1.png" alt="Criteria parameters 1" loading="lazy" /></p>
 <p>Parameter options are displayed and then selected.</p>
-<p><img class="ui image" src="/static/teachertool/parameters-2.png" alt="Criteria parameters 2" loading="lazy" /></p>
-<p><img class="ui image" src="/static/teachertool/parameters-3.png" alt="Criteria parameters 3" loading="lazy" /></p>
+<p><img src="/static/teachertool/parameters-2.png" alt="Criteria parameters 2" loading="lazy" /></p>
+<p><img src="/static/teachertool/parameters-3.png" alt="Criteria parameters 3" loading="lazy" /></p>
 <h4>5. Ask AI</h4><p>You can also have an <strong>Ask AI</strong> question as a criteria item in the checklist. You are limited to up to 5 Ask AI questions per checklist.</p>
-<p><img class="ui image" src="/static/teachertool/ask-ai-criteria.png" alt="Ask AI criteria" loading="lazy" /></p>
+<p><img src="/static/teachertool/ask-ai-criteria.png" alt="Ask AI criteria" loading="lazy" /></p>
 <h4>6. Remove Criteria</h4><p>A criteria item is removed using the <strong>trash</strong> button.</p>
-<p><img class="ui image" src="/static/teachertool/remove-criteria.png" alt="Remove Criteria" loading="lazy" /></p>
+<p><img src="/static/teachertool/remove-criteria.png" alt="Remove Criteria" loading="lazy" /></p>
 <h4>7. Load a project</h4><p>Load a project into the project view by pasting in a share link or share ID.</p>
-<p><img class="ui image" src="/static/teachertool/loaded-project.png" alt="A loaded project" loading="lazy" /></p>
+<p><img src="/static/teachertool/loaded-project.png" alt="A loaded project" loading="lazy" /></p>
 <p>The project will load in read-only mode with the project title appearing at the top of the project view.</p>
-<p><img class="ui image" src="/static/teachertool/validate-me.png" alt="Project validation" loading="lazy" /></p>
+<p><img src="/static/teachertool/validate-me.png" alt="Project validation" loading="lazy" /></p>
 <h4>8. Run the checklist</h4><p>With a project loaded, the checklist can run. The results are shown after clicking the <strong>Run</strong> button.</p>
-<p><img class="ui image" src="/static/teachertool/run-checklist-button.png" alt="Run checklist" loading="lazy" /></p>
+<p><img src="/static/teachertool/run-checklist-button.png" alt="Run checklist" loading="lazy" /></p>
 <p>The results view lists each criteria with its outcome.</p>
-<p><img class="ui image" src="/static/teachertool/checklist-execution.png" alt="Checklist execution" loading="lazy" /></p>
+<p><img src="/static/teachertool/checklist-execution.png" alt="Checklist execution" loading="lazy" /></p>
 <p><strong>Note</strong>: the <strong>Run</strong> Button is disabled without loaded project.</p>
 <h3>Editing Results</h3><h4>1. Add feedback and notes</h4><p>Feedback and notes are added using the <strong>Add Notes</strong> button. The feedback box should resize to fit its content as notes are added. The original feedback remains even if you re-run the rules using the <strong>Run</strong> button.</p>
-<p><img class="ui image" src="/static/teachertool/editing-results-1.png" alt="Editing results" loading="lazy" /></p>
-<p><img class="ui image" src="/static/teachertool/editing-results-2.png" alt="Editing results" loading="lazy" /></p>
-<p><img class="ui image" src="/static/teachertool/editing-results-3.png" alt="Editing results" loading="lazy" /></p>
+<p><img src="/static/teachertool/editing-results-1.png" alt="Editing results" loading="lazy" /></p>
+<p><img src="/static/teachertool/editing-results-2.png" alt="Editing results" loading="lazy" /></p>
+<p><img src="/static/teachertool/editing-results-3.png" alt="Editing results" loading="lazy" /></p>
 <h4>2. Edit outcomes</h4><p>An outcome is edited using the provided dropdown.</p>
-<p><img class="ui image" src="/static/teachertool/edit-outcome-1.png" alt="Edit outcome" loading="lazy" /></p>
+<p><img src="/static/teachertool/edit-outcome-1.png" alt="Edit outcome" loading="lazy" /></p>
 <p>The new selected outcome.</p>
-<p><img class="ui image" src="/static/teachertool/edit-outcome-2.png" alt="Edit outcome" loading="lazy" /></p>
+<p><img src="/static/teachertool/edit-outcome-2.png" alt="Edit outcome" loading="lazy" /></p>
 <h3>Result Clearing and Auto-Run</h3><h4>1. Toggling Auto-run</h4><p>Auto-run is toggled either <strong>on</strong> or <strong>off</strong> using the button in the menu.</p>
-<p><img class="ui image" src="/static/teachertool/autorun-button.png" alt="Auto-run button" loading="lazy" /></p>
+<p><img src="/static/teachertool/autorun-button.png" alt="Auto-run button" loading="lazy" /></p>
 <h4>2. Auto-run disabled</h4><p>If auto-run is <strong>disabled</strong>, a result's outcome (i.e. "Looks good", "Needs work", etc...) is set to "Not started" automatically if any of any of the following conditions are met:</p>
 <ul>
 <li>It is newly added (defaults to the "Not Started" state).</li>
@@ -1751,24 +1751,24 @@
 </ul>
 <h4>3. Auto-run enabled</h4><p>If auto-run is <strong>enabled</strong>, any rules that enter the "Not started" state due to the conditions listed above are immediately and automatically re-run with their results updated.</p>
 <h3>Loading/Importing/Exporting Checklists</h3><h4>1. Pre-built checklists</h4><p>There are pre-built checklists are available on the welcome page. If a selected checklist is already in-progress, an overwrite confirmation prompt is given.</p>
-<p><img class="ui image" src="/static/teachertool/prebuilt-rubrics.png" alt="Pre-built checklists" loading="lazy" /></p>
+<p><img src="/static/teachertool/prebuilt-rubrics.png" alt="Pre-built checklists" loading="lazy" /></p>
 <h4>2. Export a checklist</h4><p>A checklist is exported using the vertical "..." menu near the "auto-run" button. Only the checklist is exported, not the results. For a copy of the results, use the <a href="#other">print</a> function in the Results view.</p>
-<p><img class="ui image" src="/static/teachertool/export-checklist.png" alt="Export checklist" loading="lazy" /></p>
+<p><img src="/static/teachertool/export-checklist.png" alt="Export checklist" loading="lazy" /></p>
 <p>This will download a json file for the checklist.</p>
-<p><img class="ui image" src="/static/teachertool/checklist-download.png" alt="Checklist download" loading="lazy" /></p>
+<p><img src="/static/teachertool/checklist-download.png" alt="Checklist download" loading="lazy" /></p>
 <h4>3. Import a checklist</h4><p>User can import a checklist from a file using the same "..." menu, or from the card on the welcome page.</p>
-<p><img class="ui image" src="/static/teachertool/import-checklist-card.png" alt="Import checklist card" loading="lazy" /></p>
-<p><img class="ui image" src="/static/teachertool/import-checklist-menu.png" alt="Import checklist menu" loading="lazy" /></p>
+<p><img src="/static/teachertool/import-checklist-card.png" alt="Import checklist card" loading="lazy" /></p>
+<p><img src="/static/teachertool/import-checklist-menu.png" alt="Import checklist menu" loading="lazy" /></p>
 <p>Checklist file is selected using "Browse" or dropped directly into the popup. An overwrite confirmation prompted if there is currently an in-progress checklist.</p>
-<p><img class="ui image" src="/static/teachertool/import-checklist-dragdrop-1.png" alt="Import checklist drag in" loading="lazy" /></p>
-<p><img class="ui image" src="/static/teachertool/import-checklist-dragdrop-2.png" alt="Import checklist drop off" loading="lazy" /></p>
+<p><img src="/static/teachertool/import-checklist-dragdrop-1.png" alt="Import checklist drag in" loading="lazy" /></p>
+<p><img src="/static/teachertool/import-checklist-dragdrop-2.png" alt="Import checklist drop off" loading="lazy" /></p>
 <h3>Other</h3><p>If the page is refreshed (or if the browser closes/re-opens), the current checklist preserved.</p>
 <p>Use the print button to create a version of the results with the outcomes and feedback visible (the other UI elements are hidden).</p>
-<p><img class="ui image" src="/static/teachertool/print-button.png" alt="Print button" loading="lazy" /></p>
+<p><img src="/static/teachertool/print-button.png" alt="Print button" loading="lazy" /></p>
 <p>The checklist-view/project-view splitter can be resized. It can also be reset to 50/50 split with double-click.</p>
-<p><img class="ui image" src="/static/teachertool/view-splitter.png" alt="View splitter button" loading="lazy" /></p>
+<p><img src="/static/teachertool/view-splitter.png" alt="View splitter button" loading="lazy" /></p>
 <p>Slide the splitter to widen the view of the criteria and results.</p>
-<p><img class="ui image" src="/static/teachertool/split-resize.png" alt="Split view resize" loading="lazy" /></p>
+<p><img src="/static/teachertool/split-resize.png" alt="Split view resize" loading="lazy" /></p>
 
     </div>
 

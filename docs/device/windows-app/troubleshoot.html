@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/device/windows-microbit-drive.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/device/windows-microbit-drive.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1700,7 +1700,7 @@
         </div>
     </div>
 <h2>Step 1: Check your cable</h2><p>Make sure that your micro:bit is connected to your computer with a micro USB cable. You should see a <strong>MICROBIT</strong> drive appear in Windows Explorer when it's connected. </p>
-<p><img class="ui image" src="/static/mb/device/windows-microbit-drive.png" alt="MICROBIT drive" loading="lazy" /></p>
+<p><img src="/static/mb/device/windows-microbit-drive.png" alt="MICROBIT drive" loading="lazy" /></p>
 <p><strong>If you can see the MICROBIT drive go to step 2</strong>.</p>
 <p>If you can't see the drive:</p>
 <ul>
@@ -1715,15 +1715,15 @@
 <ol>
 <li>Go to the <strong>MICROBIT</strong> drive.</li>
 <li>Open the <strong>DETAILS.TXT</strong> file.<br />
-<img class="ui image" src="/static/mb/device/mb-drive-contents.jpg" alt="" loading="lazy" /><br /></li>
+<img src="/static/mb/device/mb-drive-contents.jpg" alt="" loading="lazy" /><br /></li>
 <li>Look for a line in the file that says the version number. It should say <strong>Version: ...</strong>
-<img class="ui image" src="/static/mb/device/details-txt.jpg" alt="" loading="lazy" /><br /></li>
+<img src="/static/mb/device/details-txt.jpg" alt="" loading="lazy" /><br /></li>
 </ol>
 <p>If the version is <strong>0234</strong>, you <strong>NEED</strong> to update the <a href="/pxt-microbit-wom-sim/docs/device/firmware.html">firmware</a> on your micro:bit. Go to <strong>Step 3</strong> and follow the upgrade instructions.</p>
 <p>If the version is <strong>0241</strong>, <strong>0243</strong> or higher, <strong>you have the right firmware</strong>. You can create a <a target="_blank" href="https://support.microbit.org/support/tickets/new">support ticket</a> to notify the Micro:bit Foundation of the problem. <strong>Skip the rest of these steps</strong>.</p>
 <h2>Step 3: Upgrade the firmware</h2><ol>
 <li>Put your micro:bit into <strong>MAINTENANCE Mode</strong>. To do this, unplug the USB cable from the micro:bit and then re-connect the USB cable while you hold down the reset button. Once you insert the cable, you can release the reset button. You should now see a <strong>MAINTENANCE</strong> drive instead of the <strong>MICROBIT</strong> drive like before. Also, a yellow LED light will stay on next to the reset button.
-<img class="ui image" src="/static/mb/device/maintenance.gif" alt="MAINTENANCE gesture" loading="lazy" /></li>
+<img src="/static/mb/device/maintenance.gif" alt="MAINTENANCE gesture" loading="lazy" /></li>
 <li><strong><a target="_blank" href="https://microbit.org/guide/firmware/#update-firmware">Download the firmware .hex file</a></strong></li>
 <li>Drag and drop that file onto the <strong>MAINTENANCE</strong> drive.</li>
 <li>The yellow LED will flash while the <code>HEX</code> file is copying. When the copy finishes, the LED will go off and the micro:bit resets. The <strong>MAINTENANCE</strong> drive now changes back to <strong>MICROBIT</strong>.</li>

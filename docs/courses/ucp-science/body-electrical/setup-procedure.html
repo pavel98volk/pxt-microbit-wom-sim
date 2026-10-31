@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/courses/ucp-science/body-electrical/body-wires-connect.jpg" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/courses/ucp-science/body-electrical/body-wires-connect.jpg" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1700,7 +1700,7 @@
 <li>Experiment with different data collections scenarios (this experiment could try several different areas of the body. It could also monitor the body sitting or during movements or exercise to observe any differences).</li>
 <li>Report on the findings and observations in the experiments.</li>
 </ol>
-<p><img class="ui image" src="/static/courses/ucp-science/body-electrical/body-wires-connect.jpg" alt="Micro:bit connected to body wires" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/body-electrical/body-wires-connect.jpg" alt="Micro:bit connected to body wires" loading="lazy" /></p>
 <h2>Code and data collection</h2><p>This project will use to microbits to collect and record data using MakeCode as described in the <a href="/pxt-microbit-wom-sim/docs/courses/ucp-science/data-collection/setup-procedure.html">Data Collection</a> lesson.</p>
 <h2>Option 2 — MakeCode and a USB connection</h2><p>MakeCode allows data to be directly read from the micro:bit when it is attached using USB cable. Data can be sent from the micro:bit to the browser using serial data connection over WebUSB. The data collected over the serial connection can be graphed and the data can be downloaded. A limit of only about the last 20 seconds of data can be downloaded as a <code>"data.csv"</code> file. This allows the collection of data in real time. This file can be opened in a spreadsheet for further analysis. Many different kinds of experiments can be performed using this data logging technique. </p>
 <h3>on Start event</h3><ol>
@@ -1722,10 +1722,10 @@ basic.forever(() =&gt; {
     ekg = pins.analogReadPin(AnalogPin.P0)
     serial.writeValue("EKG", ekg)
 })</code></pre><h3>Analyze</h3><p>Here's a sample of some of the graphed data:</p>
-<p><img class="ui image" src="/static/courses/ucp-science/body-electrical/sample-graph.jpg" alt="Sample of data graphed in the data view" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/body-electrical/sample-graph.jpg" alt="Sample of data graphed in the data view" loading="lazy" /></p>
 <p>Download the data collected and observed using the purple <strong>Download</strong> button.
 The same data from the <code>"data.csv"</code> file might look like this in a spreadsheet:</p>
-<p><img class="ui image" src="/static/courses/ucp-science/body-electrical/spreadsheet-view.jpg" alt="View of EKG data in spreadsheet" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/body-electrical/spreadsheet-view.jpg" alt="View of EKG data in spreadsheet" loading="lazy" /></p>
 <p>Do some more measurements:</p>
 <ol>
 <li>Try graphic the data in different ways in the spreadsheet.</li>
@@ -1767,9 +1767,9 @@ radio.onReceivedNumber(function (receivedNumber) {
 
     <a class="ui primary button docbutton" href="/pxt-microbit-wom-sim/docs/courses/ucp-science/body-electrical/resources.html"><p>NEXT: Resources</p>
 </a>
-<p><br /></p>
+<br />
+Adapted from "[Body Electrical &amp; Waves](https://drive.google.com/open?id=1KofuOt0v1lmQhQyJux1XWDVoCDeslcjDFysjStFmo1w)" by [C Lyman](http://utahcoding.org) [![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-<p>Adapted from "<a target="_blank" href="https://drive.google.com/open?id=1KofuOt0v1lmQhQyJux1XWDVoCDeslcjDFysjStFmo1w">Body Electrical &amp; Waves</a>" by <a target="_blank" href="http://utahcoding.org">C Lyman</a> <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img class="ui image" src="https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png" alt="CC BY-NC-SA" loading="lazy" /></a></p>
 <pre><code class="lang-package">radio</code></pre>
     </div>
 

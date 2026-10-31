@@ -1709,7 +1709,7 @@
 <li>Toolbox - in the middle of the screen, there are a number of different categories, each containing a number of blocks that can be dragged into the programming workspace on the right. </li>
 <li>Workspace - on the right side of the screen is the Programming Workspace where you will create your program.  Programs are constructed by snapping blocks together in this area.</li>
 </ul>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/ide-tour.png" alt="IDE tour" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/ide-tour.png" alt="IDE tour" loading="lazy" /></p>
 <p>The features highlighted here are:</p>
 <ol>
 <li>Go to the <strong>Home Screen</strong> to start a new project or open an existing project</li>
@@ -1728,37 +1728,37 @@
 <li>Tooltips - Hover over any block until a hand icon appears and a small text box will pop up telling you what that block does. You can try this now with the 'on start' and 'forever' blocks.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/blocks-tooltips.png" alt="Blocks tooltips" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/blocks-tooltips.png" alt="Blocks tooltips" loading="lazy" /></p>
 </blockquote>
 <blockquote>
 <p>Hovering over the code in JavaScript has the same effect.</p>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/code-tooltips.png" alt="Code tooltips" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/code-tooltips.png" alt="Code tooltips" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li>Help/Documentation - You can also right-click on any block and select Help to open the reference documentation.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/help-menu.png" alt="Help menu" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/help-menu.png" alt="Help menu" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li>Deleting blocks - Click on the 'forever' block and drag it left to the Toolbox area. You should see a garbage can icon appear. Let go of the block and it should disappear. You can drag any block back to the Toolbox area to delete it from the coding workspace.  You can also remove a block from your coding window by selecting the block and then pressing the "delete" key on your keyboard (or command-X on a mac).</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/drag-to-trash.gif" alt="Trash" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/drag-to-trash.gif" alt="Trash" loading="lazy" /></p>
 </blockquote>
 <p>Looking at our pseudocode, we want to make sure to start a program with a clear screen.</p>
 <ul>
 <li>We can do this by going to the <strong>Basic</strong> toolbox category and under <strong>...more</strong>, choose a <code>||basic:clear screen||</code> block.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/clear-screen-block.png" alt="Clear screen block" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/clear-screen-block.png" alt="Clear screen block" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li>Drag the ‘clear screen’ block to the coding Workspace.</li>
 </ul>
 <blockquote>
 <p>Notice that the block is ‘grayed’ out. If you hover over the ‘grayed out’ block, a pop up text box will appear letting you know that since this block is not attached to an event handler block, it will not run.
-<img class="ui image" src="/static/courses/csintro/algorithms/clear-screen-disabled.png" alt="Clear screen disabled" loading="lazy" /></p>
+<img src="/static/courses/csintro/algorithms/clear-screen-disabled.png" alt="Clear screen disabled" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li>Go ahead and drag the ‘clear screen’ block into the ‘on start’ block. Now the block is no longer grayed out, indicating that it will run when the event, the program starts, occurs.</li>
@@ -1766,7 +1766,7 @@
 <pre><code class="lang-blocks">basic.clearScreen()</code></pre><h2>Save early, save often!</h2><p>We now have a working program running on the micro:bit simulator! 
 As you write your program, MakeCode will automatically compile and run your code on the simulator. The program doesn’t do much at this point, but before we make it more interesting, we should name our program and save it.</p>
 <p>On the bottom left of the application window, to the right of the Download button, is a text box in which you can name your program. After naming your program, press the save button to save it.
-<img class="ui image" src="/static/courses/csintro/algorithms/save-button.png" alt="Save button" loading="lazy" />
+<img src="/static/courses/csintro/algorithms/save-button.png" alt="Save button" loading="lazy" />
 Important: Whenever you write a significant piece of code or just every few minutes, you should save your code. Giving your code a meaningful name will help you find it faster from a list of programs and will let others know what your program does.</p>
 <h2>More event handlers</h2><p>Now to make our program a bit more interesting by adding two more event handlers.</p>
 <ul>
@@ -1774,13 +1774,13 @@ Important: Whenever you write a significant piece of code or just every few minu
 </ul>
 <blockquote>
 <p>Notice that the second block is grayed out. This is because, right now, they are the same block, both ‘listening’ for the same event ‘on button A pressed’.
-<img class="ui image" src="/static/courses/csintro/algorithms/two-on-buttons.png" alt="Two on buttons" loading="lazy" /></p>
+<img src="/static/courses/csintro/algorithms/two-on-buttons.png" alt="Two on buttons" loading="lazy" /></p>
 </blockquote>
 <ul>
 <li>Leave the first block alone for now, and using the drop-down menu within the second block, change the ‘A’ to ‘B’. Now this block will no longer be grayed out, as it is now listening for a different event, ‘on button B pressed’.</li>
 </ul>
 <blockquote>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/on-button-b.png" alt="Make on button B" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/on-button-b.png" alt="Make on button B" loading="lazy" /></p>
 </blockquote>
 <pre><code class="lang-blocks">input.onButtonPressed(Button.A, () =&gt; {
 })
@@ -1870,12 +1870,12 @@ input.onButtonPressed(Button.B, () =&gt; {
 <li>Right-click the code block.</li>
 <li>A menu will pop up. Select ‘Add Comment’.</li>
 </ul>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/add-comment.png" alt="Add comment menu" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/add-comment.png" alt="Add comment menu" loading="lazy" /></p>
 <ul>
 <li>This will cause a comment icon to appear to the left of the previous icon.</li>
 <li>Click on the comment icon and a small yellow box will appear into which you can write your comment.</li>
 </ul>
-<p><img class="ui image" src="/static/courses/csintro/algorithms/write-comment.png" alt="Write comment" loading="lazy" /></p>
+<p><img src="/static/courses/csintro/algorithms/write-comment.png" alt="Write comment" loading="lazy" /></p>
 <ul>
 <li>Click on the comment icon again to close the comment box when you are done.</li>
 <li>Click on the comment icon whenever you want to see your comment again or to edit it.</li>

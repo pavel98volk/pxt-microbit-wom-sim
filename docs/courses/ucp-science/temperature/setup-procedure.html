@@ -1743,9 +1743,9 @@ a sun shade has on keeping your car cooler.</p>
 <pre><code class="lang-blocks">basic.forever(() =&gt; {
 	serial.writeValue("Celsius", input.temperature())
 });</code></pre><p>When the program is running, a purple <strong>Show data Device</strong> button shows up under the Simulator. By clicking on the button the data being observed can monitored and graphed in the <strong>Show data Device</strong> window. </p>
-<p><img class="ui image" src="/static/courses/ucp-science/temperature/show-device.png" alt="show device button" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/temperature/show-device.png" alt="show device button" loading="lazy" /></p>
 <p>The graph is highlighted with the blue box. The <strong>Download</strong> button in the red highlighted box allows the downloading of the recorded data as a CSV file which can be opened in a spreadsheet and analyzed.</p>
-<p><img class="ui image" src="/static/courses/ucp-science/temperature/export.png" alt="export data" loading="lazy" /></p>
+<p><img src="/static/courses/ucp-science/temperature/export.png" alt="export data" loading="lazy" /></p>
 <h3>Temperature project 3 - Remote radio collecting to receiving radio displaying</h3><p>Two micro:bits can be used to collect and record data using the radio commands. One micro:bit can be setup remotely and the other micro:bit can be used to observe the data. The first micro:bit can send the data it observes to the second micro:bit for the observer to record. To set up two micro:bits so they can communicate over the radio they need to be on the same radio group.</p>
 <h4>Radio sending code</h4><p>In the starting of the code the title is displayed, radio group <code>99</code> is setup, and the initial <code>temperature</code> variable is set to <code>0</code>.</p>
 <p>In the <code>||basic:forever||</code> loop the temperature is collected from the micro:bit sensor and stored in the <code>temperature</code>variable. The temperature is displayed on the LED display. A radio signal is sent to all micro:bit radios in group 99. The program pauses for <code>1000</code> milliseconds and then loops again.</p>
@@ -1778,9 +1778,9 @@ radio.onReceivedNumber( function(receivedNumber) {
 
     <a class="ui primary button docbutton" href="/pxt-microbit-wom-sim/docs/courses/ucp-science/temperature/resources.html"><p>NEXT: Resources</p>
 </a>
-<p><br /></p>
+<br />
+Adapted from "[Temperature Data](https://drive.google.com/open?id=1X6FeANka2qcMC2ZFQgSSxEoHxsQc--6a0Pk9xxMOwE8)" by [C Lyman](http://utahcoding.org) [![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-<p>Adapted from "<a target="_blank" href="https://drive.google.com/open?id=1X6FeANka2qcMC2ZFQgSSxEoHxsQc--6a0Pk9xxMOwE8">Temperature Data</a>" by <a target="_blank" href="http://utahcoding.org">C Lyman</a> <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img class="ui image" src="https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png" alt="CC BY-NC-SA" loading="lazy" /></a></p>
 <pre><code class="lang-package">radio</code></pre>
     </div>
 

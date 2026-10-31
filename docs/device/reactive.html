@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/device/reactive-0.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/device/reactive-0.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1712,9 +1712,9 @@
 <li>Sequence <strong>S3</strong>: contains a few instructions to increment a counter.</li>
 </ul>
 <p>In order to be responsive, we would like to <em>interrupt</em> the execution of sequence <strong>S1</strong> <em>periodically</em> to execute the sequence <strong>S2</strong>, which will check if button <strong>A</strong> is pressed, which looks like:</p>
-<p><img class="ui image" src="/static/mb/device/reactive-0.png" alt="Execution sequence diagram: S1 and S2" loading="lazy" /></p>
+<p><img src="/static/mb/device/reactive-0.png" alt="Execution sequence diagram: S1 and S2" loading="lazy" /></p>
 <p>The result is that it takes sequence <strong>S1</strong> a little longer to complete, due to the interruptions to execute sequence <strong>S2</strong>, but we are checking often enough to detect a press of button <strong>A</strong> . When <strong>S2</strong> detects a press of button <strong>A</strong>, then the sequence <strong>S3</strong> can be executed before <strong>S1</strong> resumes:</p>
-<p><img class="ui image" src="/static/mb/device/reactive-1.png" alt="Execution sequence diagram: S1 and S2 with interrupt and one S3 slice" loading="lazy" /></p>
+<p><img src="/static/mb/device/reactive-1.png" alt="Execution sequence diagram: S1 and S2 with interrupt and one S3 slice" loading="lazy" /></p>
 <p>As we’ll soon see, there are other choices for how the sequences can be ordered to achieve the desired result.</p>
 <h2>The micro:bit scheduler and queuing up subprograms</h2><p>The micro:bit’s <em>scheduler</em> provides the capability to concurrently execute different code sequences, relieving us of a lot of low-level programming. In fact, scheduling is so useful that it is a part of every <em>operating system</em>!</p>
 <p>The first job of the scheduler is to allow multiple <em>subprograms</em> to be queued up for later execution. For our purposes, a subprogram is just a statement or sequence of statements in the context of a larger program. Consider the program below for counting button presses.</p>
@@ -1778,7 +1778,7 @@ basic.forever(() =&gt; {
 <li>Queue the forever loop to the run queue</li>
 </ol>
 <p>The program then ends execution and control passes back to the scheduler. Let’s assume the user has not pressed any buttons . The scheduler finds the <code>forever</code> loop in the run queue and passes control to it. The loop first calls <code>basic.showNumber(0)</code>. In the diagram below, we use "Show 0" to refer to the execution of this function:</p>
-<p><img class="ui image" src="/static/mb/device/reactive-3.png" alt="Execution sequence diagram: display loop with increment and interrupt" loading="lazy" /></p>
+<p><img src="/static/mb/device/reactive-3.png" alt="Execution sequence diagram: display loop with increment and interrupt" loading="lazy" /></p>
 <p>While "Show 0" (the blue sequence) is running, periodic interrupts by the scheduler (every 6 milliseconds) poll for button presses and queue an event handler for each press of button <strong>A</strong>. Let’s say that one button press takes place during this time, as shown above. This will cause an event handler (labelled "inc") to be queued for later execution by the scheduler. Once the "Show 0" has completed, the loop then calls <code>basic.pause(20)</code> to put the forever loop to sleep for 20 milliseconds and give the scheduler an opportunity to run any newly queued event handler. Control passes to the "inc" event handler which will increment the global variable <code>count</code> from 0 to 1 and then complete, returning control to the scheduler. At some point, the <code>forever</code> loop moves from the sleep queue to the run queue; the <code>forever</code> loop then will resume and call <code>basic.showNumber(1)</code>.</p>
 <h2>Final comments</h2><p>Through this example, we have seen that the micro:bit scheduler enables you to create a program that is composed of concurrent subprograms. In essence, the programmer needs to only think about the concurrent subprograms cooperatively passing control back to the scheduler, making sure no subprogram hogs control (or "dribbles the ball without passing") for too long. While a subprogram runs, the scheduler polls the buttons and other IO peripherals at a high frequency in order to fire off events and queue event handlers for later execution, but this is invisible to the programmer.</p>
 <p>As a result, you can easily add a new capability to the micro:bit by just adding a new subprogram. For example, if you want to add a reset feature to the counter program, all you need to do is add a new event handler for a press of button <strong>B</strong> that sets the global variable "count" to zero, as shown below:</p>

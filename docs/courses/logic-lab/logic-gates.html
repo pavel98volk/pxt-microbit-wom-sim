@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/courses/logic-lab/logic-gates/full-adder.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/courses/logic-lab/logic-gates/full-adder.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1691,18 +1691,18 @@
 					</button>
 					
     <div class="ui text">
-        <h1>Logic Gates</h1><p><img class="ui image" src="/static/courses/logic-lab/logic-gates/full-adder.png" alt="OR gate symbol" loading="lazy" /></p>
+        <h1>Logic Gates</h1><p><img src="/static/courses/logic-lab/logic-gates/full-adder.png" alt="OR gate symbol" loading="lazy" /></p>
 <p>In the real world digital devices aren't the abstract logical expressions of Boolean algebra, but they are implementations of these expressions in hardware. The logical expressions are translated into device structures called <em>logic gates</em>. A logic gate is both a symbolic representation of a logical operation and, when used in digital electronics, it is an actual circuit in hardware. A single logic gate is usually made of several transistors an shares space with many others in an integrated circuit.</p>
 <p>Each of the basic operators we learned about in the <a href="/pxt-microbit-wom-sim/docs/courses/logic-lab/expressions.html">expressions</a> section have a gate symbol. The symbol takes the place of the operator and the variables are the inputs to the gate. The resulting value from the expression equation is the output of the gate. The output of a gate can be a final result or it can be connected as an input to yet another gate.</p>
 <h2>Gate symbols</h2><p>Logic gates are symbols that can directly replace an expression in Boolean arithmetic. Each one has a different shape to show its particular function. The inputs (Boolean variables) enter at the left of the symbol and the output leaves from the right. When combined together, several gates can make a complex logical evaluation system that has many inputs and outputs. Digital computers are designed by connecting thousands, or millions, of these gates to together.</p>
 <h3>NOT gate</h3><p>The NOT gate is a forward arrow with a small circle at the output. The circle part of the symbol is what says that the output is negating the input.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/logic-gates/not-gate.png" alt="NOT gate symbol" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/logic-gates/not-gate.png" alt="NOT gate symbol" loading="lazy" /></p>
 <h3>OR gate</h3><p>Th OR gate has a curved input side and a sharp pointed output.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/logic-gates/or-gate.png" alt="OR gate symbol" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/logic-gates/or-gate.png" alt="OR gate symbol" loading="lazy" /></p>
 <h3>AND gate</h3><p>The AND gate has a flat input side and round output side.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/logic-gates/and-gate.png" alt="AND gate symbol" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/logic-gates/and-gate.png" alt="AND gate symbol" loading="lazy" /></p>
 <h3>Exclusive OR (XOR) gate</h3><p>The exclusive or gate symbol is just like the OR gate but it has an additional curved line crossing the inputs.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/logic-gates/xor-gate.png" alt="XOR gate symbol" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/logic-gates/xor-gate.png" alt="XOR gate symbol" loading="lazy" /></p>
 <h2>Combined logic</h2><p>When you connect multiple gates together you have a combined logic system or <em>combinatorial logic</em>. To design a combined logic system we can use a truth tables to match logical outputs for out various input conditions. Boolean expressions are written from the conditions in the table. Then, we can directly convert the expression into a diagram of logic gates.</p>
 <p>You might remember that back in <a href="/pxt-microbit-wom-sim/docs/courses/logic-lab/elements#xor.html">Boolean elements</a> we saw that there was no operator to use in code for XOR. It was was made up using a combination of AND, OR, and NOT operators:</p>
 <pre><code class="lang-block">let A = false
@@ -1736,23 +1736,25 @@ let Q = (A || B) &amp;&amp; !(A &amp;&amp; B)</code></pre><p>Let's map the input
 <td>T</td>
 <td>F</td>
 </tr>
+<tr>
+<td><br /></td>
+<td></td>
+<td></td>
+</tr>
 </tbody></table>
-<p><br /></p>
-
-
 <p>There are two conditions where the result column has <code>true</code> values. The first condition is when <code>A</code> is <code>false</code> and <code>B</code> is <code>true</code> which is expressed as <code>~A · B</code>. The second condition is when <code>A</code> is <code>true</code> and <code>B</code> is <code>false</code> which is expressed as <code>A · ~B</code>. Our XOR expression is <code>true</code> when one of these conditions are <code>true</code> which is written like:</p>
 <p><code>A ⊕ B</code> = <code>(~A · B) + (A · ~B)</code></p>
 <p>In code this expression is formed with these logic blocks:</p>
 <pre><code class="lang-block">let A = false
 let B = false
 let Q = (!A &amp;&amp; B) || (A &amp;&amp; !B)</code></pre><p>Converting the equation to logic gates makes the following diagram. Notice how each gate "connects" the variables together just like the logic blocks in the code above.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/logic-gates/combinatorial1-xor.png" alt="Combinatorial XOR first version" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/logic-gates/combinatorial1-xor.png" alt="Combinatorial XOR first version" loading="lazy" /></p>
 <p>However, if we take the other two unused conditions from the truth table that make the XOR operation <code>false</code>, can make the negative equation for XOR, called a NXOR:</p>
 <p><code>~(A ⊕ B)</code> = <code>(~A · ~B) + (A · B)</code></p>
 <p>To get back to <code>A ⊕ B</code> we have to negate this negative equation. Then, with the help of <a href="/pxt-microbit-wom-sim/docs/courses/logic-lab/expressions#de-morgan-s-thereom.html">De Morgan's Theorem</a>, we get a different equation for XOR but it's still logically equivalent to the original one.</p>
 <p><code>A ⊕ B</code> = <code>(A + B) · ~(A · B)</code></p>
 <p>When this equation is converted to logic gates, there's one fewer gate than in the first diagram.</p>
-<p><img class="ui image" src="/static/courses/logic-lab/logic-gates/combinatorial2-xor.png" alt="Combinatorial XOR second version" loading="lazy" /></p>
+<p><img src="/static/courses/logic-lab/logic-gates/combinatorial2-xor.png" alt="Combinatorial XOR second version" loading="lazy" /></p>
 <p>This diagram has less complexity than the first one. Reduction in the number of gates to accomplish the same logical result is one of the primary goals for digital logic design. For electronic devices, this allows more gates to use the limited amount of space on an integrated circuit.</p>
 
     <a class="ui primary button docbutton" href="/pxt-microbit-wom-sim/docs/courses/logic-lab/programmable.html"><p>NEXT: Programmable Logic</p>

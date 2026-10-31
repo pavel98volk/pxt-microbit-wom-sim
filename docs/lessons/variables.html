@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/blocks/lessons/variables-0.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/blocks/lessons/variables-0.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1696,9 +1696,9 @@
 <p>We can modify variables but they must first be defined. Open the ‘Variables’ drawer to the left of your code.</p>
 <p>In the variables section you will see two blocks: <code>set item</code> and <code>item</code>. The set item block allows you to set a variable to another value or create a new variable.</p>
 <p>Drag the <code>set item</code> block into your code. Click the little arrow next to the word <code>item</code> and select <strong>New Variable</strong>, enter <strong>value</strong> as the name. You have now created a new variable called value, however you must set an initial value. Go to the <strong>Maths</strong> drawer and drag a <code>0</code> block, connecting it to the empty socket in the <code>set</code> value block. Your code should look like this:</p>
-<p><img class="ui image" src="/static/mb/blocks/lessons/variables-0.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/blocks/lessons/variables-0.png" alt="" loading="lazy" /></p>
 <h2>Using Variables</h2><p>We can also set value to something else using this line. For example, we could use the functions in the <strong>Maths</strong> drawer to set value to a new value. If we combine this with the <code>forever</code> loop and if statements from the previous page then we can create a counter:</p>
-<p><img class="ui image" src="/static/mb/blocks/lessons/variables-1.png" alt="" loading="lazy" /></p>
+<p><img src="/static/mb/blocks/lessons/variables-1.png" alt="" loading="lazy" /></p>
 <p>Drag a <code>forever</code> block from the <strong>Basic</strong> drawer and add an <code>if</code> block from the <strong>If</strong> drawer. Attach the ‘button pressed’ block from the ‘Input’ drawer.</p>
 <p>Drag another <code>set item</code> block from the <strong>Variables</strong> draw and click the <strong>down arrow</strong> next to item, however this time select <strong>value</strong>, we don’t have to declare it again as we have already created it. Open the <strong>Maths</strong> drawer and drag a <code>+</code> block before clicking it into place in the <code>set</code> value block. Drag an <code>item</code> block from the <strong>Variables</strong> drawer and again click the <strong>down arrow</strong> before selecting <strong>value</strong>. Add a <code>0</code> from the <strong>Maths</strong> drawer and change the value from <strong>0</strong> to <strong>1</strong>.</p>
 <p>Finally, beneath that line, drag a <code>show number</code> block from the <strong>Basic</strong> drawer, and drag out the <code>0</code>. Drag another variable block from the <strong>Variables</strong> drawer, change it to <code>value</code>, and drop this into the space.</p>

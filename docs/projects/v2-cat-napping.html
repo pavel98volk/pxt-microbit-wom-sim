@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/projects/cat-napping/1_lychee.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/projects/cat-napping/1_lychee.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1692,7 +1692,7 @@
 					
     <div class="ui text">
         <h1>Cat Napping</h1><h2>Introduction</h2><p>Lychee the cat loves the sun and wants to know if your home has a good sunbathing spot. Are you up for the challenge?</p>
-<p><img class="ui image" src="/static/mb/projects/cat-napping/1_lychee.png" alt="Cat Tanning banner message, an image of a cat" loading="lazy" /></p>
+<p><img src="/static/mb/projects/cat-napping/1_lychee.png" alt="Cat Tanning banner message, an image of a cat" loading="lazy" /></p>
 <h2>Setting logging to false on start</h2><p>First, we want to make sure we know when our micro:bit is collecting data. To do this, let's create a <a href="#boolean"><strong><em>boolean</em></strong></a> <a href="#variable"><strong><em>variable</em></strong></a> and use it to track when the micro:bit is logging data. We'll start with the logging variable set to false.</p>
 <p>■ In the <code>||variables:Variables||</code> category, click on <code>Make a Variable...</code> and make a variable named <code>logging</code>.<br />■ From the <code>||variables:Variables||</code> category, grab the <code>||variables:set [logging] to [0]||</code> block and snap it into the empty <code>||basic(noclick):on start||</code> container.<br />■ From the <code>||logic:Logic||</code> category, grab a <code>||logic:&lt;false&gt;||</code> argument and snap it in to <strong>replace</strong> the <code>||variables(noclick):[0]||</code> value in your <code>||variables(noclick):set [logging] to [0]||</code> statement.</p>
 <pre><code class="lang-blocks">let logging = false
@@ -1771,9 +1771,9 @@ loops.everyInterval(60000, function () {
 })</code></pre><h2>Time to log data!</h2><p>You did it! If you have a micro:bit V2 (the one with the <strong>shiny gold</strong> logo at the top), download this code and try it out!</p>
 <p>■ Find a sun spot in your house and press the <code>A</code> button to start logging data - your display should show an icon and play a sound to indicate that you are logging data.<br />■ After some time (we recommend at least an hour), press the <code>A</code> button again to stop logging data - your display should clear to indicate that you are not logging data.</p>
 <h2>Reviewing your data</h2><p>Now that you have logged some data, plug your micro:bit into a laptop or desktop computer. The micro:bit will appear like a USB drive called MICROBIT. Look in there and you'll see a file called MY_DATA:</p>
-<p><img class="ui image" src="/static/mb/projects/cat-napping/11_mydata.png" alt="MY_DATA file highlighted in file folder" loading="lazy" /></p>
+<p><img src="/static/mb/projects/cat-napping/11_mydata.png" alt="MY_DATA file highlighted in file folder" loading="lazy" /></p>
 <p>Double-click on MY_DATA to open it in a web browser and you'll see a table with your data:</p>
-<p><img class="ui image" src="/static/mb/projects/cat-napping/11_datafile.png" alt="Image of sample data file" loading="lazy" /></p>
+<p><img src="/static/mb/projects/cat-napping/11_datafile.png" alt="Image of sample data file" loading="lazy" /></p>
 <h2>Lychee's preferences</h2><p>Does your home have a good sunbathing spot for Lychee? Compare the light and temperature levels you record for different areas around your house! The sunniest and warmest spots will likely be her favorite ☀️😻</p>
 <pre><code class="lang-template">//</code></pre><pre><code class="lang-package">datalogger</code></pre>
     </div>

@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/projects/a4-motion.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/projects/a4-motion.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1691,10 +1691,10 @@
 					</button>
 					
     <div class="ui text">
-        <h1>Rock Paper Scissors</h1><h2>Introduction</h2><p><img class="ui image" src="/static/mb/projects/a4-motion.png" alt="Cartoon of the Rock Paper Scissors game" loading="lazy" /></p>
+        <h1>Rock Paper Scissors</h1><h2>Introduction</h2><p><img src="/static/mb/projects/a4-motion.png" alt="Cartoon of the Rock Paper Scissors game" loading="lazy" /></p>
 <p>Turn your micro:bit into a <strong>Rock Paper Scissors</strong> game that you can play with your friends!</p>
 <h2>Step 1</h2><p>First we need to make a variable to keep track of whether we have a Rock, Paper or Scissors in our hand. A variable is a container for storing values. Click on the <code>||variables:Variables||</code> category in the Toolbox. Click on the <strong>Make a Variable</strong> button. Give your new variable the name "hand" and click Ok.</p>
-<p><img class="ui image" src="/static/mb/projects/rock-paper-scissors/newvar.gif" alt="A animation that shows how to create a variable" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rock-paper-scissors/newvar.gif" alt="A animation that shows how to create a variable" loading="lazy" /></p>
 <h2>Step 2</h2><p>Click on the <code>||variables:Variables||</code> category in the Toolbox again. You'll notice that there are some new blocks that have appeared. Drag a <code>||variables:set hand||</code> block into the <code>||input:on shake||</code> block. We'll start our Rock Paper Scissors game when we shake 👋 our micro:bit.</p>
 <pre><code class="lang-blocks">let hand = 0;
 input.onGesture(Gesture.Shake, function() {
@@ -1795,9 +1795,9 @@ input.onGesture(Gesture.Shake, function() {
     	basic.showIcon(IconNames.Scissors)
     }
 })</code></pre><h2>Step 13</h2><p>Let's test your code! Press the white <strong>SHAKE</strong> button on the micro:bit on-screen simulator, or move your cursor quickly back and forth over the simulator. Do you see the icons for rock, paper and scissors randomly appear?  ⭐ Great job! ⭐</p>
-<p><img class="ui image" src="/static/mb/projects/rock-paper-scissors/rpssim3.gif" alt="Shaking a micro:bit simulator" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rock-paper-scissors/rpssim3.gif" alt="Shaking a micro:bit simulator" loading="lazy" /></p>
 <h2>Step 14</h2><p>If you have a micro:bit device, connect it to your computer and click the <code>|Download|</code> button. Follow the instructions to transfer your code onto the micro:bit. Once your code has been downloaded, attach your micro:bit to a battery pack and challenge another micro:bit or a human to a game of Rock, Paper, Scissors!</p>
-<p><img class="ui image" src="/static/mb/projects/rock-paper-scissors/hand.jpg" alt="A micro:bit in a hand" loading="lazy" /></p>
+<p><img src="/static/mb/projects/rock-paper-scissors/hand.jpg" alt="A micro:bit in a hand" loading="lazy" /></p>
 <h2>Step 15</h2><p>Go further - Try adding 🎵 Music 🎵 blocks to your Rock Paper Scissors game for different sound effects. Note that some Music blocks may require a micro:bit v2 device to play.</p>
 <pre><code class="lang-blocks">let hand = 0
 input.onGesture(Gesture.Shake, function () {

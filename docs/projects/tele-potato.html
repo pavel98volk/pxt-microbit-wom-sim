@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="The famous &quot;Hot Potato&quot; game revisit for micro:bit" />
-<meta name="twitter:image" content="/static/mb/projects/tele-potato.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="The famous &quot;Hot Potato&quot; game revisit for micro:bit" />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/projects/tele-potato.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1699,12 +1699,12 @@
 
         </div>
     </div>
-<p><img class="ui image" src="/static/mb/projects/tele-potato.png" alt="A teleporting potato" loading="lazy" /></p>
+<p><img src="/static/mb/projects/tele-potato.png" alt="A teleporting potato" loading="lazy" /></p>
 <p>Do you know the "Hot Potato" game? You toss around a potato while a timer counts down
 and the person holding it when the timer is up loses... It's super fun.</p>
 <p>In this project, we'll build a similar kind of game but instead we'll use a <strong>virtual potato</strong> and the micro:bit radio.</p>
 <h2>Teleporting potato?</h2><p>Instead of passing a real potato around while a real clock counts down, we are going to <strong>send a number</strong> between micro:bits. We can do that using the <code>||radio:Radio||</code> blocks. They use the antenna on the micro:bit to send data over radio frequency signals, just like the phones or gadgets around you.</p>
-<p><img class="ui image" src="/static/mb/projects/tele-potato/radio-potato.jpg" alt="Using radio to send a potato" loading="lazy" /></p>
+<p><img src="/static/mb/projects/tele-potato/radio-potato.jpg" alt="Using radio to send a potato" loading="lazy" /></p>
 <p>Now, what does it mean to have a number represent a potato? Well, we need to <strong>model</strong> the clock as <strong>a number</strong> being tossed around with the potato. We do this so that we can play the game using the radio. So what is so special about this potato clock? It ticks down the time and when it reaches 0, it rings.</p>
 <p>To keep track of things, let's have a variable called <strong>potato</strong>:</p>
 <ul>
@@ -1712,7 +1712,7 @@ and the person holding it when the timer is up loses... It's super fun.</p>
 <li>if value of <strong>potato</strong> reaches 0, the game is over</li>
 <li>if the value of <strong>potato</strong> is negative, this means that the player doesn't have the potato in their hand</li>
 </ul>
-<p><img class="ui image" src="/static/mb/projects/tele-potato/model.jpg" alt="A diagram of the potato representation" loading="lazy" /></p>
+<p><img src="/static/mb/projects/tele-potato/model.jpg" alt="A diagram of the potato representation" loading="lazy" /></p>
 <p>Now that we know what the potato is, we need to come up with the user interactions. This is how will the user play the game:</p>
 <ul>
 <li>press the <code>A+B</code> button to start the game and send the first potato</li>

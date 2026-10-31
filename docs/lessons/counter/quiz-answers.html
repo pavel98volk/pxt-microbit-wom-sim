@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/lessons/counter-0.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/lessons/counter-0.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1694,28 +1694,25 @@
         <h1>counter quiz answers</h1><p>Learn how to create a counter with the micro:bit button. </p>
 <p>This is the answer key for the <a href="/pxt-microbit-wom-sim/docs/lessons/counter/quiz.html">counter quiz</a>.</p>
 <h2>1. What is a variable?</h2><p>Answers may vary but a variable is a place where you can store and retrieve data</p>
-<h2>2. Draw the stored value for the variable called count</h2><pre><code class="lang-blocks">let count = 0</code></pre><p><img class="ui image" src="/static/mb/lessons/counter-0.png" alt="" loading="lazy" /></p>
+<h2>2. Draw the stored value for the variable called count</h2><pre><code class="lang-blocks">let count = 0</code></pre><p><img src="/static/mb/lessons/counter-0.png" alt="" loading="lazy" /></p>
 <p>We create a <strong>variable</strong>, <code>count</code> to keep track of the current count. The number 0 is stored into memory of the variable.</p>
-<p><br /></p>
-
+<br />
 
 <h2>3. Draw which LEDs are ON after running this code and pressing button "A" once. Explain you chose to draw that number</h2><pre><code class="lang-blocks">let count = 0
 input.onButtonPressed(Button.A, () =&gt; {
     count = count + 1
     basic.showNumber(count)
-})</code></pre><p><img class="ui image" src="/static/mb/lessons/counter-1.png" alt="" loading="lazy" /></p>
+})</code></pre><p><img src="/static/mb/lessons/counter-1.png" alt="" loading="lazy" /></p>
 <p>We are only pressing on button pressed once. So the number to display on the micro:bit is also one.</p>
-<p><br /></p>
-
+<br />
 
 <h2>4. Draw which LEDs are ON after running this code and pressing button "A" three times. Explain you chose to draw that number</h2><pre><code class="lang-blocks">let count = 0
 input.onButtonPressed(Button.A, () =&gt; {
     count =  + 1
     basic.showNumber(count)
-})</code></pre><p><img class="ui image" src="/static/mb/lessons/counter-2.png" alt="" loading="lazy" /></p>
+})</code></pre><p><img src="/static/mb/lessons/counter-2.png" alt="" loading="lazy" /></p>
 <p>We included the code <code>on button pressed("A")</code> that runs each time the user presses A. The code increments <code>count</code> by <code>1</code>. We increase <code>count</code> by 1 whenever the user presses the button. So the third time the A button is pressed on the micro:bit, the number 3 is displayed</p>
-<p><br /></p>
-
+<br />
 
 
     </div>

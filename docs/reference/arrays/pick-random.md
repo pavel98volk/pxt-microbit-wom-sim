@@ -23,7 +23,7 @@ let item = list[Math.randomRange(0, list.length - 1)]
 
 ## Returns
 
-* An item from the array that is randomly selected.
+* An item from the array that is ramdomly selected.
 
 ## Example #example
 

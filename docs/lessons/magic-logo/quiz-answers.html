@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/mb/lessons/magic-logo-0.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/mb/lessons/magic-logo-0.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1695,8 +1695,7 @@
 <h2>Name</h2><h2>Directions</h2><p>This is the answer key for the <a href="/pxt-microbit-wom-sim/docs/lessons/magic-logo/quiz.html">magic logo quiz</a></p>
 <p>Answer the questions while completing the tutorial. Pay attention to the dialogues!</p>
 <h2>1. Define 'on logo up'</h2><p>A function that will run code when the micro:bit screen is facing up and vertically orientated.</p>
-<p><br /></p>
-
+<br />
 
 <h2>2. Write the condition that detects when the micro:bit logo is facing up and vertically orientated.</h2><p>The <code>logo up</code> event is raised when...</p>
 <ul>
@@ -1704,16 +1703,13 @@
 <li>the screen is facing down and the board is horizontal</li>
 <li>the board is vertical and the logo is facing up</li>
 </ul>
-<p><br /></p>
-
+<br />
 
 <pre><code class="lang-blocks">input.onGesture(Gesture.LogoUp, function () {
-})</code></pre><p><br /></p>
+})</code></pre><br />
 
-
-<h2>3. Write the code to display a downward pointing arrow when the logo is down.</h2><p><img class="ui image" src="/static/mb/lessons/magic-logo-0.png" alt="" loading="lazy" /></p>
-<p><br /></p>
-
+<h2>3. Write the code to display a downward pointing arrow when the logo is down.</h2><p><img src="/static/mb/lessons/magic-logo-0.png" alt="" loading="lazy" /></p>
+<br />
 
 <pre><code class="lang-blocks">input.onGesture(Gesture.LogoDown, function () {
     basic.showLeds(`

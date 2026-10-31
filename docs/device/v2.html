@@ -22,14 +22,14 @@
 <meta name="twitter:site" content="@msmakecode" />
 <meta name="twitter:title" content="Microsoft MakeCode for micro:bit" />
 <meta name="twitter:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
-<meta name="twitter:image" content="/static/v2/v2-only.png" />
+<meta name="twitter:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta property="og:title" content="Microsoft MakeCode for micro:bit" />
 <meta property="og:site_name" content="Microsoft MakeCode" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="A Blocks / JavaScript code editor for the micro:bit powered by Microsoft MakeCode." />
 <meta property="fb:app_id" content="" />
-<meta property="og:image" content="/static/v2/v2-only.png" />
+<meta property="og:image" content="docs/static/icons/apple-touch-icon.png" />
 
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="docs/static/icons/apple-touch-icon.png">
@@ -1693,10 +1693,8 @@
     <div class="ui text">
         <h1>micro:bit v2</h1><p>The <a target="_blank" href="https://microbit.org/new-microbit/">micro:bit v2</a> introduces a microphone, speaker, and capacitive touch input on the board's logo. The new blocks designed for the micro:bit v2 will not work with the micro:bit v1.</p>
 <p>Let's learn how this works in MakeCode...</p>
-<h2>v2 Blocks</h2><p><img class="ui image" src="/static/v2/v2-only.png" alt="works with micro:bit v2 only image" loading="lazy" /></p>
-<p><br /></p>
-
-
+<h2>v2 Blocks</h2><p><img src="/static/v2/v2-only.png" alt="works with micro:bit v2 only image" loading="lazy" />
+<br /></p>
 <p>Here are the standard blocks that <strong>require</strong> micro:bit v2 hardware to run.</p>
 <pre><code class="lang-block">let pressed = input.logoIsPressed()
 let level = input.soundLevel()
@@ -1731,15 +1729,15 @@ pins.touchSetMode(TouchTarget.P0, TouchTargetMode.Capacitive)</code></pre><h2>Ho
 <li>gold plated logo on the front, instead of a colored one</li>
 <li>tiny hole near the top right of the screen for the microphone LED</li>
 </ul>
-<p><img class="ui image" src="/static/v2/front.jpg" alt="micro:bit v1 and micro:bit v2 front side by side" loading="lazy" /></p>
+<p><img src="/static/v2/front.jpg" alt="micro:bit v1 and micro:bit v2 front side by side" loading="lazy" /></p>
 <ul>
 <li>red power LED next to the USB connect</li>
 <li>large black speaker component centrally located in the back and rotated by 45 degrees</li>
 <li>slanted radio antenna</li>
 </ul>
-<p><img class="ui image" src="/static/v2/back.jpg" alt="micro:bit v1 and micro:bit v2 back side by side" loading="lazy" /></p>
+<p><img src="/static/v2/back.jpg" alt="micro:bit v1 and micro:bit v2 back side by side" loading="lazy" /></p>
 <h2>v2 simulator</h2><p>If your program uses any of the micro:bit v2 specific blocks, the simulator will automatically change to a micro:bit v2 with notches in the connector and a gold plated logo. You will also see a "v2" symbol on the lower right of the board.</p>
-<p><img class="ui image" src="/static/v2/simulator.png" alt="micro:bit v2 simulator" loading="lazy" /></p>
+<p><img src="/static/v2/simulator.png" alt="micro:bit v2 simulator" loading="lazy" /></p>
 <h2>I see 927 scrolling on my board?</h2><p>If your program tries to use any of the micro:bit v2 blocks on a micro:bit v1 board, you will see the <strong>927</strong> <a href="/pxt-microbit-wom-sim/docs/device/error-codes.html">error code</a> scroll on the micro:bit screen.</p>
 
     </div>
