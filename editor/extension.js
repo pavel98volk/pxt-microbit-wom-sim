@@ -39,6 +39,31 @@ function hideHomeScreenGalleries() {
         }
     `);
 }
+// GitHub Pages only: root-relative /static/logo/social-buttons/*.png (Google Classroom / Teams share buttons) 404 when
+// hosted under /<repo>/, so point them at the official site instead.
+function redirectSocialButtonLogos() {
+    if (typeof document === "undefined" || typeof MutationObserver === "undefined")
+        return;
+    const w = window;
+    if (w._womSocialLogoObserver)
+        return;
+    const prefix = "/static/logo/social-buttons/";
+    const fix = (img) => {
+        const src = img.getAttribute("src");
+        if (src && src.indexOf(prefix) === 0)
+            img.setAttribute("src", "https://makecode.microbit.org" + src);
+    };
+    const scan = (node) => {
+        if (node.nodeType !== 1)
+            return;
+        const el = node;
+        if (el.tagName === "IMG")
+            fix(el);
+        el.querySelectorAll && el.querySelectorAll("img").forEach(i => fix(i));
+    };
+    w._womSocialLogoObserver = new MutationObserver(muts => muts.forEach(m => m.addedNodes.forEach(scan)));
+    w._womSocialLogoObserver.observe(document.documentElement, { childList: true, subtree: true });
+}
 function applyGithubIoMasking() {
     var _a, _b, _c, _d;
     ensureCloudApiRoot();
@@ -49,6 +74,7 @@ function applyGithubIoMasking() {
     if (!isGithubIo)
         return;
     hideHomeScreenGalleries();
+    redirectSocialButtonLogos();
     // 1. Disable auth in pxt.auth so pxt.auth.hasIdentity() evaluates to false
     if ((_a = pxt.auth) === null || _a === void 0 ? void 0 : _a.enableAuth) {
         pxt.auth.enableAuth(false);
