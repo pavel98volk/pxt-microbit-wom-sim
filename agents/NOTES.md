@@ -253,6 +253,39 @@ See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-
   2. **Activating or switching audio to an occupied pin**: When `pins.setAudioPin`, `setAudioPinEnabled(true)`, or tone playback occurs on a pin already occupied by an attached module, `checkSoundPinConflict()` detects the conflict, highlights the speaker badge in red, and presents the warning banner.
   3. **Conflict Resolution**: Calling `pins.setAudioPinEnabled(false)` immediately resolves the conflict, dismisses the warning banner, realigns any remaining banners, and hides the speaker icon.
 
+---
+
+## 7. Two-Way Compatibility Bridge with `makecode.microbit.org`
+
+### 7.1 The Compatibility Gap
+- In this target, the 3 extensions (`Module-World`, `module_world_color`, `tm1650`) are natively bundled under `libs/` and listed in `pxtarget.json`'s `bundleddirs`. Their blocks include `control.dmesg("wom:...")` hooks to drive interactive SVG simulation.
+- On standard `makecode.microbit.org`, these extensions are not bundled; they must be declared as GitHub dependencies (`github:YahboomTechnology/...`).
+- Conversely, projects created on or exported from `makecode.microbit.org` reference GitHub URLs. If loaded into this custom simulator without interception, MakeCode would attempt to fetch them into `pxt_modules/`, causing duplicate identifier collisions, network failures on GitHub Pages, and bypassing the local simulator hooks.
+
+### 7.2 Outbound: Injecting GitHub Extension References into `.hex` and `#project:` Payloads
+1. **Declarative Git Descriptors**: Each bundled directory contains `.git.json` declaring its GitHub repo:
+   - `libs/Module-World/.git.json` -> `YahboomTechnology/Module-World#master`
+   - `libs/module_world_color/.git.json` -> `YahboomTechnology/module_world_color#master`
+   - `libs/tm1650/.git.json` -> `YahboomTechnology/tm1650#master`
+2. **Runtime Prepare-Config Hook in `editor/extension.tsx`**:
+   - `pxt.MainPackage.prototype.prepareConfigToBePublished` is hooked. When generating embedded project metadata for `.hex` builds, `#project:<base64>` links, or cloud export, any dependency matching `Module-World`, `module_world_color`, or `tm1650` is mapped to its canonical GitHub slug (`github:YahboomTechnology/...#master`).
+   - Standard `makecode.microbit.org` reads this metadata upon `.hex` drop or project import, resolves the GitHub dependencies, downloads the packages into `pxt_modules/`, and compiles with all blocks intact.
+
+### 7.3 Inbound: Intercepting and Normalizing to Bundled Packages
+1. **Universal Funnel Interception via `pxt.workspace.installAsync` & `getTextAsync`**:
+   - Every project entering MakeCode (dragged `.hex`, file import dialog, `#project:` base64 unpack, or cloud script install) passes through `pxt.workspace.installAsync(header, files)`.
+   - `sanitizeDependenciesForLocalSim(files)` inspects `pxt.json`. If dependencies contain `Module-World`, `module_world_color`, or `tm1650` (or any `github:YahboomTechnology/...` variant), it normalizes them to bundled syntax (`"*"`).
+   - Any cached `pxt_modules/(Module-World|module_world_color|tm1650)/*` entries are purged from the project file tree so they do not shadow or conflict with the bundled files in `libs/`.
+   - As a result, the simulator always executes the local `libs/` TypeScript code with full `control.dmesg` visual instrumentation, with zero network calls to GitHub.
+
+### 7.4 Importing Links Generated via `microbit.org`
+1. **`pxt.Cloud.parseScriptId` Patch**:
+   - Extended to parse script IDs from `https://makecode.microbit.org/_<id>`, `https://makecode.microbit.org/#pub:_<id>`, `https://microbit.org/...`, and bare script IDs (`_<id>` or 23-digit IDs).
+   - Pasting official share links into the standard MakeCode *Import URL...* dialog works out-of-the-box.
+2. **Hash & Query Parameter Boot Handler (`handleExternalImportAsync`)**:
+   - If the custom simulator is loaded with `#pub:_<id>`, `#import:_<id>`, or `?import=https://makecode.microbit.org/_<id>`, the script ID is parsed, the project text is fetched via `pxt.Cloud.privateGetAsync(scriptId, true)`, passed through the sanitized `installAsync`, and loaded directly into the workspace.
+
+
 
 
 
