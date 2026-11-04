@@ -55,7 +55,9 @@ In `node_modules/pxt-core/built/pxtsim.js` (`BoardHost` lines 776–805 and `All
 - In `sim/tsconfig.json`, `pxt-common-packages/libs/base/sim/control.ts` is compiled **after** `sim/visuals/*.ts`.
 - If `pxsim.control.dmesg` is hooked at top-level module load time (or defined in `sim/state/misc.ts`), `control.ts` executes later in `built/sim.js` and overwrites `control.dmesg = dmesg`.
 - **Solution (Already Implemented in [sim/visuals/womManager.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/visuals/womManager.ts))**:
-  - `WomModuleManager.installHooks()` wraps `pxsim.control.dmesg`, `pxsim.pins.digitalReadPin`, `pxsim.pins.analogReadPin`, `pxsim.pins.pulseIn`, `pxsim.pins.servoSetPulse`, `pxsim.pins.i2cWriteBuffer`, and `pxsim.pins.i2cReadBuffer` at runtime when `WomModuleManager.initBoard(this)` runs in `DalBoard.initAsync` ([sim/dalboard.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/dalboard.ts#L184)).
+  - `WomModuleManager.installHooks()` wraps `pxsim.control.dmesg`, `pxsim.pins.digitalReadPin`, `pxsim.pins.analogReadPin`, `pxsim.pins.pulseIn`, `pxsim.pins.servoSetPulse`, `pxsim.pins.i2cWriteBuffer`, `pxsim.pins.i2cReadBuffer`, `pxsim.pins.setAudioPinEnabled`, `pxsim.pins.setAudioPin`, and `pxsim.pins.analogPitch` at runtime when `WomModuleManager.initBoard(this)` runs in `DalBoard.initAsync` ([sim/dalboard.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/dalboard.ts#L184)).
+  - **Wires + Jack Suppression & Speaker Pin Icon**: Instead of displaying the headphone jack and crocodile clip wire simulation when audio blocks are used, `"headphone"` is filtered out from `cmpsList` before `BoardHost` runs in `DalBoard.initAsync`. A small interactive speaker icon is rendered directly OVER the active audio output pin (`P0` by default, or updated via `pins.setAudioPin(pin)` or `ModuleWorld_PWM.BuzzerPin`).
+  - **Audio Pin Conflict Detection**: If the audio pin is configured and enabled, attempting to attach a module to the sound pin (or enabling audio on a pin already occupied by a module) displays an orange warning banner: `⚠️ Pin conflict on <pin>: pin is used for audio output; call pins.setAudioPinEnabled(false) to use for <module>.` Calling `pins.setAudioPinEnabled(false)` removes the speaker icon and dismisses the warning.
   - Each wrapped function is tagged with `(fn as any)._womHook = true` rather than a static boolean flag, guaranteeing idempotency and survival across script load order.
   - Because all pin hooks live inside `sim/visuals/womManager.ts`, **core simulator files (`sim/state/edgeconnector.ts`, `sim/state/edgeconnectorsim.ts`, `sim/state/misc.ts`) remain 100% unmodified** and agents adding new modules never need to edit `sim/dalboard.ts` or `sim/state/*`.
 
@@ -227,6 +229,30 @@ See [sim/public/sprites/README.md](file:///home/tresspass/Projects/pxt-microbit-
   - Active tab on `#editortoggle`: `color: #ff8b27 !important; background: transparent !important; font-weight: 600;` on top of the white sliding pill (`.active ~ .item.toggle { background: #ffffff !important; }`).
   - Chevron dropdown `#editordropdown.active`: `background: #ffffff !important; color: #ff8b27 !important;` attaching seamlessly to the white pill.
   - Dropdown popup `#editordropdown .menu`: `#ffffff` background with crisp dark text `rgba(0, 0, 0, 0.87)` for both JavaScript and Python (`.base-menuitem`), light gray hover, and orange text + checkmark for the selected language.
+
+---
+
+## 6. Suppression of Breadboard Headphone & Audio Pin Speaker Indicator
+
+### 6.1 Complete Suppression of Wires + Jack Animation
+- In standard MakeCode micro:bit, using music blocks automatically requests `"headphone"` in `msg.parts`, causing `BoardHost` to instantiate a headphone jack and crocodile clips on `P0` and `GND`, scaling `<svg class="sim">` down and altering breadboard viewbox.
+- In `DalBoard.initAsync` ([sim/dalboard.ts](file:///home/tresspass/Projects/pxt-microbit-wom-sim/sim/dalboard.ts)), `"headphone"` is filtered out from `cmpsList` before `BoardHost` initialization while tracking `this.hasAudioHeadphone = hasHeadphone`.
+- This ensures `BoardHost` never shrinks `<svg class="sim">` or inserts breadboard headphone components/wires into the DOM. The micro:bit board always remains at full size (`500px x 408px`), with `viewBox="0 0 500 <height>"`.
+
+### 6.2 Small Speaker Icon Over Pin
+- When audio output is configured (`hasAudioHeadphone` from project parts, `pins.setAudioPin(pin)`, `ModuleWorld_PWM.BuzzerPin`, or `analogPitch`) and enabled (`pins.setAudioPinEnabled` is not false):
+  - A small interactive speaker icon badge is drawn directly OVER the active micro:bit pin (default `P0`, or dynamically repositioned when the sound pin changes).
+  - For large pins (`P0`, `P1`, `P2`), the icon is centered at `y = 341.6` inside the gold ring hole.
+  - For small pins (`P3..P20`), the icon is centered at `y = 366` over the gold finger strip.
+  - Calling `pins.setAudioPinEnabled(false)` removes/hides the speaker icon.
+
+### 6.3 Sound Pin Conflict Warning Banner
+- If audio output on edge connector is configured and enabled:
+  1. **Attaching a module to the sound pin**: When `ensureModule` is called with pins that overlap the active audio pin, it displays an orange warning banner:
+     `⚠️ Pin conflict on <pin>: pin is used for audio output; call pins.setAudioPinEnabled(false) to use for <module>.`
+  2. **Activating or switching audio to an occupied pin**: When `pins.setAudioPin`, `setAudioPinEnabled(true)`, or tone playback occurs on a pin already occupied by an attached module, `checkSoundPinConflict()` detects the conflict, highlights the speaker badge in red, and presents the warning banner.
+  3. **Conflict Resolution**: Calling `pins.setAudioPinEnabled(false)` immediately resolves the conflict, dismisses the warning banner, realigns any remaining banners, and hides the speaker icon.
+
 
 
 

@@ -26,6 +26,7 @@ namespace pxsim {
         fileSystem: FileSystemState;
         logoTouch: Button;
         speakerEnabled: boolean = true;
+        hasAudioHeadphone: boolean = false;
         controlMessageState: ControlMessageState;
         samplesState: samples.SamplesState;
 
@@ -137,7 +138,9 @@ namespace pxsim {
             super.initAsync(msg);
 
             const boardDef = msg.boardDefinition;
-            const cmpsList = msg.parts;
+            const hasHeadphone = (msg.parts || []).indexOf("headphone") !== -1;
+            this.hasAudioHeadphone = hasHeadphone;
+            const cmpsList = (msg.parts || []).filter(p => p !== "headphone");
             const cmpDefs = msg.partDefinitions || {};
             const fnArgs = msg.fnArgs;
 

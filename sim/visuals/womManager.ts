@@ -123,6 +123,14 @@ namespace pxsim.visuals {
         return -1;
     }
 
+    /**
+     * Convert a pin ID or AnalogPin enum to its micro:bit pin name ("P0".."P20")
+     */
+    export function pinIdToName(pinId: number): string {
+        const idx = pinId >= 100 ? pinId - 100 : pinId >= DAL.MICROBIT_ID_IO_P0 ? pinId - DAL.MICROBIT_ID_IO_P0 : pinId;
+        return (idx >= 0 && idx <= 20) ? `P${idx}` : "P0";
+    }
+
     export function getPinInstance(pinName: string): Pin | undefined {
         const b = board();
         if (!b || !b.edgeConnectorState) return undefined;
@@ -561,12 +569,21 @@ namespace pxsim.visuals {
          */
         public static initBoard(b: DalBoard): WomModuleManager {
             WomModuleManager.installHooks();
+            if (typeof pxsim !== "undefined" && pxsim.pins) {
+                (pxsim.pins as any).edgeConnectorSoundDisabled = false;
+            }
             let mgr = (b as any).womManager as WomModuleManager;
             if (!mgr) {
                 mgr = new WomModuleManager(b);
                 (b as any).womManager = mgr;
                 b.updateSubscribers.push(() => mgr.updateAllModules());
+            } else {
+                mgr.boardInstance = b;
+                mgr.rootGroup = null;
+                mgr.speakerGroup = null;
+                if ((b as any).hasAudioHeadphone) mgr.audioPinConfigured = true;
             }
+            mgr.updateAudioSpeakerIcon();
             return mgr;
         }
 
@@ -696,6 +713,41 @@ namespace pxsim.visuals {
                 (hookedI2cRead as any)._womHook = true;
                 pxsim.pins.i2cReadBuffer = hookedI2cRead;
             }
+
+            // 7. Hook pxsim.pins.setAudioPinEnabled
+            if (pxsim.pins && (!(pxsim.pins as any).setAudioPinEnabled || !(pxsim.pins as any).setAudioPinEnabled._womHook)) {
+                const hookedSetAudioPinEnabled = function (enabled: boolean) {
+                    (pxsim.pins as any).edgeConnectorSoundDisabled = !enabled;
+                    const mgr = WomModuleManager.get();
+                    if (mgr) mgr.setAudioPinEnabled(!!enabled);
+                };
+                (hookedSetAudioPinEnabled as any)._womHook = true;
+                pxsim.pins.setAudioPinEnabled = hookedSetAudioPinEnabled;
+            }
+
+            // 8. Hook pxsim.pins.setAudioPin
+            if (pxsim.pins && (!(pxsim.pins as any).setAudioPin || !(pxsim.pins as any).setAudioPin._womHook)) {
+                const origSetAudioPin = pxsim.pins.setAudioPin;
+                const hookedSetAudioPin = function (pinId: number) {
+                    if (origSetAudioPin) origSetAudioPin.call(pxsim.pins, pinId);
+                    const mgr = WomModuleManager.get();
+                    if (mgr) mgr.setAudioPin(pinId);
+                };
+                (hookedSetAudioPin as any)._womHook = true;
+                pxsim.pins.setAudioPin = hookedSetAudioPin;
+            }
+
+            // 9. Hook pxsim.pins.analogPitch
+            if (pxsim.pins && (!(pxsim.pins as any).analogPitch || !(pxsim.pins as any).analogPitch._womHook)) {
+                const origAnalogPitch = pxsim.pins.analogPitch;
+                const hookedAnalogPitch = function (frequency: number, ms: number) {
+                    const mgr = WomModuleManager.get();
+                    if (mgr) mgr.onAudioPitchTriggered();
+                    if (origAnalogPitch) origAnalogPitch.call(pxsim.pins, frequency, ms);
+                };
+                (hookedAnalogPitch as any)._womHook = true;
+                pxsim.pins.analogPitch = hookedAnalogPitch;
+            }
         }
 
         public static handleDmesg(msg: string) {
@@ -731,6 +783,7 @@ namespace pxsim.visuals {
         private wiresGroup: SVGGElement | null = null;
         private modulesGroup: SVGGElement | null = null;
         private warningGroup: SVGGElement | null = null;
+        private speakerGroup: SVGGElement | null = null;
 
         /** Canonical pinKey (e.g. "P0,P1") -> spawned module */
         private modulesByPinKey: { [pinKey: string]: IWomModule } = {};
@@ -740,6 +793,13 @@ namespace pxsim.visuals {
         private occupied: boolean[][] = [];
         private warningsShown: { [msg: string]: boolean } = {};
         private lastPostedHeight = 430;
+
+        /** Audio pin tracking (speaker icon + conflict check) */
+        private audioPinConfigured: boolean = false;
+        private audioPinEnabled: boolean = true;
+        private currentAudioPin: string = "P0";
+        private soundWarningElement: SVGGElement | null = null;
+        private soundWarningMsg: string | null = null;
 
         public static readonly GRID_COLS = 3;
         public static readonly CELL_W = 148;
@@ -751,6 +811,13 @@ namespace pxsim.visuals {
 
         constructor(private boardInstance?: DalBoard) {
             WomModuleManager.installHooks();
+            const b = boardInstance || board();
+            if (b) {
+                const vh = (b as any).viewHost;
+                if ((b as any).hasAudioHeadphone || (vh && vh.opts && vh.opts.partsList && vh.opts.partsList.indexOf("headphone") !== -1)) {
+                    this.audioPinConfigured = true;
+                }
+            }
         }
 
         /** Compute pixel width for a given colSpan (1 -> 148, 2 -> 312) */
@@ -787,6 +854,9 @@ namespace pxsim.visuals {
                 this.wiresGroup = <SVGGElement>svg.child(this.rootGroup, "g", { class: "wom-wires-layer" });
                 this.modulesGroup = <SVGGElement>svg.child(this.rootGroup, "g", { class: "wom-modules-layer" });
                 this.warningGroup = <SVGGElement>svg.child(this.rootGroup, "g", { class: "wom-warning-layer" });
+            }
+            if (!this.speakerGroup || !svgEl.contains(this.speakerGroup)) {
+                this.speakerGroup = <SVGGElement>svg.child(svgEl, "g", { class: "wom-speaker-layer" });
             }
             return true;
         }
@@ -825,7 +895,12 @@ namespace pxsim.visuals {
                 }
             }
 
-            // 2b. Check LED matrix shared pin conflict (orange warning banner)
+            // 2b. Check audio / sound pin conflict (orange warning banner, similar to led enable: false)
+            if (this.isAudioPinConflictActive(pins)) {
+                this.showSoundPinConflictWarning(moduleType, pins, this.currentAudioPin);
+            }
+
+            // 2c. Check LED matrix shared pin conflict (orange warning banner)
             const ledConflictPins = pins.filter(p => LED_SHARED_PINS.indexOf(p) !== -1);
             if (ledConflictPins.length > 0 && WomModuleManager.isLedConflictActive(this.boardInstance)) {
                 this.showLedPinConflictWarning(moduleType, pins, ledConflictPins);
@@ -843,6 +918,7 @@ namespace pxsim.visuals {
             for (const pin of pins) {
                 this.pinOwner[pin] = mod;
             }
+            this.updateAudioSpeakerIcon();
 
             // 4. Allocate 2D grid slot and position module
             const slot = this.allocateGridSlot(mod.colSpan, mod.rowSpan);
@@ -925,7 +1001,7 @@ namespace pxsim.visuals {
                     return;
                 }
 
-                const boardCoord = boardView.getCoord(pinName);
+                let boardCoord = boardView.getCoord(pinName);
                 if (!boardCoord) return;
 
                 const wireColor = pad.color || getPinWireColor(pinName);
@@ -1040,18 +1116,140 @@ namespace pxsim.visuals {
             this.updateViewBox();
         }
 
+        public setAudioPin(pinId: number): void {
+            this.currentAudioPin = pinIdToName(pinId);
+            this.audioPinConfigured = true;
+            this.checkSoundPinConflict();
+        }
+
+        public setAudioPinEnabled(enabled: boolean): void {
+            this.audioPinEnabled = !!enabled;
+            (pxsim.pins as any).edgeConnectorSoundDisabled = !enabled;
+            if (enabled) this.audioPinConfigured = true;
+            this.checkSoundPinConflict();
+        }
+
+        public onAudioPitchTriggered(): void {
+            if (!this.audioPinConfigured) {
+                this.audioPinConfigured = true;
+                this.checkSoundPinConflict();
+            }
+        }
+
+        public isAudioPinActive(): boolean {
+            if (!this.audioPinConfigured || !this.audioPinEnabled) return false;
+            if (typeof pxsim !== "undefined" && pxsim.pins && (pxsim.pins as any).edgeConnectorSoundDisabled) {
+                return false;
+            }
+            return true;
+        }
+
+        public isAudioPinConflictActive(pins: string[]): boolean {
+            return this.isAudioPinActive() && pins.indexOf(this.currentAudioPin) !== -1;
+        }
+
+        public checkSoundPinConflict(): void {
+            if (!this.isAudioPinActive()) {
+                this.clearSoundPinConflictWarning();
+            } else {
+                const owner = this.pinOwner[this.currentAudioPin];
+                if (owner) {
+                    this.showSoundPinConflictWarning(owner.moduleType, owner.pins, this.currentAudioPin, owner.displayName);
+                } else {
+                    this.clearSoundPinConflictWarning();
+                }
+            }
+            this.updateAudioSpeakerIcon();
+        }
+
+        public showSoundPinConflictWarning(moduleType: string, pins: string[], soundPin: string, displayName?: string): void {
+            const targetName = displayName || moduleType;
+            const msg = `Pin conflict on ${soundPin}: pin is used for audio output; call pins.setAudioPinEnabled(false) to use for ${targetName}.`;
+            if (this.warningsShown[msg]) return;
+            this.warningsShown[msg] = true;
+            this.soundWarningMsg = msg;
+            console.warn(`[WoM Sim] ${msg}`);
+            if (!this.warningGroup) return;
+
+            const bannerIndex = Object.keys(this.warningsShown).length - 1;
+            const yOffset = 412 + bannerIndex * 26;
+            const g = <SVGGElement>svg.child(this.warningGroup, "g", { class: "wom-warning-sound", transform: `translate(10, ${yOffset})` });
+            this.soundWarningElement = g;
+            svg.child(g, "rect", { x: 0, y: 0, width: 480, height: 22, rx: 4, fill: "#c2410c", stroke: "#fdba74", "stroke-width": 1 });
+            const t = svg.child(g, "text", { x: 8, y: 15, fill: "#ffffff", "font-family": "monospace, sans-serif", "font-size": "10.5px", "font-weight": "bold" });
+            t.textContent = `⚠️ ${msg}`;
+            this.updateViewBox();
+            this.updateAudioSpeakerIcon();
+        }
+
+        public clearSoundPinConflictWarning(): void {
+            if (this.soundWarningMsg) {
+                delete this.warningsShown[this.soundWarningMsg];
+                this.soundWarningMsg = null;
+            }
+            if (this.soundWarningElement) {
+                this.soundWarningElement.remove();
+                this.soundWarningElement = null;
+                if (this.warningGroup) {
+                    for (let i = 0; i < this.warningGroup.children.length; i++) {
+                        (this.warningGroup.children[i] as SVGGElement).setAttribute("transform", `translate(10, ${412 + i * 26})`);
+                    }
+                }
+                this.updateViewBox();
+            }
+            this.updateAudioSpeakerIcon();
+        }
+
+        public updateAudioSpeakerIcon(): void {
+            const b = this.boardInstance || board();
+            if (!b || !b.view) return;
+            if (!this.speakerGroup || !b.view.contains(this.speakerGroup)) {
+                this.speakerGroup = <SVGGElement>svg.child(b.view, "g", { class: "wom-speaker-layer" });
+            }
+            while (this.speakerGroup.firstChild) {
+                this.speakerGroup.removeChild(this.speakerGroup.firstChild);
+            }
+            if (!this.isAudioPinActive()) {
+                this.speakerGroup.style.display = "none";
+                return;
+            }
+            this.speakerGroup.style.display = "";
+
+            const pinName = this.currentAudioPin;
+            const boardView = this.getBoardView();
+            const coord = boardView ? boardView.getCoord(pinName) : null;
+            const isBig = pinName === "P0" || pinName === "P1" || pinName === "P2";
+            const x = coord ? coord[0] : (pinName === "P1" ? 139.3 : pinName === "P2" ? 249.4 : 40.5);
+            const y = isBig ? 341.6 : 366;
+            const conflict = !!this.pinOwner[pinName];
+
+            const g = svg.child(this.speakerGroup, "g", {
+                transform: `translate(${x}, ${y})`,
+                style: "cursor: pointer; pointer-events: auto;",
+                title: conflict ? `Audio output conflict on ${pinName}` : `Audio output: ${pinName}`
+            });
+            svg.child(g, "circle", {
+                cx: 0, cy: 0, r: isBig ? 10 : 8,
+                fill: conflict ? "#7f1d1d" : "#0f172a",
+                stroke: conflict ? "#ef4444" : "#38bdf8",
+                "stroke-width": 1.5
+            });
+            const cone = svg.child(g, "g", { transform: isBig ? "" : "scale(0.8)" });
+            svg.child(cone, "polygon", { points: "-5,-2.5 -2,-2.5 1.5,-5.5 1.5,5.5 -2,2.5 -5,2.5", fill: "#fff" });
+            svg.child(cone, "path", { d: "M 3.5 -3 C 4.7 -1.5 4.7 1.5 3.5 3", fill: "none", stroke: "#fff", "stroke-width": 1.2, "stroke-linecap": "round" });
+            svg.child(cone, "path", { d: "M 5.8 -5 C 7.5 -2.5 7.5 2.5 5.8 5", fill: "none", stroke: "#fff", "stroke-width": 1.2, "stroke-linecap": "round" });
+        }
+
         private updateViewBox(): void {
             const b = this.boardInstance || board();
             if (!b || !b.view) return;
-            const numRows = Math.max(1, this.occupied.length);
+            const numRows = this.occupied.length;
             const numWarnings = Object.keys(this.warningsShown).length;
             const warningExtra = Math.max(0, (numWarnings - 1) * 26);
-            const requiredHeight = Math.max(
-                430 + warningExtra,
-                WomModuleManager.START_Y +
-                numRows * (WomModuleManager.CELL_H + WomModuleManager.GAP_Y) +
-                16
-            );
+            const womHeight = numRows > 0
+                ? WomModuleManager.START_Y + numRows * (WomModuleManager.CELL_H + WomModuleManager.GAP_Y) + 16
+                : 430;
+            const requiredHeight = Math.max(430 + warningExtra, womHeight);
             b.view.setAttribute("viewBox", `0 0 500 ${requiredHeight}`);
 
             if (requiredHeight !== this.lastPostedHeight && typeof Runtime !== "undefined" && Runtime.postMessage) {
