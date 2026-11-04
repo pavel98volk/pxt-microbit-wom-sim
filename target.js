@@ -409,7 +409,7 @@ var pxtTargetBundle = {
         "organizationLogo": "docs/static/Microsoft_logo_rgb_W-white_D-square.png",
         "organizationWideLogo": "docs/static/Microsoft_logo_rgb_W-white_D.png",
         "homeScreenHero": {
-            "imageUrl": "https://makecode.microbit.org/static/herogallery/hero-banner.png",
+            "imageUrl": "docs/static/herogallery/hero-banner.png",
             "name": "Flashing Heart",
             "url": "/projects/flashing-heart",
             "description": "New? Start here!",

@@ -175,17 +175,10 @@
         if (url.startsWith(window.location.origin + "/api/")) {
             return "https://www.makecode.com" + url.slice(window.location.origin.length);
         }
-        // Rewrite /static/... or https://<domain>/static/... to https://makecode.microbit.org/static/...
-        if (url.startsWith("/static/")) {
-            return "https://makecode.microbit.org" + url;
-        }
-        if (url.startsWith(window.location.origin + "/static/")) {
-            return "https://makecode.microbit.org" + url.slice(window.location.origin.length);
-        }
         return url;
     }
 
-    // 2. Intercept fetch for /api/ and /static/
+    // 2. Intercept fetch for /api/
     if (window.fetch) {
         const origFetch = window.fetch;
         window.fetch = function(input, init) {
@@ -200,7 +193,7 @@
         };
     }
 
-    // 3. Intercept XMLHttpRequest for /api/ and /static/
+    // 3. Intercept XMLHttpRequest for /api/
     if (window.XMLHttpRequest) {
         const origOpen = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function(method, url) {
@@ -210,54 +203,6 @@
             return origOpen.apply(this, arguments);
         };
     }
-
-    // 4. Intercept setAttribute for image src / data-src
-    const origSetAttr = Element.prototype.setAttribute;
-    Element.prototype.setAttribute = function(name, val) {
-        if (typeof val === "string") {
-            if ((name === "src" || name === "data-src" || name === "href") && (val.startsWith("/static/") || val.startsWith(window.location.origin + "/static/"))) {
-                val = rewriteUrl(val);
-            }
-        }
-        return origSetAttr.call(this, name, val);
-    };
-
-    // 5. MutationObserver to rewrite CSS background-image or lazy-loaded cards
-    const staticObserver = new MutationObserver(mutations => {
-        for (let i = 0; i < mutations.length; i++) {
-            const m = mutations[i];
-            if (m.type === "attributes" && m.attributeName === "style") {
-                const target = m.target;
-                if (target && target.style && target.style.backgroundImage && target.style.backgroundImage.indexOf("/static/") !== -1) {
-                    target.style.backgroundImage = target.style.backgroundImage.replace(/url\(["']?(\/static\/[^"']+)["']?\)/g, (full, path) => {
-                        return 'url("' + rewriteUrl(path) + '")';
-                    });
-                }
-            } else if (m.type === "childList") {
-                for (let j = 0; j < m.addedNodes.length; j++) {
-                    const node = m.addedNodes[j];
-                    if (node.nodeType === 1) {
-                        const el = node;
-                        if (el.dataset && el.dataset.src && el.dataset.src.startsWith("/static/")) {
-                            el.dataset.src = rewriteUrl(el.dataset.src);
-                        }
-                        if (el.tagName === "IMG" && el.src && el.src.startsWith(window.location.origin + "/static/")) {
-                            el.src = rewriteUrl(el.src);
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-        staticObserver.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ["style", "data-src", "src"]
-        });
-    });
 })();
 </script>
 <script type="text/javascript" src="/pxt-microbit-wom-sim/pxtweb.js"></script>

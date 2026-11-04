@@ -18,6 +18,38 @@ function ensureCloudApiRoot() {
         pxt.Cloud.apiRoot = "https://www.makecode.com/api/";
     }
 }
+function stripGalleries(cfg) {
+    if (cfg && typeof cfg === "object") {
+        cfg.galleries = {};
+        cfg.localizedGalleries = {};
+    }
+    return cfg;
+}
+// GitHub Pages only: no hero banner, no Tutorials/Games/Make it: code it/... carousels on the home screen.
+function hideHomeScreenGalleries() {
+    var _a;
+    const theme = (_a = pxt.appTarget) === null || _a === void 0 ? void 0 : _a.appTheme;
+    if (theme) {
+        delete theme.homeScreenHero;
+        delete theme.homeScreenHeroGallery;
+    }
+    // Galleries come from pxt.targetConfigAsync() (and its cached copy in local storage)
+    const p = pxt;
+    if (p.targetConfigAsync && !p.targetConfigAsync._womStripped) {
+        const orig = p.targetConfigAsync;
+        const wrapped = function (...args) {
+            return orig.apply(this, args).then(stripGalleries);
+        };
+        wrapped._womStripped = true;
+        p.targetConfigAsync = wrapped;
+    }
+    try {
+        const cached = pxt.storage.getLocal("targetconfig");
+        if (cached)
+            pxt.storage.setLocal("targetconfig", JSON.stringify(stripGalleries(JSON.parse(cached))));
+    }
+    catch (e) { /* ignore corrupted cache */ }
+}
 function applyGithubIoMasking() {
     var _a, _b, _c, _d;
     ensureCloudApiRoot();
@@ -43,6 +75,8 @@ function applyGithubIoMasking() {
     if ((_d = pxt.appTarget) === null || _d === void 0 ? void 0 : _d.appTheme) {
         pxt.appTarget.appTheme.docMenu = [];
     }
+    // 3b. Remove the "New? Start here!" hero banner and all example galleries from the home screen
+    hideHomeScreenGalleries();
     // 4. Inject CSS safety rule to mask sign-in, profile, and help menu
     const styleId = "pxt-githubio-cloud-mask";
     if (typeof document !== "undefined" && !document.getElementById(styleId)) {

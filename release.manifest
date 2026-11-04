@@ -59,7 +59,7 @@ CACHE:
 /pxt-microbit-wom-sim/worker.js
 /pxt-microbit-wom-sim/monacoworker.js
 
-# ver Wed Nov 04 2026 23:08:46 GMT+0200 (Eastern European Standard Time)
+# ver Wed Nov 04 2026 23:28:39 GMT+0200 (Eastern European Standard Time)
 
 # target
 /pxt-microbit-wom-sim/docs/static/providers/github-mark.png
@@ -72,6 +72,7 @@ CACHE:
 /pxt-microbit-wom-sim/docs/static/icons/apple-touch-icon.png
 /pxt-microbit-wom-sim/docs/static/Microsoft_logo_rgb_W-white_D-square.png
 /pxt-microbit-wom-sim/docs/static/Microsoft_logo_rgb_W-white_D.png
+/pxt-microbit-wom-sim/docs/static/herogallery/hero-banner.png
 /pxt-microbit-wom-sim/docs/static/download/transfer.png
 /pxt-microbit-wom-sim/docs/static/download/connect-microbit.gif
 /pxt-microbit-wom-sim/docs/static/download/full-reset.gif
