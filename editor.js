@@ -3111,12 +3111,18 @@ const dialogs = require("./dialogs");
 const flash = require("./flash");
 const patch = require("./patch");
 const COMPAT_EXTENSIONS = {
-    "Module-World": "github:YahboomTechnology/Module-World#main",
-    "module_world_color": "github:YahboomTechnology/module_world_color#main",
-    "tm1650": "github:YahboomTechnology/tm1650#master"
+    "Module-World": "github:YahboomTechnology/Module-World",
+    "module_world_color": "github:YahboomTechnology/module_world_color",
+    "tm1650": "github:YahboomTechnology/tm1650"
 };
+function ensureCloudApiRoot() {
+    if (pxt.Cloud) {
+        pxt.Cloud.apiRoot = "https://www.makecode.com/api/";
+    }
+}
 function applyGithubIoMasking() {
     var _a, _b, _c, _d;
+    ensureCloudApiRoot();
     if (typeof window === "undefined" || !window.location)
         return;
     const isGithubIo = /github\.io$/i.test(window.location.hostname);
@@ -3178,6 +3184,39 @@ function installPrepareConfigHook() {
             }
         }
         return cfg;
+    };
+}
+// Embed bundled extension sources into _packaged-extensions.json in .hex so microbit.org can load them offline
+function installFilesToBePublishedHook() {
+    var _a;
+    const mainPkgProto = (_a = pxt.MainPackage) === null || _a === void 0 ? void 0 : _a.prototype;
+    if (!mainPkgProto || mainPkgProto._packagedExtHookInstalled)
+        return;
+    mainPkgProto._packagedExtHookInstalled = true;
+    const origFilesToBePublished = mainPkgProto.filesToBePublishedAsync;
+    mainPkgProto.filesToBePublishedAsync = async function (allowPrivate = false, packExternalExtensions = false) {
+        const files = origFilesToBePublished
+            ? await origFilesToBePublished.call(this, allowPrivate, packExternalExtensions)
+            : {};
+        if (files) {
+            let packaged = {};
+            if (files[pxt.PACKAGED_EXTENSIONS]) {
+                try {
+                    packaged = JSON.parse(files[pxt.PACKAGED_EXTENSIONS]);
+                }
+                catch (e) { }
+            }
+            const bundledpkgs = pxt.appTarget.bundledpkgs || {};
+            for (const [pkgId, ghSlug] of Object.entries(COMPAT_EXTENSIONS)) {
+                if (bundledpkgs[pkgId]) {
+                    const pkgFiles = Object.assign({}, bundledpkgs[pkgId]);
+                    packaged[ghSlug] = pkgFiles;
+                    packaged[pkgId] = pkgFiles;
+                }
+            }
+            files[pxt.PACKAGED_EXTENSIONS] = JSON.stringify(packaged);
+        }
+        return files;
     };
 }
 // Sanitize dependencies for incoming projects: rewrite any GitHub references back to local bundled packages
@@ -3247,21 +3286,24 @@ function installWorkspaceHooks() {
 }
 // Patch pxt.Cloud.parseScriptId to recognize official makecode.microbit.org and microbit.org URLs
 function installScriptIdHook() {
+    ensureCloudApiRoot();
     const cloud = pxt.Cloud;
     if (!cloud || cloud._compatHookInstalled)
         return;
     cloud._compatHookInstalled = true;
+    // Enforce official MakeCode API root so static hosts (e.g. GitHub Pages) do not hit relative /api/
+    cloud.apiRoot = "https://www.makecode.com/api/";
     const origParseScriptId = cloud.parseScriptId;
     cloud.parseScriptId = function (uri) {
         if (!uri)
             return undefined;
         const trimmed = uri.trim();
-        // 1. Direct script ID (e.g. _xxxxxxxxxxxx or 23-digit id)
-        const directMatch = /^(_[a-zA-Z0-9]{12}|S?[0-9\-]{23})$/.exec(trimmed);
+        // 1. Direct script ID (e.g. _xxxxxxxxxxxx or S12345-67890-... or 12345-67890-...)
+        const directMatch = /^(_[a-zA-Z0-9]{10,14}|S?[0-9\-]{20,26})$/.exec(trimmed);
         if (directMatch)
             return directMatch[1];
         // 2. Official micro:bit URLs (standard or hash route)
-        const mbMatch = /(?:makecode\.microbit\.org|microbit\.org)\/(?:#pub:|\/)?(_[a-zA-Z0-9]{12}|S?[0-9\-]{23})/i.exec(trimmed);
+        const mbMatch = /(?:makecode\.microbit\.org|microbit\.org)\/(?:#pub:|\/)?(_[a-zA-Z0-9]{10,14}|S?[0-9\-]{20,26})/i.exec(trimmed);
         if (mbMatch)
             return mbMatch[1];
         return origParseScriptId ? origParseScriptId(uri) : undefined;
@@ -3269,40 +3311,30 @@ function installScriptIdHook() {
 }
 // Handle external micro:bit project imports if opened via URL hash or query parameter
 async function handleExternalImportAsync(pv) {
-    var _a;
     if (typeof window === "undefined" || !window.location)
         return;
+    ensureCloudApiRoot();
     const hash = window.location.hash || "";
     const search = window.location.search || "";
     const urlParams = new URLSearchParams(search);
     const importUrl = urlParams.get("import");
     let scriptId;
+    const cloud = pxt.Cloud;
     if (importUrl) {
-        scriptId = pxt.Cloud.parseScriptId(importUrl);
+        scriptId = (cloud === null || cloud === void 0 ? void 0 : cloud.parseScriptId) ? cloud.parseScriptId(importUrl) : undefined;
     }
     else if (hash.startsWith("#pub:") || hash.startsWith("#import:")) {
         const rawArg = hash.replace(/^#(pub|import):/, "");
-        scriptId = pxt.Cloud.parseScriptId(rawArg) || rawArg;
+        scriptId = ((cloud === null || cloud === void 0 ? void 0 : cloud.parseScriptId) ? cloud.parseScriptId(rawArg) : undefined) || rawArg;
     }
-    if (scriptId && /^(_[a-zA-Z0-9]{12}|S?[0-9\-]{23})$/.test(scriptId)) {
+    if (scriptId && /^(_[a-zA-Z0-9]{10,14}|S?[0-9\-]{20,26})$/.test(scriptId)) {
         pxt.BrowserUtils.changeHash("");
         if (pv.showLoading)
             pv.showLoading("importing", "Loading micro:bit project...");
         try {
-            const res = await pxt.Cloud.privateGetAsync(scriptId, true);
-            if (res && res.text) {
-                const files = JSON.parse(res.text);
-                const header = {
-                    target: pxt.appTarget.id,
-                    targetVersion: (_a = pxt.appTarget.versions) === null || _a === void 0 ? void 0 : _a.target,
-                    editor: res.editor || pxt.BLOCKS_PROJECT_NAME,
-                    name: res.name || "microbit project",
-                    meta: {},
-                    pubId: scriptId,
-                    pubCurrent: true
-                };
-                const ws = pxt.workspace;
-                const installed = await ws.installAsync(header, files);
+            const ws = pxt.workspace;
+            if (ws && ws.installByIdAsync) {
+                const installed = await ws.installByIdAsync(scriptId);
                 await pv.loadHeaderAsync(installed, null);
             }
         }
@@ -3318,14 +3350,18 @@ async function handleExternalImportAsync(pv) {
     }
 }
 // Run immediately when editor extension loads
+ensureCloudApiRoot();
 applyGithubIoMasking();
 installPrepareConfigHook();
+installFilesToBePublishedHook();
 installWorkspaceHooks();
 installScriptIdHook();
 pxt.editor.initExtensionsAsync = function (opts) {
     pxt.debug('loading microbit target extensions...');
+    ensureCloudApiRoot();
     applyGithubIoMasking();
     installPrepareConfigHook();
+    installFilesToBePublishedHook();
     installWorkspaceHooks();
     installScriptIdHook();
     const manyAny = Math;
