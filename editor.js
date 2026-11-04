@@ -3120,14 +3120,37 @@ function ensureCloudApiRoot() {
         pxt.Cloud.apiRoot = "https://www.makecode.com/api/";
     }
 }
+function injectStyle(styleId, css) {
+    if (typeof document === "undefined" || document.getElementById(styleId))
+        return;
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+// All hosts: the "Cloud Projects" sign-in card is useless without cloud backend
+function hideCloudProjectsCard() {
+    injectStyle("pxt-cloud-projects-card-mask", `.cloudprojectscard { display: none !important; }`);
+}
+// GitHub Pages only: hides the "New? Start here!" hero banner and all example gallery sections (keeps My Projects/search/import)
+function hideHomeScreenGalleries() {
+    injectStyle("pxt-home-galleries-mask", `
+        .getting-started-segment.hero,
+        .ui.segment.gallerysegment:not(.search-segment):not(.mystuff-segment) {
+            display: none !important;
+        }
+    `);
+}
 function applyGithubIoMasking() {
     var _a, _b, _c, _d;
     ensureCloudApiRoot();
     if (typeof window === "undefined" || !window.location)
         return;
+    hideCloudProjectsCard();
     const isGithubIo = /github\.io$/i.test(window.location.hostname);
     if (!isGithubIo)
         return;
+    hideHomeScreenGalleries();
     // 1. Disable auth in pxt.auth so pxt.auth.hasIdentity() evaluates to false
     if ((_a = pxt.auth) === null || _a === void 0 ? void 0 : _a.enableAuth) {
         pxt.auth.enableAuth(false);
@@ -3145,7 +3168,7 @@ function applyGithubIoMasking() {
     if ((_d = pxt.appTarget) === null || _d === void 0 ? void 0 : _d.appTheme) {
         pxt.appTarget.appTheme.docMenu = [];
     }
-    // 4. Inject CSS safety rule to mask sign-in, profile, help menu, hero banner and example galleries
+    // 4. Inject CSS safety rule to mask sign-in, profile, and help menu
     const styleId = "pxt-githubio-cloud-mask";
     if (typeof document !== "undefined" && !document.getElementById(styleId)) {
         const style = document.createElement("style");
@@ -3159,9 +3182,7 @@ function applyGithubIoMasking() {
             #docs-menuitem,
             .help-dropdown-menuitem,
             #mainmenu #docs-menuitem,
-            #mainmenu .help-dropdown-menuitem,
-            .getting-started-segment.hero,
-            .ui.segment.gallerysegment:not(.search-segment) {
+            #mainmenu .help-dropdown-menuitem {
                 display: none !important;
             }
         `;
