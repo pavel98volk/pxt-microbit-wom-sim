@@ -8,6 +8,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dialogs = require("./dialogs");
 const flash = require("./flash");
 const patch = require("./patch");
+const COMPAT_EXTENSIONS = {
+    "Module-World": "github:YahboomTechnology/Module-World#main",
+    "module_world_color": "github:YahboomTechnology/module_world_color#main",
+    "tm1650": "github:YahboomTechnology/tm1650#master"
+};
 function applyGithubIoMasking() {
     var _a, _b, _c, _d;
     if (typeof window === "undefined" || !window.location)
@@ -53,11 +58,174 @@ function applyGithubIoMasking() {
         document.head.appendChild(style);
     }
 }
+// Intercept export/publish to inject GitHub repo references into embedded pxt.json for microbit.org compatibility
+function installPrepareConfigHook() {
+    var _a;
+    const mainPkgProto = (_a = pxt.MainPackage) === null || _a === void 0 ? void 0 : _a.prototype;
+    if (!mainPkgProto || mainPkgProto._compatHookInstalled)
+        return;
+    mainPkgProto._compatHookInstalled = true;
+    const origPrepareConfig = mainPkgProto.prepareConfigToBePublished;
+    mainPkgProto.prepareConfigToBePublished = function () {
+        const cfg = origPrepareConfig ? origPrepareConfig.call(this) : pxt.U.clone(this.config);
+        if (cfg && cfg.dependencies) {
+            for (const [pkgName, githubSlug] of Object.entries(COMPAT_EXTENSIONS)) {
+                if (cfg.dependencies[pkgName]) {
+                    cfg.dependencies[pkgName] = githubSlug;
+                }
+            }
+        }
+        return cfg;
+    };
+}
+// Sanitize dependencies for incoming projects: rewrite any GitHub references back to local bundled packages
+function sanitizeDependenciesForLocalSim(files) {
+    if (!files || !files[pxt.CONFIG_NAME])
+        return files;
+    try {
+        const cfg = JSON.parse(files[pxt.CONFIG_NAME]);
+        if (cfg && cfg.dependencies) {
+            let modified = false;
+            for (const key of Object.keys(cfg.dependencies)) {
+                const val = cfg.dependencies[key];
+                const isModuleWorld = /Module-World/i.test(key) || (typeof val === "string" && /YahboomTechnology\/Module-World/i.test(val));
+                const isColor = /module_world_color/i.test(key) || (typeof val === "string" && /YahboomTechnology\/module_world_color/i.test(val));
+                const isTm1650 = /tm1650/i.test(key) || (typeof val === "string" && /YahboomTechnology\/tm1650/i.test(val));
+                if (isModuleWorld || isColor || isTm1650) {
+                    const canonicalName = isModuleWorld ? "Module-World" : isColor ? "module_world_color" : "tm1650";
+                    if (key !== canonicalName) {
+                        delete cfg.dependencies[key];
+                    }
+                    cfg.dependencies[canonicalName] = "*";
+                    modified = true;
+                }
+            }
+            if (modified) {
+                if (!cfg.dependencies["core"])
+                    cfg.dependencies["core"] = "*";
+                if (!cfg.dependencies["radio"])
+                    cfg.dependencies["radio"] = "*";
+                if (!cfg.dependencies["microphone"])
+                    cfg.dependencies["microphone"] = "*";
+                files[pxt.CONFIG_NAME] = JSON.stringify(cfg, null, 4);
+                // Strip any cached external files for these packages so they don't override bundled packages
+                for (const fn of Object.keys(files)) {
+                    if (/^pxt_modules\/(Module-World|module_world_color|tm1650)\//i.test(fn)) {
+                        delete files[fn];
+                    }
+                }
+            }
+        }
+    }
+    catch (e) {
+        pxt.error("Failed to sanitize project dependencies", e);
+    }
+    return files;
+}
+// Intercept project installation and retrieval to enforce bundled package usage
+function installWorkspaceHooks() {
+    const ws = pxt.workspace;
+    if (!ws || ws._compatHooksInstalled)
+        return;
+    ws._compatHooksInstalled = true;
+    const origInstallAsync = ws.installAsync;
+    if (origInstallAsync) {
+        ws.installAsync = async function (h, files, ...args) {
+            files = sanitizeDependenciesForLocalSim(files);
+            return origInstallAsync.call(this, h, files, ...args);
+        };
+    }
+    const origGetTextAsync = ws.getTextAsync;
+    if (origGetTextAsync) {
+        ws.getTextAsync = async function (id, ...args) {
+            const files = await origGetTextAsync.call(this, id, ...args);
+            return sanitizeDependenciesForLocalSim(files);
+        };
+    }
+}
+// Patch pxt.Cloud.parseScriptId to recognize official makecode.microbit.org and microbit.org URLs
+function installScriptIdHook() {
+    const cloud = pxt.Cloud;
+    if (!cloud || cloud._compatHookInstalled)
+        return;
+    cloud._compatHookInstalled = true;
+    const origParseScriptId = cloud.parseScriptId;
+    cloud.parseScriptId = function (uri) {
+        if (!uri)
+            return undefined;
+        const trimmed = uri.trim();
+        // 1. Direct script ID (e.g. _xxxxxxxxxxxx or 23-digit id)
+        const directMatch = /^(_[a-zA-Z0-9]{12}|S?[0-9\-]{23})$/.exec(trimmed);
+        if (directMatch)
+            return directMatch[1];
+        // 2. Official micro:bit URLs (standard or hash route)
+        const mbMatch = /(?:makecode\.microbit\.org|microbit\.org)\/(?:#pub:|\/)?(_[a-zA-Z0-9]{12}|S?[0-9\-]{23})/i.exec(trimmed);
+        if (mbMatch)
+            return mbMatch[1];
+        return origParseScriptId ? origParseScriptId(uri) : undefined;
+    };
+}
+// Handle external micro:bit project imports if opened via URL hash or query parameter
+async function handleExternalImportAsync(pv) {
+    var _a;
+    if (typeof window === "undefined" || !window.location)
+        return;
+    const hash = window.location.hash || "";
+    const search = window.location.search || "";
+    const urlParams = new URLSearchParams(search);
+    const importUrl = urlParams.get("import");
+    let scriptId;
+    if (importUrl) {
+        scriptId = pxt.Cloud.parseScriptId(importUrl);
+    }
+    else if (hash.startsWith("#pub:") || hash.startsWith("#import:")) {
+        const rawArg = hash.replace(/^#(pub|import):/, "");
+        scriptId = pxt.Cloud.parseScriptId(rawArg) || rawArg;
+    }
+    if (scriptId && /^(_[a-zA-Z0-9]{12}|S?[0-9\-]{23})$/.test(scriptId)) {
+        pxt.BrowserUtils.changeHash("");
+        if (pv.showLoading)
+            pv.showLoading("importing", "Loading micro:bit project...");
+        try {
+            const res = await pxt.Cloud.privateGetAsync(scriptId, true);
+            if (res && res.text) {
+                const files = JSON.parse(res.text);
+                const header = {
+                    target: pxt.appTarget.id,
+                    targetVersion: (_a = pxt.appTarget.versions) === null || _a === void 0 ? void 0 : _a.target,
+                    editor: res.editor || pxt.BLOCKS_PROJECT_NAME,
+                    name: res.name || "microbit project",
+                    meta: {},
+                    pubId: scriptId,
+                    pubCurrent: true
+                };
+                const ws = pxt.workspace;
+                const installed = await ws.installAsync(header, files);
+                await pv.loadHeaderAsync(installed, null);
+            }
+        }
+        catch (err) {
+            pxt.error("Failed to import micro:bit project", err);
+            if (pv.warningNotification)
+                pv.warningNotification("Could not load micro:bit project from link.");
+        }
+        finally {
+            if (pv.hideLoading)
+                pv.hideLoading("importing");
+        }
+    }
+}
 // Run immediately when editor extension loads
 applyGithubIoMasking();
+installPrepareConfigHook();
+installWorkspaceHooks();
+installScriptIdHook();
 pxt.editor.initExtensionsAsync = function (opts) {
     pxt.debug('loading microbit target extensions...');
     applyGithubIoMasking();
+    installPrepareConfigHook();
+    installWorkspaceHooks();
+    installScriptIdHook();
     const manyAny = Math;
     if (!manyAny.imul)
         manyAny.imul = function (a, b) {
@@ -86,9 +254,11 @@ pxt.editor.initExtensionsAsync = function (opts) {
     res.mkPacketIOWrapper = flash.mkDAPLinkPacketIOWrapper;
     res.blocklyPatch = patch.patchBlocks;
     res.showProgramTooLargeErrorAsync = dialogs.showProgramTooLargeErrorAsync;
-    // Zero-backend share link handler: generate self-contained #project:<base64> link
     if (opts && opts.projectView) {
         const pv = opts.projectView;
+        // Check for pending external import (e.g. ?import=... or #pub:...)
+        handleExternalImportAsync(pv);
+        // Zero-backend share link handler: generate self-contained #project:<base64> link
         const origPublishAsync = pv.publishAsync ? pv.publishAsync.bind(pv) : null;
         pv.publishAsync = async function (name, description, screenshotUri, forceAnonymous) {
             var _a, _b, _c;

@@ -7,6 +7,7 @@ var pxsim;
         constructor() {
             super();
             this.speakerEnabled = true;
+            this.hasAudioHeadphone = false;
             // board hardware version
             this.hardwareVersion = 1;
             // components
@@ -99,7 +100,9 @@ var pxsim;
         initAsync(msg) {
             super.initAsync(msg);
             const boardDef = msg.boardDefinition;
-            const cmpsList = msg.parts;
+            const hasHeadphone = (msg.parts || []).indexOf("headphone") !== -1;
+            this.hasAudioHeadphone = hasHeadphone;
+            const cmpsList = (msg.parts || []).filter(p => p !== "headphone");
             const cmpDefs = msg.partDefinitions || {};
             const fnArgs = msg.fnArgs;
             const v2Parts = {
@@ -5801,6 +5804,14 @@ var pxsim;
             return -1;
         }
         visuals.pinNameToId = pinNameToId;
+        /**
+         * Convert a pin ID or AnalogPin enum to its micro:bit pin name ("P0".."P20")
+         */
+        function pinIdToName(pinId) {
+            const idx = pinId >= 100 ? pinId - 100 : pinId >= 100 /* DAL.MICROBIT_ID_IO_P0 */ ? pinId - 100 /* DAL.MICROBIT_ID_IO_P0 */ : pinId;
+            return (idx >= 0 && idx <= 20) ? `P${idx}` : "P0";
+        }
+        visuals.pinIdToName = pinIdToName;
         function getPinInstance(pinName) {
             const b = pxsim.board();
             if (!b || !b.edgeConnectorState)
@@ -6071,6 +6082,7 @@ var pxsim;
                 this.wiresGroup = null;
                 this.modulesGroup = null;
                 this.warningGroup = null;
+                this.speakerGroup = null;
                 /** Canonical pinKey (e.g. "P0,P1") -> spawned module */
                 this.modulesByPinKey = {};
                 /** Individual pin name (e.g. "P0") -> spawned module owning that pin */
@@ -6079,7 +6091,20 @@ var pxsim;
                 this.occupied = [];
                 this.warningsShown = {};
                 this.lastPostedHeight = 430;
+                /** Audio pin tracking (speaker icon + conflict check) */
+                this.audioPinConfigured = false;
+                this.audioPinEnabled = true;
+                this.currentAudioPin = "P0";
+                this.soundWarningElement = null;
+                this.soundWarningMsg = null;
                 WomModuleManager.installHooks();
+                const b = boardInstance || pxsim.board();
+                if (b) {
+                    const vh = b.viewHost;
+                    if (b.hasAudioHeadphone || (vh && vh.opts && vh.opts.partsList && vh.opts.partsList.indexOf("headphone") !== -1)) {
+                        this.audioPinConfigured = true;
+                    }
+                }
             }
             static registerFactory(moduleType, factory, dmesgHandler) {
                 WomModuleManager.factories[moduleType] = factory;
@@ -6166,12 +6191,23 @@ var pxsim;
              */
             static initBoard(b) {
                 WomModuleManager.installHooks();
+                if (typeof pxsim !== "undefined" && pxsim.pins) {
+                    pxsim.pins.edgeConnectorSoundDisabled = false;
+                }
                 let mgr = b.womManager;
                 if (!mgr) {
                     mgr = new WomModuleManager(b);
                     b.womManager = mgr;
                     b.updateSubscribers.push(() => mgr.updateAllModules());
                 }
+                else {
+                    mgr.boardInstance = b;
+                    mgr.rootGroup = null;
+                    mgr.speakerGroup = null;
+                    if (b.hasAudioHeadphone)
+                        mgr.audioPinConfigured = true;
+                }
+                mgr.updateAudioSpeakerIcon();
                 return mgr;
             }
             static get(b) {
@@ -6295,6 +6331,43 @@ var pxsim;
                     hookedI2cRead._womHook = true;
                     pxsim.pins.i2cReadBuffer = hookedI2cRead;
                 }
+                // 7. Hook pxsim.pins.setAudioPinEnabled
+                if (pxsim.pins && (!pxsim.pins.setAudioPinEnabled || !pxsim.pins.setAudioPinEnabled._womHook)) {
+                    const hookedSetAudioPinEnabled = function (enabled) {
+                        pxsim.pins.edgeConnectorSoundDisabled = !enabled;
+                        const mgr = WomModuleManager.get();
+                        if (mgr)
+                            mgr.setAudioPinEnabled(!!enabled);
+                    };
+                    hookedSetAudioPinEnabled._womHook = true;
+                    pxsim.pins.setAudioPinEnabled = hookedSetAudioPinEnabled;
+                }
+                // 8. Hook pxsim.pins.setAudioPin
+                if (pxsim.pins && (!pxsim.pins.setAudioPin || !pxsim.pins.setAudioPin._womHook)) {
+                    const origSetAudioPin = pxsim.pins.setAudioPin;
+                    const hookedSetAudioPin = function (pinId) {
+                        if (origSetAudioPin)
+                            origSetAudioPin.call(pxsim.pins, pinId);
+                        const mgr = WomModuleManager.get();
+                        if (mgr)
+                            mgr.setAudioPin(pinId);
+                    };
+                    hookedSetAudioPin._womHook = true;
+                    pxsim.pins.setAudioPin = hookedSetAudioPin;
+                }
+                // 9. Hook pxsim.pins.analogPitch
+                if (pxsim.pins && (!pxsim.pins.analogPitch || !pxsim.pins.analogPitch._womHook)) {
+                    const origAnalogPitch = pxsim.pins.analogPitch;
+                    const hookedAnalogPitch = function (frequency, ms) {
+                        const mgr = WomModuleManager.get();
+                        if (mgr)
+                            mgr.onAudioPitchTriggered();
+                        if (origAnalogPitch)
+                            origAnalogPitch.call(pxsim.pins, frequency, ms);
+                    };
+                    hookedAnalogPitch._womHook = true;
+                    pxsim.pins.analogPitch = hookedAnalogPitch;
+                }
             }
             static handleDmesg(msg) {
                 const b = pxsim.board();
@@ -6357,6 +6430,9 @@ var pxsim;
                     this.modulesGroup = pxsim.svg.child(this.rootGroup, "g", { class: "wom-modules-layer" });
                     this.warningGroup = pxsim.svg.child(this.rootGroup, "g", { class: "wom-warning-layer" });
                 }
+                if (!this.speakerGroup || !svgEl.contains(this.speakerGroup)) {
+                    this.speakerGroup = pxsim.svg.child(svgEl, "g", { class: "wom-speaker-layer" });
+                }
                 return true;
             }
             /**
@@ -6388,7 +6464,11 @@ var pxsim;
                         return null;
                     }
                 }
-                // 2b. Check LED matrix shared pin conflict (orange warning banner)
+                // 2b. Check audio / sound pin conflict (orange warning banner, similar to led enable: false)
+                if (this.isAudioPinConflictActive(pins)) {
+                    this.showSoundPinConflictWarning(moduleType, pins, this.currentAudioPin);
+                }
+                // 2c. Check LED matrix shared pin conflict (orange warning banner)
                 const ledConflictPins = pins.filter(p => visuals.LED_SHARED_PINS.indexOf(p) !== -1);
                 if (ledConflictPins.length > 0 && WomModuleManager.isLedConflictActive(this.boardInstance)) {
                     this.showLedPinConflictWarning(moduleType, pins, ledConflictPins);
@@ -6404,6 +6484,7 @@ var pxsim;
                 for (const pin of pins) {
                     this.pinOwner[pin] = mod;
                 }
+                this.updateAudioSpeakerIcon();
                 // 4. Allocate 2D grid slot and position module
                 const slot = this.allocateGridSlot(mod.colSpan, mod.rowSpan);
                 const modX = WomModuleManager.START_X + slot.col * (WomModuleManager.CELL_W + WomModuleManager.GAP_X);
@@ -6477,7 +6558,7 @@ var pxsim;
                         pinName === "GND") {
                         return;
                     }
-                    const boardCoord = boardView.getCoord(pinName);
+                    let boardCoord = boardView.getCoord(pinName);
                     if (!boardCoord)
                         return;
                     const wireColor = pad.color || getPinWireColor(pinName);
@@ -6577,16 +6658,136 @@ var pxsim;
                 t.textContent = `⚠️ ${msg}`;
                 this.updateViewBox();
             }
+            setAudioPin(pinId) {
+                this.currentAudioPin = pinIdToName(pinId);
+                this.audioPinConfigured = true;
+                this.checkSoundPinConflict();
+            }
+            setAudioPinEnabled(enabled) {
+                this.audioPinEnabled = !!enabled;
+                pxsim.pins.edgeConnectorSoundDisabled = !enabled;
+                if (enabled)
+                    this.audioPinConfigured = true;
+                this.checkSoundPinConflict();
+            }
+            onAudioPitchTriggered() {
+                if (!this.audioPinConfigured) {
+                    this.audioPinConfigured = true;
+                    this.checkSoundPinConflict();
+                }
+            }
+            isAudioPinActive() {
+                if (!this.audioPinConfigured || !this.audioPinEnabled)
+                    return false;
+                if (typeof pxsim !== "undefined" && pxsim.pins && pxsim.pins.edgeConnectorSoundDisabled) {
+                    return false;
+                }
+                return true;
+            }
+            isAudioPinConflictActive(pins) {
+                return this.isAudioPinActive() && pins.indexOf(this.currentAudioPin) !== -1;
+            }
+            checkSoundPinConflict() {
+                if (!this.isAudioPinActive()) {
+                    this.clearSoundPinConflictWarning();
+                }
+                else {
+                    const owner = this.pinOwner[this.currentAudioPin];
+                    if (owner) {
+                        this.showSoundPinConflictWarning(owner.moduleType, owner.pins, this.currentAudioPin, owner.displayName);
+                    }
+                    else {
+                        this.clearSoundPinConflictWarning();
+                    }
+                }
+                this.updateAudioSpeakerIcon();
+            }
+            showSoundPinConflictWarning(moduleType, pins, soundPin, displayName) {
+                const targetName = displayName || moduleType;
+                const msg = `Pin conflict on ${soundPin}: pin is used for audio output; call pins.setAudioPinEnabled(false) to use for ${targetName}.`;
+                if (this.warningsShown[msg])
+                    return;
+                this.warningsShown[msg] = true;
+                this.soundWarningMsg = msg;
+                console.warn(`[WoM Sim] ${msg}`);
+                if (!this.warningGroup)
+                    return;
+                const bannerIndex = Object.keys(this.warningsShown).length - 1;
+                const yOffset = 412 + bannerIndex * 26;
+                const g = pxsim.svg.child(this.warningGroup, "g", { class: "wom-warning-sound", transform: `translate(10, ${yOffset})` });
+                this.soundWarningElement = g;
+                pxsim.svg.child(g, "rect", { x: 0, y: 0, width: 480, height: 22, rx: 4, fill: "#c2410c", stroke: "#fdba74", "stroke-width": 1 });
+                const t = pxsim.svg.child(g, "text", { x: 8, y: 15, fill: "#ffffff", "font-family": "monospace, sans-serif", "font-size": "10.5px", "font-weight": "bold" });
+                t.textContent = `⚠️ ${msg}`;
+                this.updateViewBox();
+                this.updateAudioSpeakerIcon();
+            }
+            clearSoundPinConflictWarning() {
+                if (this.soundWarningMsg) {
+                    delete this.warningsShown[this.soundWarningMsg];
+                    this.soundWarningMsg = null;
+                }
+                if (this.soundWarningElement) {
+                    this.soundWarningElement.remove();
+                    this.soundWarningElement = null;
+                    if (this.warningGroup) {
+                        for (let i = 0; i < this.warningGroup.children.length; i++) {
+                            this.warningGroup.children[i].setAttribute("transform", `translate(10, ${412 + i * 26})`);
+                        }
+                    }
+                    this.updateViewBox();
+                }
+                this.updateAudioSpeakerIcon();
+            }
+            updateAudioSpeakerIcon() {
+                const b = this.boardInstance || pxsim.board();
+                if (!b || !b.view)
+                    return;
+                if (!this.speakerGroup || !b.view.contains(this.speakerGroup)) {
+                    this.speakerGroup = pxsim.svg.child(b.view, "g", { class: "wom-speaker-layer" });
+                }
+                while (this.speakerGroup.firstChild) {
+                    this.speakerGroup.removeChild(this.speakerGroup.firstChild);
+                }
+                if (!this.isAudioPinActive()) {
+                    this.speakerGroup.style.display = "none";
+                    return;
+                }
+                this.speakerGroup.style.display = "";
+                const pinName = this.currentAudioPin;
+                const boardView = this.getBoardView();
+                const coord = boardView ? boardView.getCoord(pinName) : null;
+                const isBig = pinName === "P0" || pinName === "P1" || pinName === "P2";
+                const x = coord ? coord[0] : (pinName === "P1" ? 139.3 : pinName === "P2" ? 249.4 : 40.5);
+                const y = isBig ? 341.6 : 366;
+                const conflict = !!this.pinOwner[pinName];
+                const g = pxsim.svg.child(this.speakerGroup, "g", {
+                    transform: `translate(${x}, ${y})`,
+                    style: "cursor: pointer; pointer-events: auto;",
+                    title: conflict ? `Audio output conflict on ${pinName}` : `Audio output: ${pinName}`
+                });
+                pxsim.svg.child(g, "circle", {
+                    cx: 0, cy: 0, r: isBig ? 10 : 8,
+                    fill: conflict ? "#7f1d1d" : "#0f172a",
+                    stroke: conflict ? "#ef4444" : "#38bdf8",
+                    "stroke-width": 1.5
+                });
+                const cone = pxsim.svg.child(g, "g", { transform: isBig ? "" : "scale(0.8)" });
+                pxsim.svg.child(cone, "polygon", { points: "-5,-2.5 -2,-2.5 1.5,-5.5 1.5,5.5 -2,2.5 -5,2.5", fill: "#fff" });
+                pxsim.svg.child(cone, "path", { d: "M 3.5 -3 C 4.7 -1.5 4.7 1.5 3.5 3", fill: "none", stroke: "#fff", "stroke-width": 1.2, "stroke-linecap": "round" });
+                pxsim.svg.child(cone, "path", { d: "M 5.8 -5 C 7.5 -2.5 7.5 2.5 5.8 5", fill: "none", stroke: "#fff", "stroke-width": 1.2, "stroke-linecap": "round" });
+            }
             updateViewBox() {
                 const b = this.boardInstance || pxsim.board();
                 if (!b || !b.view)
                     return;
-                const numRows = Math.max(1, this.occupied.length);
+                const numRows = this.occupied.length;
                 const numWarnings = Object.keys(this.warningsShown).length;
                 const warningExtra = Math.max(0, (numWarnings - 1) * 26);
-                const requiredHeight = Math.max(430 + warningExtra, WomModuleManager.START_Y +
-                    numRows * (WomModuleManager.CELL_H + WomModuleManager.GAP_Y) +
-                    16);
+                const womHeight = numRows > 0
+                    ? WomModuleManager.START_Y + numRows * (WomModuleManager.CELL_H + WomModuleManager.GAP_Y) + 16
+                    : 430;
+                const requiredHeight = Math.max(430 + warningExtra, womHeight);
                 b.view.setAttribute("viewBox", `0 0 500 ${requiredHeight}`);
                 if (requiredHeight !== this.lastPostedHeight && typeof pxsim.Runtime !== "undefined" && pxsim.Runtime.postMessage) {
                     this.lastPostedHeight = requiredHeight;
@@ -8985,6 +9186,8 @@ var pxsim;
                     height: 120
                 });
                 this.setImageHref(rotorImg, "sprites/servo_rotor.svg");
+                // Short 5V power wire stub emerging from the top of the servo with unselectable "5V" label
+                this.createPowerWireStub();
                 // Circular toggle button ('f' / 'b') on top of the bottom left corner
                 this.createFaceToggleButton();
                 // Circular 0 degree selection button on the bottom right (positional servos only)
@@ -8996,6 +9199,52 @@ var pxsim;
                 this.applyModeVisuals();
                 this.renderHornAngle(0);
                 this.updateState();
+            }
+            createPowerWireStub() {
+                const wireX = 94;
+                const wireBottomY = 42;
+                const wireTopY = 29;
+                const d = `M ${wireX} ${wireBottomY} L ${wireX} ${wireTopY}`;
+                this.powerWireGroup = pxsim.svg.elt("g", {
+                    class: "wom-servo-5v-wire",
+                    style: "pointer-events: none; user-select: none;"
+                });
+                // Insert before spriteEl so the bottom of the short wire tucks cleanly behind the top edge of the servo sprite
+                if (this.spriteEl && this.spriteEl.parentNode === this.element) {
+                    this.element.insertBefore(this.powerWireGroup, this.spriteEl);
+                }
+                else {
+                    this.element.appendChild(this.powerWireGroup);
+                }
+                // Subtle shadow under wire matching WomModuleManager.drawWiresForModule
+                pxsim.svg.child(this.powerWireGroup, "path", {
+                    d,
+                    fill: "none",
+                    stroke: "rgba(0,0,0,0.35)",
+                    "stroke-width": 4.5,
+                    "stroke-linecap": "round"
+                });
+                // Red 5V power wire stub
+                pxsim.svg.child(this.powerWireGroup, "path", {
+                    d,
+                    fill: "none",
+                    stroke: "#ef4444",
+                    "stroke-width": 3,
+                    "stroke-linecap": "round",
+                    opacity: 0.92
+                });
+                // Unselectable "5V" label immediately at the end of the short wire
+                const label = pxsim.svg.child(this.powerWireGroup, "text", {
+                    x: wireX,
+                    y: wireTopY - 4,
+                    "text-anchor": "middle",
+                    fill: "#ef4444",
+                    "font-family": "monospace, sans-serif",
+                    "font-size": "16.5px",
+                    "font-weight": "bold",
+                    style: "pointer-events: none; user-select: none; -webkit-user-select: none;"
+                });
+                label.textContent = "5V";
             }
             setServoMode(mode, fromInitBlock = false) {
                 if (this.modeLockedByInit && !fromInitBlock)
@@ -9022,6 +9271,11 @@ var pxsim;
                 }
                 if (this.zeroPosBtnGroup) {
                     this.zeroPosBtnGroup.style.display = this.mode === "continuous" ? "none" : "block";
+                }
+                if (this.powerWireGroup) {
+                    // Adjust vertical offset so visible stub length matches top edge of positional (y≈33.2) vs continuous (y≈38.9) sprite
+                    const yOffset = this.mode === "continuous" ? 5.7 : 0;
+                    this.powerWireGroup.setAttribute("transform", `translate(0, ${yOffset})`);
                 }
             }
             renderHornAngle(angleDeg) {
@@ -9210,7 +9464,6 @@ var pxsim;
                 this.updateFaceButtonVisuals();
                 this.updateZeroPositionButtonVisuals();
                 if (this.mode === "continuous") {
-                    this.targetRpm = -this.targetRpm;
                     if (Math.abs(this.targetRpm) >= 0.5) {
                         const dir = (this.isBack ? -this.targetRpm : this.targetRpm) > 0 ? "CW" : "CCW";
                         this.setBadgeText(`${Math.round(Math.abs(this.targetRpm))}rpm ${dir}`, "#22c55e");
