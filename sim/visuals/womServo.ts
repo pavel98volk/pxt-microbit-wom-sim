@@ -75,6 +75,7 @@ namespace pxsim.visuals {
         private zeroPosBtnGroup: SVGGElement;
         private zeroPosBtnCircle: SVGCircleElement;
         private miniRotorImg: SVGImageElement;
+        private powerWireGroup: SVGGElement;
         private readonly shaftX = 74;
         private readonly shaftY = 108;
         private readonly hornScale = 0.28;
@@ -135,6 +136,9 @@ namespace pxsim.visuals {
             });
             this.setImageHref(rotorImg, "sprites/servo_rotor.svg");
 
+            // Short 5V power wire stub emerging from the top of the servo with unselectable "5V" label
+            this.createPowerWireStub();
+
             // Circular toggle button ('f' / 'b') on top of the bottom left corner
             this.createFaceToggleButton();
 
@@ -149,6 +153,57 @@ namespace pxsim.visuals {
             this.applyModeVisuals();
             this.renderHornAngle(0);
             this.updateState();
+        }
+
+        private createPowerWireStub(): void {
+            const wireX = 94;
+            const wireBottomY = 42;
+            const wireTopY = 29;
+            const d = `M ${wireX} ${wireBottomY} L ${wireX} ${wireTopY}`;
+
+            this.powerWireGroup = <SVGGElement>svg.elt("g", {
+                class: "wom-servo-5v-wire",
+                style: "pointer-events: none; user-select: none;"
+            });
+
+            // Insert before spriteEl so the bottom of the short wire tucks cleanly behind the top edge of the servo sprite
+            if (this.spriteEl && this.spriteEl.parentNode === this.element) {
+                this.element.insertBefore(this.powerWireGroup, this.spriteEl);
+            } else {
+                this.element.appendChild(this.powerWireGroup);
+            }
+
+            // Subtle shadow under wire matching WomModuleManager.drawWiresForModule
+            svg.child(this.powerWireGroup, "path", {
+                d,
+                fill: "none",
+                stroke: "rgba(0,0,0,0.35)",
+                "stroke-width": 4.5,
+                "stroke-linecap": "round"
+            });
+
+            // Red 5V power wire stub
+            svg.child(this.powerWireGroup, "path", {
+                d,
+                fill: "none",
+                stroke: "#ef4444",
+                "stroke-width": 3,
+                "stroke-linecap": "round",
+                opacity: 0.92
+            });
+
+            // Unselectable "5V" label immediately at the end of the short wire
+            const label = <SVGTextElement>svg.child(this.powerWireGroup, "text", {
+                x: wireX,
+                y: wireTopY - 4,
+                "text-anchor": "middle",
+                fill: "#ef4444",
+                "font-family": "monospace, sans-serif",
+                "font-size": "16.5px",
+                "font-weight": "bold",
+                style: "pointer-events: none; user-select: none; -webkit-user-select: none;"
+            });
+            label.textContent = "5V";
         }
 
         public setServoMode(mode: WomServoMode, fromInitBlock = false): void {
@@ -175,6 +230,11 @@ namespace pxsim.visuals {
             }
             if (this.zeroPosBtnGroup) {
                 this.zeroPosBtnGroup.style.display = this.mode === "continuous" ? "none" : "block";
+            }
+            if (this.powerWireGroup) {
+                // Adjust vertical offset so visible stub length matches top edge of positional (y≈33.2) vs continuous (y≈38.9) sprite
+                const yOffset = this.mode === "continuous" ? 5.7 : 0;
+                this.powerWireGroup.setAttribute("transform", `translate(0, ${yOffset})`);
             }
         }
 
@@ -386,7 +446,6 @@ namespace pxsim.visuals {
             this.updateZeroPositionButtonVisuals();
 
             if (this.mode === "continuous") {
-                this.targetRpm = -this.targetRpm;
                 if (Math.abs(this.targetRpm) >= 0.5) {
                     const dir = (this.isBack ? -this.targetRpm : this.targetRpm) > 0 ? "CW" : "CCW";
                     this.setBadgeText(`${Math.round(Math.abs(this.targetRpm))}rpm ${dir}`, "#22c55e");
