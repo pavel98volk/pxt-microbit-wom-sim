@@ -3186,39 +3186,6 @@ function installPrepareConfigHook() {
         return cfg;
     };
 }
-// Embed bundled extension sources into _packaged-extensions.json in .hex so microbit.org can load them offline
-function installFilesToBePublishedHook() {
-    var _a;
-    const mainPkgProto = (_a = pxt.MainPackage) === null || _a === void 0 ? void 0 : _a.prototype;
-    if (!mainPkgProto || mainPkgProto._packagedExtHookInstalled)
-        return;
-    mainPkgProto._packagedExtHookInstalled = true;
-    const origFilesToBePublished = mainPkgProto.filesToBePublishedAsync;
-    mainPkgProto.filesToBePublishedAsync = async function (allowPrivate = false, packExternalExtensions = false) {
-        const files = origFilesToBePublished
-            ? await origFilesToBePublished.call(this, allowPrivate, packExternalExtensions)
-            : {};
-        if (files) {
-            let packaged = {};
-            if (files[pxt.PACKAGED_EXTENSIONS]) {
-                try {
-                    packaged = JSON.parse(files[pxt.PACKAGED_EXTENSIONS]);
-                }
-                catch (e) { }
-            }
-            const bundledpkgs = pxt.appTarget.bundledpkgs || {};
-            for (const [pkgId, ghSlug] of Object.entries(COMPAT_EXTENSIONS)) {
-                if (bundledpkgs[pkgId]) {
-                    const pkgFiles = Object.assign({}, bundledpkgs[pkgId]);
-                    packaged[ghSlug] = pkgFiles;
-                    packaged[pkgId] = pkgFiles;
-                }
-            }
-            files[pxt.PACKAGED_EXTENSIONS] = JSON.stringify(packaged);
-        }
-        return files;
-    };
-}
 // Sanitize dependencies for incoming projects: rewrite any GitHub references back to local bundled packages
 function sanitizeDependenciesForLocalSim(files) {
     if (!files || !files[pxt.CONFIG_NAME])
@@ -3353,7 +3320,6 @@ async function handleExternalImportAsync(pv) {
 ensureCloudApiRoot();
 applyGithubIoMasking();
 installPrepareConfigHook();
-installFilesToBePublishedHook();
 installWorkspaceHooks();
 installScriptIdHook();
 pxt.editor.initExtensionsAsync = function (opts) {
@@ -3361,7 +3327,6 @@ pxt.editor.initExtensionsAsync = function (opts) {
     ensureCloudApiRoot();
     applyGithubIoMasking();
     installPrepareConfigHook();
-    installFilesToBePublishedHook();
     installWorkspaceHooks();
     installScriptIdHook();
     const manyAny = Math;
