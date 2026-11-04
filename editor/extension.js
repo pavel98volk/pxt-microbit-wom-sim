@@ -40,29 +40,34 @@ function hideHomeScreenGalleries() {
     `);
 }
 // GitHub Pages only: root-relative /static/logo/social-buttons/*.png (Google Classroom / Teams share buttons) 404 when
-// hosted under /<repo>/, so point them at the official site instead.
+// hosted under /<repo>/. The path is hardcoded in pxt-core's SocialButton, so rewrite the URL at the moment it is
+// assigned to an <img> (before the browser requests it) instead of patching the DOM afterwards.
 function redirectSocialButtonLogos() {
-    if (typeof document === "undefined" || typeof MutationObserver === "undefined")
+    if (typeof window === "undefined")
         return;
     const w = window;
-    if (w._womSocialLogoObserver)
+    if (w._womSocialLogoHook)
         return;
+    w._womSocialLogoHook = true;
     const prefix = "/static/logo/social-buttons/";
-    const fix = (img) => {
-        const src = img.getAttribute("src");
-        if (src && src.indexOf(prefix) === 0)
-            img.setAttribute("src", "https://makecode.microbit.org" + src);
+    const rewrite = (v) => typeof v === "string" && v.indexOf(prefix) === 0 ? "https://makecode.microbit.org" + v : v;
+    // img.src = "..."
+    const desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src");
+    if (desc && desc.set) {
+        Object.defineProperty(HTMLImageElement.prototype, "src", {
+            configurable: true,
+            enumerable: desc.enumerable,
+            get: desc.get,
+            set: function (v) { desc.set.call(this, rewrite(v)); }
+        });
+    }
+    // img.setAttribute("src", "...") (what React uses)
+    const origSetAttribute = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function (name, value) {
+        if (this.tagName === "IMG" && name.toLowerCase() === "src")
+            value = rewrite(value);
+        return origSetAttribute.call(this, name, value);
     };
-    const scan = (node) => {
-        if (node.nodeType !== 1)
-            return;
-        const el = node;
-        if (el.tagName === "IMG")
-            fix(el);
-        el.querySelectorAll && el.querySelectorAll("img").forEach(i => fix(i));
-    };
-    w._womSocialLogoObserver = new MutationObserver(muts => muts.forEach(m => m.addedNodes.forEach(scan)));
-    w._womSocialLogoObserver.observe(document.documentElement, { childList: true, subtree: true });
 }
 function applyGithubIoMasking() {
     var _a, _b, _c, _d;
